@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { CornerstoneServiceProvider } from './services/cornerstoneService'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <CornerstoneServiceProvider>
+      <App />
+    </CornerstoneServiceProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

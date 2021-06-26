@@ -1,0 +1,1 @@
+export { DimcomViewer as default } from './DicomViewer';
