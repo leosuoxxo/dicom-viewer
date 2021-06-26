@@ -1,24 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState, useRef } from 'react';
+import { Box, Input } from '@material-ui/core';
+import BasicLayout from './layouts/BasicLayout';
+import DicomViewer from './containers/DicomViewer';
+import ToolBar from './containers/ToolBar';
+import { useCornerstone } from './services/cornerstoneService';
 
 function App() {
+  const { cornerstoneWADOImageLoader, cornerstone, cornerstoneTools } = useCornerstone();
+  const [imageIds, setImageIds] = useState([]);
+
+  const inputChangeHandler = e => {
+    const file = e.target.files[0];
+    const imageId = cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
+    setImageIds([imageId])
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BasicLayout top={
+      <>
+        <ToolBar />
+        <Input type="file" onChange={inputChangeHandler} />
+      </>
+    }>
+      <Box display="flex" height="100%">
+        <DicomViewer imageIds={imageIds}/>
+        <DicomViewer imageIds={imageIds}/>
+      </Box>
+    </BasicLayout>
   );
 }
 
