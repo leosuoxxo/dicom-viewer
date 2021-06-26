@@ -1,11 +1,13 @@
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Box } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { useCornerstone } from '../../services/cornerstoneService';
 
 
-export const DimcomViewer = ({ imageIds }) => {
+export const DicomViewer = ({ imageIds }) => {
+  const [isLoading,setIsLoading] = useState(false);
   const { cornerstone, cornerstoneTools } = useCornerstone();
+  
   const elementRef = useRef();
   
   const hasImageIds = imageIds && imageIds.length > 0;
@@ -22,16 +24,12 @@ export const DimcomViewer = ({ imageIds }) => {
 
     cornerstoneTools.addTool(PanTool)
     cornerstoneTools.setToolActive('Pan', { mouseButtonMask: 1 })
-
-    const LengthTool = cornerstoneTools.LengthTool;
-
-    cornerstoneTools.addTool(LengthTool)
-    cornerstoneTools.setToolActive('Length', { mouseButtonMask: 1 })
   }
 
   useEffect(() => {
-    if(!hasImageIds) return;
+    setIsLoading(true);
     const element = elementRef.current;
+    if(!hasImageIds || !element) return;
     cornerstone.enable(element);
 
     const imageId = imageIds[0];
@@ -39,8 +37,12 @@ export const DimcomViewer = ({ imageIds }) => {
     .then((image) => {
       cornerstone.displayImage(element, image);
       createTools();
+      setIsLoading(false);
     })
-    .catch(err=> console.log('err',err))
+    .catch(err=> {
+      setIsLoading(false);
+      console.log('err',err)
+    })
 
   },[imageIds])
 
@@ -48,7 +50,9 @@ export const DimcomViewer = ({ imageIds }) => {
     hasImageIds ? (
       <Box ref={elementRef} flex="1" width="100%" height="100%" />
     ) : (
-      <Skeleton width="100%" height="100%" />
+      <Box flex="1">
+        <Skeleton width="100%" height="100%" />
+      </Box>
     )
   )
 }

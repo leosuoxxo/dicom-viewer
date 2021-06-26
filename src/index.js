@@ -1,15 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { ThemeProvider } from '@material-ui/core/styles';
+import { CornerstoneServiceProvider } from './services/cornerstoneService';
+import { ToolManageServiceProvider } from './services/toolManageService';
 import App from './App';
+import theme from './theme';
+import './index.css';
 import reportWebVitals from './reportWebVitals';
-import { CornerstoneServiceProvider } from './services/cornerstoneService'
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <CornerstoneServiceProvider>
-      <App />
-    </CornerstoneServiceProvider>
+    <ThemeProvider theme={theme}>
+      <CornerstoneServiceProvider>
+        <ToolManageServiceProvider>
+          <App />
+        </ToolManageServiceProvider>
+      </CornerstoneServiceProvider>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

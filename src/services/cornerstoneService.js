@@ -1,8 +1,7 @@
-import { createContext, useEffect, useContext, useRef } from 'react';
+import { createContext, useEffect, useContext, useRef, useMemo } from 'react';
 import dicomParser from 'dicom-parser';
 import cornerstone from 'cornerstone-core';
 import cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader';
-import cornerstoneFileImageLoader from 'cornerstone-file-image-loader';
 import cornerstoneMath from 'cornerstone-math';
 import cornerstoneTools from 'cornerstone-tools';
 import Hammer from 'hammerjs';
@@ -10,20 +9,17 @@ import Hammer from 'hammerjs';
 export const Context = createContext({});
 
 export const CornerstoneServiceProvider = ({ children }) => {
+  const initializedRef = useRef(false);
   const cornerstoneToolsRef = useRef(cornerstoneTools);
-  const cornerstoneFileImageLoaderRef = useRef(cornerstoneFileImageLoader);
   const cornerstoneWADOImageLoaderRef = useRef(cornerstoneWADOImageLoader);
 
   useEffect(() => {
-    console.log('init Cornerstone')
+    if(initializedRef.current) return;
     // Cornerstone Tools
     cornerstoneToolsRef.current.external.cornerstone = cornerstone;
     cornerstoneToolsRef.current.external.Hammer = Hammer;
     cornerstoneToolsRef.current.external.cornerstoneMath = cornerstoneMath;
     cornerstoneToolsRef.current.init({ showSVGCursors: true });
-  
-    // Image Loader
-    cornerstoneFileImageLoaderRef.current.external.cornerstone = cornerstone;
   
     cornerstoneWADOImageLoaderRef.current.external.cornerstone = cornerstone;
     cornerstoneWADOImageLoaderRef.current.external.dicomParser = dicomParser;
@@ -38,14 +34,15 @@ export const CornerstoneServiceProvider = ({ children }) => {
         },
       },
     });
+
+    initializedRef.current = true;
   },[])
 
-  const refs = {
-    cornerstone,
-    cornerstoneTools: cornerstoneToolsRef.current,
-    cornerstoneFileImageLoader: cornerstoneFileImageLoaderRef.current,
-    cornerstoneWADOImageLoader: cornerstoneWADOImageLoaderRef.current
-  }
+  const refs = useMemo(() => ({
+      cornerstone,
+      cornerstoneTools: cornerstoneToolsRef.current,
+      cornerstoneWADOImageLoader: cornerstoneWADOImageLoaderRef.current,
+    }),[])
 
   return (
     <Context.Provider value={refs}>

@@ -1,1 +1,1 @@
-export { DimcomViewer as default } from './DicomViewer';
+export { DicomViewer as default } from './DicomViewer';
