@@ -1,17 +1,33 @@
 import { createContext, useCallback, useContext, useState } from 'react'; 
+import Tiff from 'tiff.js'
 import { useCornerstone } from './cornerstoneService'
-
-export default function useToken(func,initialValue) {
-  return createContext(initialValue);
-}
+import { getExtensions, fileToBuffer } from 'utils'
 
 export const useToolManageService = () => {
-  const { cornerstoneWADOImageLoader, cornerstoneTools } = useCornerstone();
+  const { cornerstoneWADOImageLoader, cornerstoneTools, cornerstoneFileImageLoader, cornerstone } = useCornerstone();
   const [imageIds,setImageIds] = useState([])
 
-  const imageUpload = useCallback((file) => {
-    const imageId = cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
-    setImageIds([imageId])
+  const imageUpload = useCallback(async (file) => {
+    const ext = getExtensions(file.name);
+
+    switch(ext) {
+      case 'tif':
+        const buffer = await fileToBuffer(file);
+        const tiff = new Tiff({ buffer });
+        const canvas = tiff.toCanvas();
+        canvas.toBlob(async function(blob) {
+          const canvasBuffer = await blob.arrayBuffer();
+          const imageId = cornerstoneFileImageLoader.fileManager.addBuffer(canvasBuffer);
+          setImageIds([imageId])
+        });
+        break;
+
+      case 'dcm':
+      default:
+        const imageId = cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
+        setImageIds([imageId])
+    }
+    
   },[])
 
   const lengthTool = useCallback(() => {
