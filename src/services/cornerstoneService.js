@@ -2,6 +2,7 @@ import { createContext, useEffect, useContext, useRef, useMemo } from 'react';
 import dicomParser from 'dicom-parser';
 import cornerstone from 'cornerstone-core';
 import cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader';
+import cornerstoneFileImageLoader from 'cornerstone-file-image-loader';
 import cornerstoneMath from 'cornerstone-math';
 import cornerstoneTools from 'cornerstone-tools';
 import Hammer from 'hammerjs';
@@ -12,6 +13,7 @@ export const CornerstoneServiceProvider = ({ children }) => {
   const initializedRef = useRef(false);
   const cornerstoneToolsRef = useRef(cornerstoneTools);
   const cornerstoneWADOImageLoaderRef = useRef(cornerstoneWADOImageLoader);
+  const cornerstoneFileImageLoaderRef = useRef(cornerstoneFileImageLoader);
 
   useEffect(() => {
     if(initializedRef.current) return;
@@ -20,7 +22,9 @@ export const CornerstoneServiceProvider = ({ children }) => {
     cornerstoneToolsRef.current.external.Hammer = Hammer;
     cornerstoneToolsRef.current.external.cornerstoneMath = cornerstoneMath;
     cornerstoneToolsRef.current.init({ showSVGCursors: true });
-  
+
+    cornerstoneFileImageLoaderRef.current.external.cornerstone = cornerstone;
+
     cornerstoneWADOImageLoaderRef.current.external.cornerstone = cornerstone;
     cornerstoneWADOImageLoaderRef.current.external.dicomParser = dicomParser;
     cornerstoneWADOImageLoaderRef.current.webWorkerManager.initialize({
@@ -42,6 +46,7 @@ export const CornerstoneServiceProvider = ({ children }) => {
       cornerstone,
       cornerstoneTools: cornerstoneToolsRef.current,
       cornerstoneWADOImageLoader: cornerstoneWADOImageLoaderRef.current,
+      cornerstoneFileImageLoader: cornerstoneFileImageLoaderRef.current,
     }),[])
 
   return (

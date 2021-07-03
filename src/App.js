@@ -9,8 +9,6 @@ import { useCornerstone } from './services/cornerstoneService';
 
 function App() {
   const { imageIds } = useContext(ToolManageService);
-  const { cornerstone, cornerstoneWADOImageLoader } = useCornerstone();
-
   const [isLoading, setIsLoading] = useState(true);
   const imageId = 'wadouri:https://storage.googleapis.com/dicom-viewer-dac76.appspot.com/Gas201.DCM';
 
