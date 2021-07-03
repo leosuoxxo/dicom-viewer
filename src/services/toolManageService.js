@@ -1,16 +1,16 @@
 import { createContext, useCallback, useContext, useState } from 'react'; 
 import Tiff from 'tiff.js'
 import { useCornerstone } from './cornerstoneService'
-import { getExtensions, fileToBuffer } from 'utils'
+import { getFileExtension, fileToBuffer } from 'utils'
 
 export const useToolManageService = () => {
   const { cornerstoneWADOImageLoader, cornerstoneTools, cornerstoneFileImageLoader, cornerstone } = useCornerstone();
   const [imageIds,setImageIds] = useState([])
 
   const imageUpload = useCallback(async (file) => {
-    const ext = getExtensions(file.name);
+    const extension = getFileExtension(file.name);
 
-    switch(ext) {
+    switch(extension) {
       case 'tif':
         const buffer = await fileToBuffer(file);
         const tiff = new Tiff({ buffer });
