@@ -5,7 +5,6 @@ import { useCornerstone } from '../../services/cornerstoneService';
 
 
 export const DicomViewer = ({ imageIds }) => {
-  const [isLoading,setIsLoading] = useState(false);
   const { cornerstone, cornerstoneTools } = useCornerstone();
   
   const elementRef = useRef();
@@ -27,20 +26,19 @@ export const DicomViewer = ({ imageIds }) => {
   }
 
   useEffect(() => {
-    setIsLoading(true);
     const element = elementRef.current;
     if(!hasImageIds || !element) return;
+    cornerstone.disable(element);
     cornerstone.enable(element);
 
     const imageId = imageIds[0];
     cornerstone.loadImage(imageId)
     .then((image) => {
       cornerstone.displayImage(element, image);
+      cornerstone.updateImage(element);
       createTools();
-      setIsLoading(false);
     })
     .catch(err=> {
-      setIsLoading(false);
       console.log('err',err)
     })
 
