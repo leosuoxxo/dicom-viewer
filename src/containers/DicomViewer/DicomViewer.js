@@ -1,13 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Box } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { useCornerstone } from '../../services/cornerstoneService';
 
 export const DicomViewer = ({ imageIds }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  //prevent eslint warning
-  console.log(isLoading);
   const { cornerstone, cornerstoneTools } = useCornerstone();
 
   const elementRef = useRef();
@@ -27,7 +24,6 @@ export const DicomViewer = ({ imageIds }) => {
   },[cornerstoneTools]);
 
   useEffect(() => {
-    setIsLoading(true);
     const element = elementRef.current;
     if (!hasImageIds || !element) return;
     cornerstone.enable(element);
@@ -38,10 +34,8 @@ export const DicomViewer = ({ imageIds }) => {
       .then((image) => {
         cornerstone.displayImage(element, image);
         createTools();
-        setIsLoading(false);
       })
       .catch((err) => {
-        setIsLoading(false);
         console.log('err', err);
       });
   }, [imageIds, cornerstone, createTools, hasImageIds]);
