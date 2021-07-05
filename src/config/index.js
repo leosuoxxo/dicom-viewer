@@ -1,4 +1,3 @@
-const Tools = {
+export const Tools = {
   ZoomMouseWheelTool: true,
-  
-}
+};
