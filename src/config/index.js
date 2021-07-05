@@ -1,4 +1,3 @@
 const Tools = {
   ZoomMouseWheelTool: true,
-  
-}
+};

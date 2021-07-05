@@ -2,15 +2,14 @@ export function getFileExtension(fileName) {
   return fileName.split('.').pop().toLowerCase();
 }
 
+export function fileToBuffer(file) {
+  return new Promise(function (resolve) {
+    const reader = new FileReader();
+    const readFile = function () {
+      resolve(reader.result);
+    };
 
-export function fileToBuffer (file) {
-  return new Promise(function (resolve, reject) {
-    const reader = new FileReader()
-    const readFile = function(event) {
-      resolve(reader.result) 
-    }
-
-    reader.addEventListener('load', readFile)
-    reader.readAsArrayBuffer(file)
-  })
+    reader.addEventListener('load', readFile);
+    reader.readAsArrayBuffer(file);
+  });
 }

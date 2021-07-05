@@ -1,4 +1,5 @@
-import { createContext, useEffect, useContext, useRef, useMemo } from 'react';
+import React, { createContext, useEffect, useContext, useRef, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import dicomParser from 'dicom-parser';
 import cornerstone from 'cornerstone-core';
 import cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader';
@@ -16,7 +17,7 @@ export const CornerstoneServiceProvider = ({ children }) => {
   const cornerstoneFileImageLoaderRef = useRef(cornerstoneFileImageLoader);
 
   useEffect(() => {
-    if(initializedRef.current) return;
+    if (initializedRef.current) return;
     // Cornerstone Tools
     cornerstoneToolsRef.current.external.cornerstone = cornerstone;
     cornerstoneToolsRef.current.external.Hammer = Hammer;
@@ -40,20 +41,23 @@ export const CornerstoneServiceProvider = ({ children }) => {
     });
 
     initializedRef.current = true;
-  },[])
+  }, []);
 
-  const refs = useMemo(() => ({
+  const refs = useMemo(
+    () => ({
       cornerstone,
       cornerstoneTools: cornerstoneToolsRef.current,
       cornerstoneWADOImageLoader: cornerstoneWADOImageLoaderRef.current,
       cornerstoneFileImageLoader: cornerstoneFileImageLoaderRef.current,
-    }),[])
+    }),
+    []
+  );
 
-  return (
-    <Context.Provider value={refs}>
-      {children}
-    </Context.Provider>
-  )
-}
+  return <Context.Provider value={refs}>{children}</Context.Provider>;
+};
 
-export const useCornerstone = () => useContext(Context)
+CornerstoneServiceProvider.propTypes = {
+  children: PropTypes.node.isRequired
+};
+
+export const useCornerstone = () => useContext(Context);

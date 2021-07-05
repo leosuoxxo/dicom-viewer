@@ -6,7 +6,7 @@ const theme = createMuiTheme({
     type: 'dark',
     primary: {
       main: blue[700],
-    }
+    },
   },
 });
 
