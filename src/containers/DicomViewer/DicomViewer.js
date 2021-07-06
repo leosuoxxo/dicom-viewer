@@ -2,14 +2,14 @@ import React, { useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Box } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
+import { isEmpty } from 'lodash';
+
 import { useCornerstone } from '../../services/cornerstoneService';
 
 export const DicomViewer = ({ imageIds }) => {
   const { cornerstone, cornerstoneTools } = useCornerstone();
 
   const elementRef = useRef();
-
-  const hasImageIds = imageIds && imageIds.length > 0;
 
   const createTools = useCallback(() => {
     const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
@@ -25,7 +25,7 @@ export const DicomViewer = ({ imageIds }) => {
 
   useEffect(() => {
     const element = elementRef.current;
-    if (!hasImageIds || !element) return;
+    if (isEmpty(imageIds) || !element) return;
     cornerstone.enable(element);
 
     const imageId = imageIds[0];
@@ -38,9 +38,9 @@ export const DicomViewer = ({ imageIds }) => {
       .catch((err) => {
         console.log('err', err);
       });
-  }, [imageIds, cornerstone, createTools, hasImageIds]);
+  }, [imageIds, cornerstone, createTools]);
 
-  return hasImageIds ? (
+  return !isEmpty(imageIds) ? (
     <Box ref={elementRef} flex="1" width="100%" height="100%" />
   ) : (
     <Box flex="1">
