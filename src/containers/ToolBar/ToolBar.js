@@ -4,7 +4,7 @@ import {
   InsertDriveFileOutlined,
   Remove,
 } from '@material-ui/icons';
-import Box from '../../components/Box';
+import { Box } from '../../components/elements';
 import { ToolManageService } from '../../services/toolManageService';
 import { useCornerstone } from '../../services/cornerstoneService';
 

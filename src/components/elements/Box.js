@@ -23,7 +23,7 @@ import {
 } from 'styled-system';
 
 /** Styled System API doc: https://styled-system.com/api */
-const Box = styled.div`
+export const Box = styled.div`
   box-sizing: border-box;
 
   ${space};
@@ -38,5 +38,3 @@ const Box = styled.div`
   ${shadow};
 `;
 Box.displayName = 'Box';
-
-export default Box;
