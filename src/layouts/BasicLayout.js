@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Box from '../components/Box';
+import { Box } from '../components/elements';
 
 const StyledBasicLayout = styled(Box)`
   display: grid;
