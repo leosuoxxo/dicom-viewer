@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { Button } from '@material-ui/core';
-import Box from './components/Box';
-import BasicLayout from './layouts/BasicLayout';
-import DicomViewer from './containers/DicomViewer';
+
+import { Box, Flex } from './components/elements';
 import ToolBar from './containers/ToolBar';
+import DicomViewer from './containers/DicomViewer';
 import { ToolManageService } from './services/toolManageService';
 
 function App() {
@@ -13,10 +13,10 @@ function App() {
     'wadouri:https://storage.googleapis.com/dicom-viewer-dac76.appspot.com/Gas201.DCM';
 
   return (
-    <BasicLayout top={<ToolBar />}>
-      <Box display="flex" height="100%">
+    <>
+      <ToolBar />
+      <Flex style={{ height: '100%' }}>
         <DicomViewer imageIds={imageIds} />
-
         {!isLoading ? (
           <DicomViewer imageIds={[imageId]} />
         ) : (
@@ -32,8 +32,8 @@ function App() {
             </Button>
           </Box>
         )}
-      </Box>
-    </BasicLayout>
+      </Flex>
+    </>
   );
 }
 
