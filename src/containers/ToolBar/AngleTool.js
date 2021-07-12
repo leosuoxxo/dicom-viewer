@@ -1,27 +1,27 @@
 import React, { useContext } from 'react';
 import { IconButton } from '@material-ui/core';
 import {
-    FormatLineSpacing,
+    TextRotationAngleup,
 } from '@material-ui/icons';
 import { ToolManageService } from '../../services/toolManageService';
 import { useCornerstone } from '../../services/cornerstoneService';
 
-const LengthTool = () => {
+const AngleTool = () => {
   const { cornerstoneTools } = useCornerstone();
   const toolManageService = useContext(ToolManageService);
 
   const clickHandler = () => {
       cornerstoneTools.init();
-      const LengthTool = cornerstoneTools.LengthTool;
-      cornerstoneTools.addTool(LengthTool);
-      toolManageService.lengthTool();
+      const AngleTool = cornerstoneTools.AngleTool;
+      cornerstoneTools.addTool(AngleTool);
+      toolManageService.angleTool();
   };
 
   return (
       <IconButton onClick={clickHandler}>
-        <FormatLineSpacing />
+        <TextRotationAngleup />
       </IconButton>
   );
 };
 
-export default LengthTool;
+export default AngleTool;
