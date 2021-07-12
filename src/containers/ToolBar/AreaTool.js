@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { IconButton } from '@material-ui/core';
+import { IconButton, Tooltip } from '@material-ui/core';
 import {
     AspectRatio,
 } from '@material-ui/icons';
@@ -18,9 +18,11 @@ const AreaTool = () => {
   };
 
   return (
-      <IconButton onClick={clickHandler}>
-        <AspectRatio />
-      </IconButton>
+      <Tooltip title="面積測量">
+        <IconButton onClick={clickHandler}>
+            <AspectRatio />
+        </IconButton>
+      </Tooltip>
   );
 };
 
