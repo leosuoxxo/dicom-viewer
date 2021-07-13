@@ -8,6 +8,8 @@ import {
 import { Flex } from '../../components/elements';
 import FileUploadTool from './FileUploadTool';
 import LengthTool from './LengthTool';
+import AngleTool from './AngleTool';
+import AreaTool from './AreaTool';
 
 export const ToolBar = () => {
   return (
@@ -16,6 +18,8 @@ export const ToolBar = () => {
         {/*Frequently used tools*/}
         <FileUploadTool />
         <LengthTool />
+        <AngleTool />
+        <AreaTool />
         <Flex style={{ flexGrow: 1 }} />
 
         {/*General function*/}

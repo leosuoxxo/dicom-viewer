@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from 'react';
-import { IconButton } from '@material-ui/core';
+import { IconButton, Tooltip } from '@material-ui/core';
 import {
     CloudUpload,
 } from '@material-ui/icons';
@@ -19,10 +19,12 @@ const FileUploadTool = () => {
   };
 
   return (
-    <IconButton onClick={clickHandler}>
-      <CloudUpload />
-      <input hidden ref={inputRef} type="file" onChange={fileUploadHanlder} />
-    </IconButton>
+      <Tooltip title="檔案上傳">
+        <IconButton onClick={clickHandler}>
+        <CloudUpload />
+        <input hidden ref={inputRef} type="file" onChange={fileUploadHanlder} />
+        </IconButton>
+      </Tooltip>
   );
 };
 

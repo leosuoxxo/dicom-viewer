@@ -1,29 +1,29 @@
 import React, { useContext } from 'react';
 import { IconButton, Tooltip } from '@material-ui/core';
 import {
-    FormatLineSpacing,
+    AspectRatio,
 } from '@material-ui/icons';
 import { ToolManageService } from '../../services/toolManageService';
 import { useCornerstone } from '../../services/cornerstoneService';
 
-const LengthTool = () => {
+const AreaTool = () => {
   const { cornerstoneTools } = useCornerstone();
   const toolManageService = useContext(ToolManageService);
 
   const clickHandler = () => {
       cornerstoneTools.init();
-      const LengthTool = cornerstoneTools.LengthTool;
-      cornerstoneTools.addTool(LengthTool);
-      toolManageService.lengthTool();
+      const FreehandRoiTool = cornerstoneTools.FreehandRoiTool;
+      cornerstoneTools.addTool(FreehandRoiTool);
+      toolManageService.areaTool();
   };
 
   return (
-    <Tooltip title="長度測量">
-      <IconButton onClick={clickHandler}>
-        <FormatLineSpacing />
-      </IconButton>
-    </Tooltip>
+      <Tooltip title="面積測量">
+        <IconButton onClick={clickHandler}>
+            <AspectRatio />
+        </IconButton>
+      </Tooltip>
   );
 };
 
-export default LengthTool;
+export default AreaTool;
