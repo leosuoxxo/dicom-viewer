@@ -5,7 +5,7 @@ import {
 } from '@material-ui/icons';
 import { ToolManageService } from '../../services/toolManageService';
 
-const FileUploadTool = () => {
+export const FileUploadTool = () => {
   const inputRef = useRef();
   const toolManageService = useContext(ToolManageService);
 
@@ -27,5 +27,3 @@ const FileUploadTool = () => {
       </Tooltip>
   );
 };
-
-export default FileUploadTool;

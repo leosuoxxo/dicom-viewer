@@ -6,10 +6,7 @@ import {
 } from '@material-ui/icons';
 
 import { Flex } from '../../components/elements';
-import FileUploadTool from './FileUploadTool';
-import LengthTool from './LengthTool';
-import AngleTool from './AngleTool';
-import AreaTool from './AreaTool';
+import { AngleTool, AreaTool, LengthTool, FileUploadTool } from '../../components/Tool';
 
 export const ToolBar = () => {
   return (
