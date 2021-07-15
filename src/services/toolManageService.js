@@ -12,30 +12,33 @@ export const useToolManageService = () => {
   } = useCornerstone();
   const [imageIds, setImageIds] = useState([]);
 
-  const imageUpload = useCallback(async (file) => {
-    const extension = getFileExtension(file.name);
+  const imageUpload = useCallback(
+    async (file) => {
+      const extension = getFileExtension(file.name);
 
-    switch (extension) {
-      case 'tif': {
-        const buffer = await fileToBuffer(file);
-        const tiff = new Tiff({ buffer });
-        const canvas = tiff.toCanvas();
-        canvas.toBlob(async function (blob) {
-          const canvasBuffer = await blob.arrayBuffer();
+      switch (extension) {
+        case 'tif': {
+          const buffer = await fileToBuffer(file);
+          const tiff = new Tiff({ buffer });
+          const canvas = tiff.toCanvas();
+          canvas.toBlob(async function (blob) {
+            const canvasBuffer = await blob.arrayBuffer();
+            const imageId =
+              cornerstoneFileImageLoader.fileManager.addBuffer(canvasBuffer);
+            setImageIds([imageId]);
+          });
+          break;
+        }
+        case 'dcm':
+        default: {
           const imageId =
-            cornerstoneFileImageLoader.fileManager.addBuffer(canvasBuffer);
+            cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
           setImageIds([imageId]);
-        });
-        break;
+        }
       }
-      case 'dcm':
-      default: {
-        const imageId =
-          cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
-        setImageIds([imageId]);
-      }
-    }
-  }, [cornerstoneFileImageLoader, cornerstoneWADOImageLoader]);
+    },
+    [cornerstoneFileImageLoader, cornerstoneWADOImageLoader]
+  );
 
   const lengthTool = useCallback(() => {
     cornerstoneTools.setToolActive('Length', { mouseButtonMask: 1 });

@@ -1,12 +1,14 @@
 import React from 'react';
 import { AppBar, Toolbar, IconButton } from '@material-ui/core';
-import {
-    Build,
-    ExitToApp,
-} from '@material-ui/icons';
+import { Build, ExitToApp } from '@material-ui/icons';
 
 import { Flex } from '../../components/elements';
-import { AngleTool, AreaTool, LengthTool, FileUploadTool } from '../../components/Tool';
+import {
+  AngleTool,
+  AreaTool,
+  LengthTool,
+  FileUploadTool,
+} from '../../components/Tool';
 
 export const ToolBar = () => {
   return (

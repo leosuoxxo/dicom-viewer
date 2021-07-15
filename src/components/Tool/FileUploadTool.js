@@ -1,8 +1,6 @@
 import React, { useContext, useRef } from 'react';
 import { IconButton, Tooltip } from '@material-ui/core';
-import {
-    CloudUpload,
-} from '@material-ui/icons';
+import { CloudUpload } from '@material-ui/icons';
 import { ToolManageService } from '../../services/toolManageService';
 
 export const FileUploadTool = () => {
@@ -19,11 +17,11 @@ export const FileUploadTool = () => {
   };
 
   return (
-      <Tooltip title="檔案上傳">
-        <IconButton onClick={clickHandler}>
+    <Tooltip title="檔案上傳">
+      <IconButton onClick={clickHandler}>
         <CloudUpload />
         <input hidden ref={inputRef} type="file" onChange={fileUploadHanlder} />
-        </IconButton>
-      </Tooltip>
+      </IconButton>
+    </Tooltip>
   );
 };

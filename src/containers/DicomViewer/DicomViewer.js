@@ -21,7 +21,7 @@ export const DicomViewer = ({ imageIds }) => {
 
     cornerstoneTools.addTool(PanTool);
     cornerstoneTools.setToolActive('Pan', { mouseButtonMask: 1 });
-  },[cornerstoneTools]);
+  }, [cornerstoneTools]);
 
   useEffect(() => {
     const element = elementRef.current;

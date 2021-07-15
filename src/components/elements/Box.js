@@ -19,7 +19,7 @@ import {
   // position, zIndex, top, right, bottom, and left.
   position,
   // textShadow and boxShadow
-  shadow
+  shadow,
 } from 'styled-system';
 
 /** Styled System API doc: https://styled-system.com/api */

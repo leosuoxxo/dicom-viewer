@@ -9,17 +9,17 @@ export const AngleTool = () => {
   const toolManageService = useContext(ToolManageService);
 
   const clickHandler = () => {
-      cornerstoneTools.init();
-      const AngleTool = cornerstoneTools.AngleTool;
-      cornerstoneTools.addTool(AngleTool);
-      toolManageService.angleTool();
+    cornerstoneTools.init();
+    const AngleTool = cornerstoneTools.AngleTool;
+    cornerstoneTools.addTool(AngleTool);
+    toolManageService.angleTool();
   };
 
   return (
-      <Tooltip title="角度測量">
-        <IconButton onClick={clickHandler}>
-          <SquareFoot />
-        </IconButton>
-      </Tooltip>
+    <Tooltip title="角度測量">
+      <IconButton onClick={clickHandler}>
+        <SquareFoot />
+      </IconButton>
+    </Tooltip>
   );
 };
