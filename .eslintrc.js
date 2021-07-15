@@ -10,7 +10,8 @@ module.exports = {
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:jest/recommended',
-    'plugin:import/errors'
+    'plugin:import/errors',
+    'plugin:prettier/recommended'
   ],
   globals: {
     Atomics: 'readonly',

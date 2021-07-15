@@ -1,4 +1,10 @@
-import React, { createContext, useEffect, useContext, useRef, useMemo } from 'react';
+import React, {
+  createContext,
+  useEffect,
+  useContext,
+  useRef,
+  useMemo,
+} from 'react';
 import PropTypes from 'prop-types';
 import dicomParser from 'dicom-parser';
 import cornerstone from 'cornerstone-core';
@@ -57,7 +63,7 @@ export const CornerstoneServiceProvider = ({ children }) => {
 };
 
 CornerstoneServiceProvider.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 };
 
 export const useCornerstone = () => useContext(Context);
