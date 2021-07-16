@@ -1,14 +1,15 @@
 import React from 'react';
 import { AppBar, Toolbar, IconButton } from '@material-ui/core';
-import { Build, ExitToApp } from '@material-ui/icons';
+import { ExitToApp } from '@material-ui/icons';
 
 import { Flex } from '../../components/elements';
 import {
   AngleTool,
-  AreaTool,
+  FreeHandRoiTool,
   LengthTool,
-  FileUploadTool,
-} from '../../components/Tool';
+  ToolMenu,
+} from '../../components/AnnotateTool';
+import { FileUploadTool } from '../../components/GeneralTool';
 
 export const ToolBar = () => {
   return (
@@ -18,14 +19,11 @@ export const ToolBar = () => {
         <FileUploadTool />
         <LengthTool />
         <AngleTool />
-        <AreaTool />
+        <FreeHandRoiTool />
         <Flex style={{ flexGrow: 1 }} />
 
-        {/*General function*/}
-        {/*TBD: list all of supported tools*/}
-        <IconButton>
-          <Build />
-        </IconButton>
+        {/*Annotate Tool*/}
+        <ToolMenu />
         {/*TBD: licence related*/}
         <IconButton>
           <ExitToApp />

@@ -48,8 +48,24 @@ export const useToolManageService = () => {
     cornerstoneTools.setToolActive('Angle', { mouseButtonMask: 1 });
   }, [cornerstoneTools]);
 
-  const areaTool = useCallback(() => {
+  const freehandRoiTool = useCallback(() => {
     cornerstoneTools.setToolActive('FreehandRoi', { mouseButtonMask: 1 });
+  }, [cornerstoneTools]);
+
+  const rectangleRoiTool = useCallback(() => {
+    cornerstoneTools.setToolActive('RectangleRoi', { mouseButtonMask: 1 });
+  }, [cornerstoneTools]);
+
+  const ellipticalRoiTool = useCallback(() => {
+    cornerstoneTools.setToolActive('EllipticalRoi', { mouseButtonMask: 1 });
+  }, [cornerstoneTools]);
+
+  const probeTool = useCallback(() => {
+    cornerstoneTools.setToolActive('Probe', { mouseButtonMask: 1 });
+  }, [cornerstoneTools]);
+
+  const arrowAnnotateTool = useCallback(() => {
+    cornerstoneTools.setToolActive('ArrowAnnotate', { mouseButtonMask: 1 });
   }, [cornerstoneTools]);
 
   return {
@@ -57,7 +73,11 @@ export const useToolManageService = () => {
     imageUpload,
     lengthTool,
     angleTool,
-    areaTool,
+    freehandRoiTool,
+    rectangleRoiTool,
+    ellipticalRoiTool,
+    probeTool,
+    arrowAnnotateTool,
   };
 };
 
