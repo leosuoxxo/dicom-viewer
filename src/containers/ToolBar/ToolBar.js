@@ -7,9 +7,9 @@ import {
   AngleTool,
   FreeHandRoiTool,
   LengthTool,
-  FileUploadTool,
   ToolMenu,
-} from '../../components/Tool';
+} from '../../components/AnnotateTool';
+import { FileUploadTool } from '../../components/GeneralTool';
 
 export const ToolBar = () => {
   return (
@@ -22,7 +22,7 @@ export const ToolBar = () => {
         <FreeHandRoiTool />
         <Flex style={{ flexGrow: 1 }} />
 
-        {/*General function*/}
+        {/*Annotate Tool*/}
         <ToolMenu />
         {/*TBD: licence related*/}
         <IconButton>
