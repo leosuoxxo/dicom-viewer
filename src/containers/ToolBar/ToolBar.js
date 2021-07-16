@@ -5,7 +5,7 @@ import { ExitToApp } from '@material-ui/icons';
 import { Flex } from '../../components/elements';
 import {
   AngleTool,
-  AreaTool,
+  FreeHandRoiTool,
   LengthTool,
   FileUploadTool,
   ToolMenu,
@@ -19,7 +19,7 @@ export const ToolBar = () => {
         <FileUploadTool />
         <LengthTool />
         <AngleTool />
-        <AreaTool />
+        <FreeHandRoiTool />
         <Flex style={{ flexGrow: 1 }} />
 
         {/*General function*/}

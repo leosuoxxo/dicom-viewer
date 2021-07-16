@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { IconButton, Tooltip } from '@material-ui/core';
-import { AspectRatio } from '@material-ui/icons';
+import { BorderColor } from '@material-ui/icons';
 import { ToolManageService } from '../../services/toolManageService';
 import { useCornerstone } from '../../services/cornerstoneService';
 
-export const AreaTool = () => {
+export const FreeHandRoiTool = () => {
   const { cornerstoneTools } = useCornerstone();
   const toolManageService = useContext(ToolManageService);
 
@@ -12,13 +12,13 @@ export const AreaTool = () => {
     cornerstoneTools.init();
     const FreehandRoiTool = cornerstoneTools.FreehandRoiTool;
     cornerstoneTools.addTool(FreehandRoiTool);
-    toolManageService.areaTool();
+    toolManageService.freehandRoiTool();
   };
 
   return (
     <Tooltip title="面積測量">
       <IconButton onClick={clickHandler}>
-        <AspectRatio />
+        <BorderColor />
       </IconButton>
     </Tooltip>
   );

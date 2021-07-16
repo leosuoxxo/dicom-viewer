@@ -48,7 +48,7 @@ export const useToolManageService = () => {
     cornerstoneTools.setToolActive('Angle', { mouseButtonMask: 1 });
   }, [cornerstoneTools]);
 
-  const areaTool = useCallback(() => {
+  const freehandRoiTool = useCallback(() => {
     cornerstoneTools.setToolActive('FreehandRoi', { mouseButtonMask: 1 });
   }, [cornerstoneTools]);
 
@@ -57,7 +57,7 @@ export const useToolManageService = () => {
     imageUpload,
     lengthTool,
     angleTool,
-    areaTool,
+    freehandRoiTool,
   };
 };
 

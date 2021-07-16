@@ -3,7 +3,7 @@ import { IconButton, Menu, MenuItem, ListItemIcon } from '@material-ui/core';
 import { Build } from '@material-ui/icons';
 
 import { Box } from '../elements';
-import { LengthTool, AreaTool, AngleTool } from './';
+import { LengthTool, FreeHandRoiTool, AngleTool } from './';
 
 export const ToolMenu = () => {
   const [anchorMenu, setAnchorMenu] = useState(null);
@@ -35,7 +35,7 @@ export const ToolMenu = () => {
             <AngleTool />
           </ListItemIcon>
           <ListItemIcon>
-            <AreaTool />
+            <FreeHandRoiTool />
           </ListItemIcon>
         </MenuItem>
       </Menu>
