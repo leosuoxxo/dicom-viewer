@@ -9,6 +9,7 @@ import {
   AngleTool,
   RectangleRoiTool,
   EllipticalRoiTool,
+  ProbeTool,
 } from './';
 
 export const ToolMenu = () => {
@@ -48,6 +49,9 @@ export const ToolMenu = () => {
           </ListItemIcon>
           <ListItemIcon>
             <EllipticalRoiTool />
+          </ListItemIcon>
+          <ListItemIcon>
+            <ProbeTool />
           </ListItemIcon>
         </MenuItem>
       </Menu>
