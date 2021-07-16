@@ -3,7 +3,13 @@ import { IconButton, Menu, MenuItem, ListItemIcon } from '@material-ui/core';
 import { Build } from '@material-ui/icons';
 
 import { Box } from '../elements';
-import { LengthTool, FreeHandRoiTool, AngleTool, RectangleRoiTool } from './';
+import {
+  LengthTool,
+  FreeHandRoiTool,
+  AngleTool,
+  RectangleRoiTool,
+  EllipticalRoiTool,
+} from './';
 
 export const ToolMenu = () => {
   const [anchorMenu, setAnchorMenu] = useState(null);
@@ -39,6 +45,9 @@ export const ToolMenu = () => {
           </ListItemIcon>
           <ListItemIcon>
             <RectangleRoiTool />
+          </ListItemIcon>
+          <ListItemIcon>
+            <EllipticalRoiTool />
           </ListItemIcon>
         </MenuItem>
       </Menu>

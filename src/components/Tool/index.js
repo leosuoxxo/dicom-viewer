@@ -5,5 +5,6 @@ export { FreeHandRoiTool } from './FreeHandRoiTool';
 export { FileUploadTool } from './FileUploadTool';
 export { LengthTool } from './LengthTool';
 export { RectangleRoiTool } from './RectangleRoiTool';
+export { EllipticalRoiTool } from './EllipticalRoiTool';
 
 export { ToolMenu } from './ToolMenu';

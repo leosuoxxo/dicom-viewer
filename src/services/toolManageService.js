@@ -56,6 +56,10 @@ export const useToolManageService = () => {
     cornerstoneTools.setToolActive('RectangleRoi', { mouseButtonMask: 1 });
   }, [cornerstoneTools]);
 
+  const ellipticalRoiTool = useCallback(() => {
+    cornerstoneTools.setToolActive('EllipticalRoi', { mouseButtonMask: 1 });
+  }, [cornerstoneTools]);
+
   return {
     imageIds,
     imageUpload,
@@ -63,6 +67,7 @@ export const useToolManageService = () => {
     angleTool,
     freehandRoiTool,
     rectangleRoiTool,
+    ellipticalRoiTool,
   };
 };
 
