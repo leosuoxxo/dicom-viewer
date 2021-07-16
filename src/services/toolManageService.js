@@ -1,15 +1,18 @@
-import React, { createContext, useCallback, useState } from 'react';
+import React, { createContext, useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Tiff from 'tiff.js';
 import { useCornerstone } from './cornerstoneService';
+import { useCanvasToTiffService } from './canvasToTiffService';
 import { getFileExtension, fileToBuffer } from '../utils';
 
 export const useToolManageService = () => {
   const {
+    cornerstone,
     cornerstoneWADOImageLoader,
     cornerstoneTools,
     cornerstoneFileImageLoader,
   } = useCornerstone();
+  const { toTiffUrl } = useCanvasToTiffService();
   const [imageIds, setImageIds] = useState([]);
 
   const imageUpload = useCallback(
@@ -17,6 +20,7 @@ export const useToolManageService = () => {
       const extension = getFileExtension(file.name);
 
       switch (extension) {
+        case 'tiff':
         case 'tif': {
           const buffer = await fileToBuffer(file);
           const tiff = new Tiff({ buffer });
@@ -38,6 +42,33 @@ export const useToolManageService = () => {
       }
     },
     [cornerstoneFileImageLoader, cornerstoneWADOImageLoader]
+  );
+
+  const exportImage = useCallback(
+    async ({ imageType }) => {
+      const [element] = cornerstone.getEnabledElements();
+
+      const link = document.createElement('a');
+      let url = '';
+
+      switch (imageType) {
+        case 'tiff':
+          url = await toTiffUrl(element.canvas);
+          console.log(url);
+          break;
+        case 'png':
+        case 'jpeg':
+        default: {
+          url = element.canvas.toDataURL(`image/${imageType}`);
+        }
+      }
+
+      link.href = url;
+      link.download = `demo.${imageType}`;
+      document.body.appendChild(link);
+      link.click();
+    },
+    [cornerstone, toTiffUrl]
   );
 
   const lengthTool = useCallback(() => {
@@ -78,6 +109,7 @@ export const useToolManageService = () => {
     ellipticalRoiTool,
     probeTool,
     arrowAnnotateTool,
+    exportImage,
   };
 };
 
@@ -89,6 +121,8 @@ export const ToolManageServiceProvider = ({ children }) => {
     </ToolManageService.Provider>
   );
 };
+
+export const useToolManage = () => useContext(ToolManageService);
 
 ToolManageServiceProvider.propTypes = {
   children: PropTypes.node.isRequired,

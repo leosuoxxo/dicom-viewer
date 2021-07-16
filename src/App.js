@@ -5,7 +5,6 @@ import { Box, Flex } from './components/elements';
 import ToolBar from './containers/ToolBar';
 import DicomViewer from './containers/DicomViewer';
 import { ToolManageService } from './services/toolManageService';
-
 function App() {
   const { imageIds } = useContext(ToolManageService);
   const [isLoading, setIsLoading] = useState(true);

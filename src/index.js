@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider } from 'styled-components';
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import { CornerstoneServiceProvider } from './services/cornerstoneService';
 import { ToolManageServiceProvider } from './services/toolManageService';
 import App from './App';
@@ -10,13 +11,15 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CornerstoneServiceProvider>
-        <ToolManageServiceProvider>
-          <App />
-        </ToolManageServiceProvider>
-      </CornerstoneServiceProvider>
-    </ThemeProvider>
+    <MuiThemeProvider theme={theme}>
+      <ThemeProvider theme={theme}>
+        <CornerstoneServiceProvider>
+          <ToolManageServiceProvider>
+            <App />
+          </ToolManageServiceProvider>
+        </CornerstoneServiceProvider>
+      </ThemeProvider>
+    </MuiThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
