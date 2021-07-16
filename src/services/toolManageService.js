@@ -4,6 +4,7 @@ import Tiff from 'tiff.js';
 import { useCornerstone } from './cornerstoneService';
 import { useCanvasToTiffService } from './canvasToTiffService';
 import { getFileExtension, fileToBuffer } from '../utils';
+import { IMAGE_TYPE } from '../constants';
 
 export const useToolManageService = () => {
   const {
@@ -20,8 +21,8 @@ export const useToolManageService = () => {
       const extension = getFileExtension(file.name);
 
       switch (extension) {
-        case 'tiff':
-        case 'tif': {
+        case IMAGE_TYPE.TIFF:
+        case IMAGE_TYPE.TIF: {
           const buffer = await fileToBuffer(file);
           const tiff = new Tiff({ buffer });
           const canvas = tiff.toCanvas();
@@ -52,12 +53,11 @@ export const useToolManageService = () => {
       let url = '';
 
       switch (imageType) {
-        case 'tiff':
+        case IMAGE_TYPE.TIFF:
           url = await toTiffUrl(element.canvas);
-          console.log(url);
           break;
-        case 'png':
-        case 'jpeg':
+        case IMAGE_TYPE.PNG:
+        case IMAGE_TYPE.JPG:
         default: {
           url = element.canvas.toDataURL(`image/${imageType}`);
         }

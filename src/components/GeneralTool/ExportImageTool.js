@@ -48,7 +48,7 @@ export const ExportImageTool = () => {
           horizontal: 'center',
         }}
       >
-        <PopoverItem p={3} onClick={exportImageHandler(IMAGE_TYPE.JPEG)}>
+        <PopoverItem p={3} onClick={exportImageHandler(IMAGE_TYPE.JPG)}>
           JPEG
         </PopoverItem>
         <PopoverItem p={3} onClick={exportImageHandler(IMAGE_TYPE.PNG)}>
