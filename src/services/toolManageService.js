@@ -64,6 +64,10 @@ export const useToolManageService = () => {
     cornerstoneTools.setToolActive('Probe', { mouseButtonMask: 1 });
   }, [cornerstoneTools]);
 
+  const arrowAnnotateTool = useCallback(() => {
+    cornerstoneTools.setToolActive('ArrowAnnotate', { mouseButtonMask: 1 });
+  }, [cornerstoneTools]);
+
   return {
     imageIds,
     imageUpload,
@@ -73,6 +77,7 @@ export const useToolManageService = () => {
     rectangleRoiTool,
     ellipticalRoiTool,
     probeTool,
+    arrowAnnotateTool,
   };
 };
 
