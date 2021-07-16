@@ -52,12 +52,17 @@ export const useToolManageService = () => {
     cornerstoneTools.setToolActive('FreehandRoi', { mouseButtonMask: 1 });
   }, [cornerstoneTools]);
 
+  const rectangleRoiTool = useCallback(() => {
+    cornerstoneTools.setToolActive('RectangleRoi', { mouseButtonMask: 1 });
+  }, [cornerstoneTools]);
+
   return {
     imageIds,
     imageUpload,
     lengthTool,
     angleTool,
     freehandRoiTool,
+    rectangleRoiTool,
   };
 };
 
