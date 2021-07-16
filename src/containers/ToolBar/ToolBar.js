@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppBar, Toolbar, IconButton } from '@material-ui/core';
-import { Build, ExitToApp } from '@material-ui/icons';
+import { ExitToApp } from '@material-ui/icons';
 
 import { Flex } from '../../components/elements';
 import {
@@ -8,6 +8,7 @@ import {
   AreaTool,
   LengthTool,
   FileUploadTool,
+  ToolMenu,
 } from '../../components/Tool';
 
 export const ToolBar = () => {
@@ -22,10 +23,7 @@ export const ToolBar = () => {
         <Flex style={{ flexGrow: 1 }} />
 
         {/*General function*/}
-        {/*TBD: list all of supported tools*/}
-        <IconButton>
-          <Build />
-        </IconButton>
+        <ToolMenu />
         {/*TBD: licence related*/}
         <IconButton>
           <ExitToApp />

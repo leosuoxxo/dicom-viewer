@@ -4,3 +4,5 @@ export { AngleTool } from './AngleTool';
 export { AreaTool } from './AreaTool';
 export { FileUploadTool } from './FileUploadTool';
 export { LengthTool } from './LengthTool';
+
+export { ToolMenu } from './ToolMenu';
