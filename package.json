@@ -4,7 +4,6 @@
   "private": true,
   "homepage": "./",
   "main": "public/electron.js",
-
   "dependencies": {
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
@@ -40,7 +39,7 @@
     "electron-build": "electron-builder",
     "build-electron:release": "yarn build && electron-builder --publish=always",
     "build-electron": "yarn build && yarn electron-build",
-    "start:electron": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\""
+    "start:electron": "cross-env BROWSER=none yarn start && electron ."
   },
   "eslintConfig": {
     "extends": [
@@ -62,7 +61,6 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "concurrently": "^6.2.0",
     "electron": "^13.1.7",
     "electron-builder": "^22.11.7",
     "eslint": "^7.30.0",
@@ -72,7 +70,6 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "prettier": "^2.3.2",
-    "wait-on": "^6.0.0"
+    "prettier": "^2.3.2"
   }
 }
