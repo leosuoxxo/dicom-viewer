@@ -41,9 +41,9 @@ export const DicomViewer = ({ imageIds }) => {
   }, [imageIds, cornerstone, createTools]);
 
   return !isEmpty(imageIds) ? (
-    <Box ref={elementRef} flex="1" width="100%" height="100%" />
+    <Box ref={elementRef} flex="1 1 50%" />
   ) : (
-    <Box flex="1">
+    <Box flex="1 1 50%">
       <Skeleton width="100%" height="100%" />
     </Box>
   );
