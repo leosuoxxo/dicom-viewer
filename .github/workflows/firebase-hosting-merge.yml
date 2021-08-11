@@ -35,16 +35,17 @@ jobs:
         uses: actions/setup-node@master
         with:
           node-version: 14
+      
+      - name: install yarn
+        run: npm install yarn
 
       - name: install dependencies
-        uses: borales/actions-yarn@v2.3.0
         with:
-          cmd: install
+          cmd: yarn install
 
       - name: build electron
-        uses: borales/actions-yarn@v2.3.0
         with:
-          cmd: build-electron
+          cmd: yarn build-electron
       
       - name: upload artifacts
         uses: actions/upload-artifact@v2
