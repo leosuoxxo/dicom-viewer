@@ -40,12 +40,10 @@ jobs:
         run: npm install yarn
 
       - name: install dependencies
-        with:
-          cmd: yarn install
+        run: yarn install
 
       - name: build electron
-        with:
-          cmd: yarn build-electron
+        run: yarn build-electron
       
       - name: upload artifacts
         uses: actions/upload-artifact@v2
