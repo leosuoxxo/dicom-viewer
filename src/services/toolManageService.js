@@ -5,6 +5,7 @@ import { useCornerstone } from './cornerstoneService';
 import { useCanvasToTiffService } from './canvasToTiffService';
 import { getFileExtension, fileToBuffer } from '../utils';
 import { IMAGE_TYPE } from '../constants';
+import dicomParser from 'dicom-parser';
 
 export const useToolManageService = () => {
   const {
@@ -32,6 +33,84 @@ export const useToolManageService = () => {
               cornerstoneFileImageLoader.fileManager.addBuffer(canvasBuffer);
             setImageIds([imageId]);
           });
+          break;
+        }
+        case 'diconde': {
+          const buffer = await fileToBuffer(file);
+          let bytes = new Uint8Array(buffer);
+          let dicomData = dicomParser.parseDicom(bytes);
+          let modified_bytes = new Uint8Array(bytes.length);
+          let prefix_len = 0;
+          while (bytes[prefix_len] == 0) {
+            prefix_len++;
+          }
+          prefix_len += 4;
+          modified_bytes.set(bytes.subarray(0, prefix_len), 0);
+
+          let r_index = prefix_len;
+          let w_index = prefix_len;
+          while (r_index < bytes.length) {
+            const tag = new Uint16Array(
+              bytes.slice(r_index, r_index + 4).buffer
+            );
+            const tag_str =
+              'x' +
+              tag[0].toString(16).padStart(4, '0') +
+              tag[1].toString(16).padStart(4, '0');
+
+            const element = dicomData.elements[tag_str];
+            const data_begin = element.dataOffset;
+            const data_end = data_begin + element.length;
+            const info_length = data_begin - r_index;
+
+            switch (tag_str) {
+              case 'x00281050':
+              case 'x00281051': {
+                console.log(`Ignore tag: ${tag_str}`);
+                break;
+              }
+              case 'x00280008': {
+                // write Tag and VR
+                modified_bytes.set(bytes.subarray(r_index, r_index+6), w_index);
+                w_index += 6;
+                // write Value Length
+                modified_bytes.set([1, 0], w_index);
+                w_index += 2;
+                // write data
+                modified_bytes.set(['1'.charCodeAt()], w_index);
+                w_index += 1;
+                break;
+              }
+              case 'x00280002': {
+                // write Tag and VR
+                modified_bytes.set(bytes.subarray(r_index, r_index+6), w_index);
+                w_index += 6;
+                // write Value Length
+                modified_bytes.set([2, 0], w_index);
+                w_index += 2;
+                // write data
+                modified_bytes.set([1, 0], w_index);
+                w_index += 2;
+                break;
+              }
+              default: {
+                // write Tag, VR, and Value Length
+                modified_bytes.set(bytes.subarray(r_index, data_end), w_index);
+                w_index += info_length;
+                // write data
+                modified_bytes.set(bytes.subarray(data_begin, data_end), w_index);
+                w_index += element.length;
+              }
+            }
+
+            r_index = data_end;
+          }
+
+          const actual_written_buffer = modified_bytes.slice(0, w_index).buffer;
+          file = new File([actual_written_buffer], 'modified_file');
+          const imageId =
+            cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
+          setImageIds([imageId]);
           break;
         }
         case 'dcm':
