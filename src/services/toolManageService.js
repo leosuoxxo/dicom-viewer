@@ -37,79 +37,81 @@ export const useToolManageService = () => {
         }
         case 'diconde': {
           const buffer = await fileToBuffer(file);
-          let bytes = new Uint8Array(buffer);
-          let dicomData = dicomParser.parseDicom(bytes);
-          let modified_bytes = new Uint8Array(bytes.length);
-          let prefix_len = 0;
-          while (bytes[prefix_len] == 0) {
-            prefix_len++;
-          }
-          prefix_len += 4;
-          modified_bytes.set(bytes.subarray(0, prefix_len), 0);
+          const bytes = new Uint8Array(buffer);
+          const dicomData = dicomParser.parseDicom(bytes);
+          const modifiedBytes = new Uint8Array(bytes.length);
 
-          let r_index = prefix_len;
-          let w_index = prefix_len;
-          while (r_index < bytes.length) {
-            const tag = new Uint16Array(
-              bytes.slice(r_index, r_index + 4).buffer
-            );
-            const tag_str =
+          // preamble and prefixing 'DICM'
+          const preableLength = 128;
+          const dicomPrefix = 'DICM';
+          let totalPrefixLength = preableLength + dicomPrefix.length;
+          modifiedBytes.set(bytes.subarray(0, totalPrefixLength), 0);
+
+          // data elements
+          let rIndex = totalPrefixLength;
+          let wIndex = totalPrefixLength;
+          while (rIndex < bytes.length) {
+            const tag = new Uint16Array(bytes.slice(rIndex, rIndex + 4).buffer);
+            const tagStr =
               'x' +
               tag[0].toString(16).padStart(4, '0') +
               tag[1].toString(16).padStart(4, '0');
 
-            const element = dicomData.elements[tag_str];
-            const data_begin = element.dataOffset;
-            const data_end = data_begin + element.length;
-            const info_length = data_begin - r_index;
+            const element = dicomData.elements[tagStr];
+            const dataBegin = element.dataOffset;
+            const dataEnd = dataBegin + element.length;
+            const infoLength = dataBegin - rIndex;
 
-            switch (tag_str) {
+            switch (tagStr) {
               case 'x00281050':
               case 'x00281051': {
-                console.log(`Ignore tag: ${tag_str}`);
+                console.log(`Ignore tag: ${tagStr}`);
                 break;
               }
               case 'x00280008': {
                 // write Tag and VR
-                modified_bytes.set(bytes.subarray(r_index, r_index+6), w_index);
-                w_index += 6;
+                modifiedBytes.set(bytes.subarray(rIndex, rIndex + 6), wIndex);
+                wIndex += 6;
                 // write Value Length
-                modified_bytes.set([1, 0], w_index);
-                w_index += 2;
-                // write data
-                modified_bytes.set(['1'.charCodeAt()], w_index);
-                w_index += 1;
+                modifiedBytes.set([1, 0], wIndex);
+                wIndex += 2;
+                // write Value Field
+                modifiedBytes.set(['1'.charCodeAt()], wIndex);
+                wIndex += 1;
                 break;
               }
               case 'x00280002': {
                 // write Tag and VR
-                modified_bytes.set(bytes.subarray(r_index, r_index+6), w_index);
-                w_index += 6;
+                modifiedBytes.set(bytes.subarray(rIndex, rIndex + 6), wIndex);
+                wIndex += 6;
                 // write Value Length
-                modified_bytes.set([2, 0], w_index);
-                w_index += 2;
-                // write data
-                modified_bytes.set([1, 0], w_index);
-                w_index += 2;
+                modifiedBytes.set([2, 0], wIndex);
+                wIndex += 2;
+                // write Value Field
+                modifiedBytes.set([1, 0], wIndex);
+                wIndex += 2;
                 break;
               }
               default: {
                 // write Tag, VR, and Value Length
-                modified_bytes.set(bytes.subarray(r_index, data_end), w_index);
-                w_index += info_length;
-                // write data
-                modified_bytes.set(bytes.subarray(data_begin, data_end), w_index);
-                w_index += element.length;
+                modifiedBytes.set(bytes.subarray(rIndex, dataEnd), wIndex);
+                wIndex += infoLength;
+                // write Value Field
+                modifiedBytes.set(bytes.subarray(dataBegin, dataEnd), wIndex);
+                wIndex += element.length;
               }
             }
 
-            r_index = data_end;
+            rIndex = dataEnd;
           }
 
-          const actual_written_buffer = modified_bytes.slice(0, w_index).buffer;
-          file = new File([actual_written_buffer], 'modified_file');
+          const actualWrittenBuffer = modifiedBytes.slice(0, wIndex).buffer;
+          const convertedFile = new File(
+            [actualWrittenBuffer],
+            `converted_${file.name}`
+          );
           const imageId =
-            cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
+            cornerstoneWADOImageLoader.wadouri.fileManager.add(convertedFile);
           setImageIds([imageId]);
           break;
         }
