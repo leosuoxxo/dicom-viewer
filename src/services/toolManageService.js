@@ -5,6 +5,7 @@ import { useCornerstone } from './cornerstoneService';
 import { useCanvasToTiffService } from './canvasToTiffService';
 import { getFileExtension, fileToBuffer, convertDiconde } from '../utils';
 import { IMAGE_TYPE } from '../constants';
+import { concat } from 'lodash';
 
 export const useToolManageService = () => {
   const {
@@ -30,7 +31,7 @@ export const useToolManageService = () => {
             const canvasBuffer = await blob.arrayBuffer();
             const imageId =
               cornerstoneFileImageLoader.fileManager.addBuffer(canvasBuffer);
-            setImageIds([imageId]);
+            setImageIds((imageIds) => concat(imageIds, imageId));
           });
           break;
         }
@@ -51,7 +52,7 @@ export const useToolManageService = () => {
         default: {
           const imageId =
             cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
-          setImageIds([imageId]);
+          setImageIds((imageIds) => concat(imageIds, imageId));
         }
       }
     },

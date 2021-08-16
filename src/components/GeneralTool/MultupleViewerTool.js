@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { IconButton, Popover, Button } from '@material-ui/core';
 import { Apps } from '@material-ui/icons';
 import { isNull, map } from 'lodash';
-import { viewerLayout } from '../../config';
+import { VIEWER_LAYOUT } from '../../constants';
+import ConfigContext from '../../ConfigContext';
 
 const ViewerController = styled(Popover)`
   && .MuiPopover-paper {
@@ -19,7 +20,7 @@ const ViewerButton = styled(Button)`
 `;
 
 export const MultipleViewerTool = () => {
-  const [currentLayout, setCurrentLayout] = useState(null);
+  const { currentLayout, setCurrentLayout } = useContext(ConfigContext);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const onClickIcon = (event) => {
@@ -48,7 +49,7 @@ export const MultipleViewerTool = () => {
           horizontal: 'center',
         }}
       >
-        {map(viewerLayout, (layout) => (
+        {map(VIEWER_LAYOUT, (layout) => (
           <ViewerButton
             active={currentLayout >= layout}
             onClick={() => setCurrentLayout(layout)}
