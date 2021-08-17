@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Tiff from 'tiff.js';
 import { useCornerstone } from './cornerstoneService';
 import { useCanvasToTiffService } from './canvasToTiffService';
-import { getFileExtension, fileToBuffer } from '../utils';
+import { getFileExtension, fileToBuffer, convertDiconde } from '../utils';
 import { IMAGE_TYPE } from '../constants';
 
 export const useToolManageService = () => {
@@ -32,6 +32,19 @@ export const useToolManageService = () => {
               cornerstoneFileImageLoader.fileManager.addBuffer(canvasBuffer);
             setImageIds([imageId]);
           });
+          break;
+        }
+        case 'diconde': {
+          const buffer = await fileToBuffer(file);
+          const bytes = new Uint8Array(buffer);
+          const convertedBytes = convertDiconde(bytes);
+          const convertedFile = new File(
+            [convertedBytes.buffer],
+            `converted_${file.name}`
+          );
+          const imageId =
+            cornerstoneWADOImageLoader.wadouri.fileManager.add(convertedFile);
+          setImageIds([imageId]);
           break;
         }
         case 'dcm':
