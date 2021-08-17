@@ -36,7 +36,7 @@ jobs:
 
       - name: Check out git repository
         uses: actions/checkout@v2
-        
+
       - name: Install Node.js
         uses: actions/setup-node@master
         with:
@@ -49,8 +49,12 @@ jobs:
         run: yarn install
 
       - name: build electron
-        run: yarn build-electron
-      
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          # GitHub token, automatically provided to the action
+          # (No need to define this secret in the repo settings)
+          github_token: ${{ secrets.github_token }}
+
       - name: upload artifacts
         uses: actions/upload-artifact@v2
         with:
