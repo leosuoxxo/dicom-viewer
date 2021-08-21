@@ -5,11 +5,11 @@ import { ToolManageService } from '../../services/toolManageService';
 
 export const FileUploadTool = () => {
   const inputRef = useRef();
-  const toolManageService = useContext(ToolManageService);
+  const { imageUpload } = useContext(ToolManageService);
 
   const fileUploadHanlder = (event) => {
     const file = event.target.files[0];
-    toolManageService.imageUpload(file);
+    imageUpload(file);
   };
 
   const clickHandler = () => {

@@ -6,21 +6,32 @@ import DicomViewer from './containers/DicomViewer';
 import { ToolManageService } from './services/toolManageService';
 import ConfigContext, { useConfigContext } from './ConfigContext';
 import { VIEWER_LAYOUT } from './constants';
-import { isNil } from 'lodash';
+import { find, isNil } from 'lodash';
 
 function AppInner() {
-  const { imageIds } = useContext(ToolManageService);
+  const { imageInfos } = useContext(ToolManageService);
   const { currentLayout } = useContext(ConfigContext);
+
+  const getImageIdFromPosition = (position) => {
+    const imageInfo = find(imageInfos, { position });
+    return isNil(imageInfo) ? null : imageInfo.id;
+  };
 
   return (
     <>
       <ToolBar />
       <Flex style={{ height: '100%' }}>
         {currentLayout >= VIEWER_LAYOUT[0] && (
-          <DicomViewer imageIds={imageIds} />
+          <DicomViewer
+            imageId={getImageIdFromPosition(VIEWER_LAYOUT[0])}
+            position={VIEWER_LAYOUT[0]}
+          />
         )}
         {currentLayout === VIEWER_LAYOUT[1] && (
-          <DicomViewer imageIds={isNil(imageIds[1]) ? [] : [imageIds[1]]} />
+          <DicomViewer
+            imageId={getImageIdFromPosition(VIEWER_LAYOUT[1])}
+            position={VIEWER_LAYOUT[1]}
+          />
         )}
       </Flex>
     </>

@@ -1,11 +1,17 @@
-import React, { createContext, useCallback, useState, useContext } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useState,
+  useContext,
+  useMemo,
+} from 'react';
 import PropTypes from 'prop-types';
 import Tiff from 'tiff.js';
 import { useCornerstone } from './cornerstoneService';
 import { useCanvasToTiffService } from './canvasToTiffService';
 import { getFileExtension, fileToBuffer, convertDiconde } from '../utils';
 import { IMAGE_TYPE } from '../constants';
-import { concat } from 'lodash';
+import { concat, filter, find, isEmpty, isNil, map } from 'lodash';
 
 export const useToolManageService = () => {
   const {
@@ -15,7 +21,29 @@ export const useToolManageService = () => {
     cornerstoneFileImageLoader,
   } = useCornerstone();
   const { toTiffUrl } = useCanvasToTiffService();
-  const [imageIds, setImageIds] = useState([]);
+
+  const [selectedPosition, setSelectedPosition] = useState('1*1');
+  const [imageInfos, setImageInfos] = useState([]);
+
+  const selectedImageId = useMemo(() => {
+    const imageInfo = find(imageInfos, { position: selectedPosition });
+    return isNil(imageInfo) ? null : imageInfo.id;
+  }, [selectedPosition, imageInfos]);
+
+  const imageInfoHandler = useCallback(
+    (imageInfos, uploadedImageId) => {
+      if (isNil(find(imageInfos, { position: selectedPosition })))
+        return concat(imageInfos, {
+          position: selectedPosition,
+          id: uploadedImageId,
+        });
+      return map(imageInfos, () => ({
+        position: selectedPosition,
+        id: uploadedImageId,
+      }));
+    },
+    [selectedPosition]
+  );
 
   const imageUpload = useCallback(
     async (file) => {
@@ -31,7 +59,10 @@ export const useToolManageService = () => {
             const canvasBuffer = await blob.arrayBuffer();
             const imageId =
               cornerstoneFileImageLoader.fileManager.addBuffer(canvasBuffer);
-            setImageIds((imageIds) => concat(imageIds, imageId));
+
+            setImageInfos((imageInfos) => {
+              return imageInfoHandler(imageInfos, imageId);
+            });
           });
           break;
         }
@@ -45,23 +76,34 @@ export const useToolManageService = () => {
           );
           const imageId =
             cornerstoneWADOImageLoader.wadouri.fileManager.add(convertedFile);
-          setImageIds([imageId]);
+          setImageInfos((imageInfos) => {
+            return imageInfoHandler(imageInfos, imageId);
+          });
           break;
         }
         case 'dcm':
         default: {
           const imageId =
             cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
-          setImageIds((imageIds) => concat(imageIds, imageId));
+          setImageInfos((imageInfos) => {
+            return imageInfoHandler(imageInfos, imageId);
+          });
         }
       }
     },
-    [cornerstoneFileImageLoader, cornerstoneWADOImageLoader]
+    [cornerstoneFileImageLoader, cornerstoneWADOImageLoader, imageInfoHandler]
   );
 
   const exportImage = useCallback(
     async ({ imageType }) => {
-      const [element] = cornerstone.getEnabledElements();
+      if (isEmpty(cornerstone.getEnabledElements())) {
+        alert('請先上傳圖檔');
+        return;
+      }
+      const [element] = filter(
+        cornerstone.getEnabledElements(),
+        (e) => e.image.imageId === selectedImageId
+      );
 
       const link = document.createElement('a');
       let url = '';
@@ -82,7 +124,7 @@ export const useToolManageService = () => {
       document.body.appendChild(link);
       link.click();
     },
-    [cornerstone, toTiffUrl]
+    [cornerstone, toTiffUrl, selectedImageId]
   );
 
   const lengthTool = useCallback(() => {
@@ -114,7 +156,9 @@ export const useToolManageService = () => {
   }, [cornerstoneTools]);
 
   return {
-    imageIds,
+    imageInfos,
+    selectedPosition,
+    setSelectedPosition,
     imageUpload,
     lengthTool,
     angleTool,

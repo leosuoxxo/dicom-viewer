@@ -1,13 +1,15 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Box } from '@material-ui/core';
+import { Box, ButtonBase } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import { isEmpty } from 'lodash';
+import { isNil } from 'lodash';
 
 import { useCornerstone } from '../../services/cornerstoneService';
+import { ToolManageService } from '../../services/toolManageService';
 
-export const DicomViewer = ({ imageIds }) => {
+export const DicomViewer = ({ imageId, position }) => {
   const { cornerstone, cornerstoneTools } = useCornerstone();
+  const { setSelectedPosition } = useContext(ToolManageService);
 
   const elementRef = useRef();
 
@@ -25,10 +27,9 @@ export const DicomViewer = ({ imageIds }) => {
 
   useEffect(() => {
     const element = elementRef.current;
-    if (isEmpty(imageIds) || !element) return;
+    if (isNil(imageId) || !element) return;
     cornerstone.enable(element);
 
-    const imageId = imageIds[0];
     cornerstone
       .loadImage(imageId)
       .then((image) => {
@@ -38,17 +39,38 @@ export const DicomViewer = ({ imageIds }) => {
       .catch((err) => {
         console.log('err', err);
       });
-  }, [imageIds, cornerstone, createTools]);
+  }, [imageId, cornerstone, createTools]);
 
-  return !isEmpty(imageIds) ? (
-    <Box ref={elementRef} flex="1 1 50%" />
-  ) : (
+  return (
     <Box flex="1 1 50%">
-      <Skeleton width="100%" height="100%" />
+      <ButtonBase
+        onClick={() => {
+          setSelectedPosition(position);
+        }}
+        disableRipple
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        {isNil(imageId) ? (
+          <Skeleton width="100%" height="100%" />
+        ) : (
+          <span
+            ref={elementRef}
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+          />
+        )}
+      </ButtonBase>
     </Box>
   );
 };
 
 DicomViewer.propTypes = {
-  imageIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  imageId: PropTypes.string.isRequired,
+  position: PropTypes.string.isRequired,
 };
