@@ -5,7 +5,7 @@ import ToolBar from './containers/ToolBar';
 import DicomViewer from './containers/DicomViewer';
 import { ToolManageService } from './services/toolManageService';
 import ConfigContext, { useConfigContext } from './ConfigContext';
-import { VIEWER_LAYOUT } from './constants';
+import { TOOLBAR_HEIGHT, VIEWER_LAYOUT } from './constants';
 import { find, isNil } from 'lodash';
 
 function AppInner() {
@@ -20,7 +20,12 @@ function AppInner() {
   return (
     <>
       <ToolBar />
-      <Flex style={{ height: '100%' }}>
+      <Flex
+        style={{
+          height: `calc(100% - ${TOOLBAR_HEIGHT})`,
+          marginTop: TOOLBAR_HEIGHT,
+        }}
+      >
         {currentLayout >= VIEWER_LAYOUT[0] && (
           <DicomViewer
             imageId={getImageIdFromPosition(VIEWER_LAYOUT[0])}

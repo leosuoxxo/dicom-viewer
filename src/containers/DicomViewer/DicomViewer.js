@@ -2,14 +2,20 @@ import React, { useEffect, useRef, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Box, ButtonBase } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import { isNil } from 'lodash';
+import { isEqual, isNil } from 'lodash';
+import styled from 'styled-components';
 
 import { useCornerstone } from '../../services/cornerstoneService';
 import { ToolManageService } from '../../services/toolManageService';
 
+const ImageContainer = styled(Box)`
+  border: 4px solid ${({ selected }) => (selected ? 'white' : 'transparent')};
+`;
+
 export const DicomViewer = ({ imageId, position }) => {
   const { cornerstone, cornerstoneTools } = useCornerstone();
-  const { setSelectedPosition } = useContext(ToolManageService);
+  const { selectedPosition, setSelectedPosition } =
+    useContext(ToolManageService);
 
   const elementRef = useRef();
 
@@ -42,7 +48,10 @@ export const DicomViewer = ({ imageId, position }) => {
   }, [imageId, cornerstone, createTools]);
 
   return (
-    <Box flex="1 1 50%">
+    <ImageContainer
+      flex="1 1 50%"
+      selected={isEqual(selectedPosition, position)}
+    >
       <ButtonBase
         onClick={() => {
           setSelectedPosition(position);
@@ -66,7 +75,7 @@ export const DicomViewer = ({ imageId, position }) => {
           />
         )}
       </ButtonBase>
-    </Box>
+    </ImageContainer>
   );
 };
 
