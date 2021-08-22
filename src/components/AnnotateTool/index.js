@@ -1,5 +1,6 @@
 export { Tool as default } from './Tool';
 
+export { HandTool } from './HandTool';
 export { AngleTool } from './AngleTool';
 export { FreeHandRoiTool } from './FreeHandRoiTool';
 export { LengthTool } from './LengthTool';

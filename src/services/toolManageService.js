@@ -127,6 +127,10 @@ export const useToolManageService = () => {
     [cornerstone, toTiffUrl, selectedImageId]
   );
 
+  const handTool = useCallback(() => {
+    cornerstoneTools.setToolActive('Pan', { mouseButtonMask: 1 });
+  }, [cornerstoneTools]);
+
   const lengthTool = useCallback(() => {
     cornerstoneTools.setToolActive('Length', { mouseButtonMask: 1 });
   }, [cornerstoneTools]);
@@ -160,6 +164,7 @@ export const useToolManageService = () => {
     selectedPosition,
     setSelectedPosition,
     imageUpload,
+    handTool,
     lengthTool,
     angleTool,
     freehandRoiTool,
