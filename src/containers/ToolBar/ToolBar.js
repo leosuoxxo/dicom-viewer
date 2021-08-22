@@ -9,7 +9,11 @@ import {
   LengthTool,
   ToolMenu,
 } from '../../components/AnnotateTool';
-import { FileUploadTool, ExportImageTool } from '../../components/GeneralTool';
+import {
+  FileUploadTool,
+  ExportImageTool,
+  MultipleViewerTool,
+} from '../../components/GeneralTool';
 
 export const ToolBar = () => {
   return (
@@ -25,6 +29,7 @@ export const ToolBar = () => {
         {/*Annotate Tool*/}
         <ToolMenu />
         {/*General function*/}
+        <MultipleViewerTool />
         {/*TBD: list all of supported tools*/}
         <ExportImageTool />
         {/*TBD: licence related*/}

@@ -1,13 +1,21 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Box } from '@material-ui/core';
+import { Box, ButtonBase } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import { isEmpty } from 'lodash';
+import { isEqual, isNil } from 'lodash';
+import styled from 'styled-components';
 
 import { useCornerstone } from '../../services/cornerstoneService';
+import { ToolManageService } from '../../services/toolManageService';
 
-export const DicomViewer = ({ imageIds }) => {
+const ImageContainer = styled(Box)`
+  border: 4px solid ${({ selected }) => (selected ? 'white' : 'transparent')};
+`;
+
+export const DicomViewer = ({ imageId, position }) => {
   const { cornerstone, cornerstoneTools } = useCornerstone();
+  const { selectedPosition, setSelectedPosition } =
+    useContext(ToolManageService);
 
   const elementRef = useRef();
 
@@ -25,10 +33,9 @@ export const DicomViewer = ({ imageIds }) => {
 
   useEffect(() => {
     const element = elementRef.current;
-    if (isEmpty(imageIds) || !element) return;
+    if (isNil(imageId) || !element) return;
     cornerstone.enable(element);
 
-    const imageId = imageIds[0];
     cornerstone
       .loadImage(imageId)
       .then((image) => {
@@ -38,17 +45,41 @@ export const DicomViewer = ({ imageIds }) => {
       .catch((err) => {
         console.log('err', err);
       });
-  }, [imageIds, cornerstone, createTools]);
+  }, [imageId, cornerstone, createTools]);
 
-  return !isEmpty(imageIds) ? (
-    <Box ref={elementRef} flex="1" width="100%" height="100%" />
-  ) : (
-    <Box flex="1">
-      <Skeleton width="100%" height="100%" />
-    </Box>
+  return (
+    <ImageContainer
+      flex="1 1 50%"
+      selected={isEqual(selectedPosition, position)}
+    >
+      <ButtonBase
+        onClick={() => {
+          setSelectedPosition(position);
+        }}
+        disableRipple
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        {isNil(imageId) ? (
+          <Skeleton width="100%" height="100%" />
+        ) : (
+          <span
+            ref={elementRef}
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+          />
+        )}
+      </ButtonBase>
+    </ImageContainer>
   );
 };
 
 DicomViewer.propTypes = {
-  imageIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  imageId: PropTypes.string.isRequired,
+  position: PropTypes.string.isRequired,
 };

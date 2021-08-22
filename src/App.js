@@ -1,38 +1,55 @@
-import React, { useContext, useState } from 'react';
-import { Button } from '@material-ui/core';
+import React, { useContext } from 'react';
 
-import { Box, Flex } from './components/elements';
+import { Flex } from './components/elements';
 import ToolBar from './containers/ToolBar';
 import DicomViewer from './containers/DicomViewer';
 import { ToolManageService } from './services/toolManageService';
-function App() {
-  const { imageIds } = useContext(ToolManageService);
-  const [isLoading, setIsLoading] = useState(true);
-  const imageId =
-    'wadouri:https://storage.googleapis.com/dicom-viewer-dac76.appspot.com/Gas201.DCM';
+import ConfigContext, { useConfigContext } from './ConfigContext';
+import { TOOLBAR_HEIGHT, VIEWER_LAYOUT } from './constants';
+import { find, isNil } from 'lodash';
+
+function AppInner() {
+  const { imageInfos } = useContext(ToolManageService);
+  const { currentLayout } = useContext(ConfigContext);
+
+  const getImageIdFromPosition = (position) => {
+    const imageInfo = find(imageInfos, { position });
+    return isNil(imageInfo) ? null : imageInfo.id;
+  };
 
   return (
     <>
       <ToolBar />
-      <Flex style={{ height: '100%' }}>
-        <DicomViewer imageIds={imageIds} />
-        {!isLoading ? (
-          <DicomViewer imageIds={[imageId]} />
-        ) : (
-          <Box
-            width="100%"
-            flex="1"
-            display="inline-flex"
-            jutifyContent="center"
-            alignItems="center"
-          >
-            <Button color="primary" onClick={() => setIsLoading(false)}>
-              click me !!!
-            </Button>
-          </Box>
+      <Flex
+        style={{
+          height: `calc(100% - ${TOOLBAR_HEIGHT})`,
+          marginTop: TOOLBAR_HEIGHT,
+        }}
+      >
+        {currentLayout >= VIEWER_LAYOUT[0] && (
+          <DicomViewer
+            imageId={getImageIdFromPosition(VIEWER_LAYOUT[0])}
+            position={VIEWER_LAYOUT[0]}
+          />
+        )}
+        {currentLayout === VIEWER_LAYOUT[1] && (
+          <DicomViewer
+            imageId={getImageIdFromPosition(VIEWER_LAYOUT[1])}
+            position={VIEWER_LAYOUT[1]}
+          />
         )}
       </Flex>
     </>
+  );
+}
+
+function App() {
+  const configContext = useConfigContext();
+
+  return (
+    <ConfigContext.Provider value={configContext}>
+      <AppInner />
+    </ConfigContext.Provider>
   );
 }
 
