@@ -129,7 +129,6 @@ export const useToolManageService = () => {
   );
 
   const eraserTool = useCallback(() => {
-    console.log('corner', cornerstoneTools.EraserTool);
     cornerstoneTools.setToolActive('Eraser', { mouseButtonMask: 1 });
   }, [cornerstoneTools]);
 
