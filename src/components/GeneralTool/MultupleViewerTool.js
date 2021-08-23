@@ -51,6 +51,7 @@ export const MultipleViewerTool = () => {
       >
         {map(VIEWER_LAYOUT, (layout) => (
           <ViewerButton
+            key={layout}
             active={currentLayout >= layout}
             onClick={() => setCurrentLayout(layout)}
           />

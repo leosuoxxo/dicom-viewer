@@ -4,6 +4,8 @@ import { Build } from '@material-ui/icons';
 
 import { Box } from '../elements';
 import {
+  EraserTool,
+  HandTool,
   LengthTool,
   FreeHandRoiTool,
   AngleTool,
@@ -12,6 +14,46 @@ import {
   ProbeTool,
   ArrowAnnotateTool,
 } from './';
+import { map } from 'lodash';
+
+const annotationTools = [
+  {
+    name: 'EraserTool',
+    comp: <EraserTool />,
+  },
+  {
+    name: 'HandTool',
+    comp: <HandTool />,
+  },
+  {
+    name: 'LengthTool',
+    comp: <LengthTool />,
+  },
+  {
+    name: 'FreeHandRoiTool',
+    comp: <FreeHandRoiTool />,
+  },
+  {
+    name: 'AngleTool',
+    comp: <AngleTool />,
+  },
+  {
+    name: 'RectangleRoiTool',
+    comp: <RectangleRoiTool />,
+  },
+  {
+    name: 'EllipticalRoiTool',
+    comp: <EllipticalRoiTool />,
+  },
+  {
+    name: 'ProbeTool',
+    comp: <ProbeTool />,
+  },
+  {
+    name: 'ArrowAnnotateTool',
+    comp: <ArrowAnnotateTool />,
+  },
+];
 
 export const ToolMenu = () => {
   const [anchorMenu, setAnchorMenu] = useState(null);
@@ -36,27 +78,9 @@ export const ToolMenu = () => {
         onClose={onCloseMenu}
       >
         <MenuItem>
-          <ListItemIcon>
-            <LengthTool />
-          </ListItemIcon>
-          <ListItemIcon>
-            <AngleTool />
-          </ListItemIcon>
-          <ListItemIcon>
-            <FreeHandRoiTool />
-          </ListItemIcon>
-          <ListItemIcon>
-            <RectangleRoiTool />
-          </ListItemIcon>
-          <ListItemIcon>
-            <EllipticalRoiTool />
-          </ListItemIcon>
-          <ListItemIcon>
-            <ProbeTool />
-          </ListItemIcon>
-          <ListItemIcon>
-            <ArrowAnnotateTool />
-          </ListItemIcon>
+          {map(annotationTools, ({ name, comp }) => (
+            <ListItemIcon key={name}>{comp}</ListItemIcon>
+          ))}
         </MenuItem>
       </Menu>
     </Box>
