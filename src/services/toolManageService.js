@@ -49,6 +49,7 @@ export const useToolManageService = () => {
 
   const imageUpload = useCallback(
     async (file) => {
+      if (isNil(file)) return;
       const extension = getFileExtension(file.name);
 
       switch (extension) {
