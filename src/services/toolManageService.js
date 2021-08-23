@@ -4,6 +4,7 @@ import React, {
   useState,
   useContext,
   useMemo,
+  useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
 import { concat, filter, find, isEmpty, isNil, map } from 'lodash';
@@ -12,7 +13,7 @@ import Tiff from 'tiff.js';
 import { useCornerstone } from './cornerstoneService';
 import { useCanvasToTiffService } from './canvasToTiffService';
 import { getFileExtension, fileToBuffer, convertDiconde } from '../utils';
-import { IMAGE_TYPE } from '../constants';
+import { IMAGE_TYPE, TOOL_COLORS } from '../constants';
 
 export const useToolManageService = () => {
   const {
@@ -127,6 +128,10 @@ export const useToolManageService = () => {
     },
     [cornerstone, toTiffUrl, selectedImageId]
   );
+
+  useEffect(() => {
+    cornerstoneTools.toolColors.setToolColor(TOOL_COLORS[0]);
+  }, [cornerstoneTools]);
 
   const eraserTool = useCallback(() => {
     cornerstoneTools.setToolActive('Eraser', { mouseButtonMask: 1 });
