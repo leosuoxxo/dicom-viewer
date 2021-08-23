@@ -6,12 +6,13 @@ import React, {
   useMemo,
 } from 'react';
 import PropTypes from 'prop-types';
+import { concat, filter, find, isEmpty, isNil, map } from 'lodash';
 import Tiff from 'tiff.js';
+
 import { useCornerstone } from './cornerstoneService';
 import { useCanvasToTiffService } from './canvasToTiffService';
 import { getFileExtension, fileToBuffer, convertDiconde } from '../utils';
 import { IMAGE_TYPE } from '../constants';
-import { concat, filter, find, isEmpty, isNil, map } from 'lodash';
 
 export const useToolManageService = () => {
   const {
@@ -127,6 +128,11 @@ export const useToolManageService = () => {
     [cornerstone, toTiffUrl, selectedImageId]
   );
 
+  const eraserTool = useCallback(() => {
+    console.log('corner', cornerstoneTools.EraserTool);
+    cornerstoneTools.setToolActive('Eraser', { mouseButtonMask: 1 });
+  }, [cornerstoneTools]);
+
   const handTool = useCallback(() => {
     cornerstoneTools.setToolActive('Pan', { mouseButtonMask: 1 });
   }, [cornerstoneTools]);
@@ -164,6 +170,7 @@ export const useToolManageService = () => {
     selectedPosition,
     setSelectedPosition,
     imageUpload,
+    eraserTool,
     handTool,
     lengthTool,
     angleTool,

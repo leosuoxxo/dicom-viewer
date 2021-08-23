@@ -80,6 +80,6 @@ export const DicomViewer = ({ imageId, position }) => {
 };
 
 DicomViewer.propTypes = {
-  imageId: PropTypes.string.isRequired,
+  imageId: PropTypes.string,
   position: PropTypes.string.isRequired,
 };

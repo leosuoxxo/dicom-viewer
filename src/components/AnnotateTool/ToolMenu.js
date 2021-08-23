@@ -4,6 +4,7 @@ import { Build } from '@material-ui/icons';
 
 import { Box } from '../elements';
 import {
+  EraserTool,
   HandTool,
   LengthTool,
   FreeHandRoiTool,
@@ -37,6 +38,9 @@ export const ToolMenu = () => {
         onClose={onCloseMenu}
       >
         <MenuItem>
+          <ListItemIcon>
+            <EraserTool />
+          </ListItemIcon>
           <ListItemIcon>
             <HandTool />
           </ListItemIcon>
