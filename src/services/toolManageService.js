@@ -32,6 +32,8 @@ export const useToolManageService = () => {
     return isNil(imageInfo) ? null : imageInfo.id;
   }, [selectedPosition, imageInfos]);
 
+  console.log('cor', cornerstoneTools);
+
   const imageInfoHandler = useCallback(
     (imageInfos, uploadedImageId) => {
       if (isNil(find(imageInfos, { position: selectedPosition })))
@@ -170,6 +172,10 @@ export const useToolManageService = () => {
     cornerstoneTools.setToolActive('ArrowAnnotate', { mouseButtonMask: 1 });
   }, [cornerstoneTools]);
 
+  const wwwcRegionTool = useCallback(() => {
+    cornerstoneTools.setToolActive('WwwcRegion', { mouseButtonMask: 1 });
+  }, [cornerstoneTools]);
+
   return {
     imageInfos,
     selectedPosition,
@@ -184,6 +190,7 @@ export const useToolManageService = () => {
     ellipticalRoiTool,
     probeTool,
     arrowAnnotateTool,
+    wwwcRegionTool,
     exportImage,
   };
 };
