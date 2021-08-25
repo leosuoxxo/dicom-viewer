@@ -14,7 +14,7 @@ const ImageContainer = styled(Box)`
 
 export const DicomViewer = ({ imageId, position }) => {
   const { cornerstone, cornerstoneTools } = useCornerstone();
-  const { selectedPosition, setSelectedPosition } =
+  const { selectedPosition, setSelectedPosition, wwwcSynchronizer } =
     useContext(ToolManageService);
 
   const elementRef = useRef();
@@ -40,12 +40,13 @@ export const DicomViewer = ({ imageId, position }) => {
       .loadImage(imageId)
       .then((image) => {
         cornerstone.displayImage(element, image);
+        wwwcSynchronizer.add(element);
         createTools();
       })
       .catch((err) => {
         console.log('err', err);
       });
-  }, [imageId, cornerstone, createTools]);
+  }, [imageId, cornerstone, cornerstoneTools, wwwcSynchronizer, createTools]);
 
   return (
     <ImageContainer

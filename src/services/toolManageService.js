@@ -32,8 +32,6 @@ export const useToolManageService = () => {
     return isNil(imageInfo) ? null : imageInfo.id;
   }, [selectedPosition, imageInfos]);
 
-  console.log('cor', cornerstoneTools);
-
   const imageInfoHandler = useCallback(
     (imageInfos, uploadedImageId) => {
       if (isNil(find(imageInfos, { position: selectedPosition })))
@@ -172,9 +170,23 @@ export const useToolManageService = () => {
     cornerstoneTools.setToolActive('ArrowAnnotate', { mouseButtonMask: 1 });
   }, [cornerstoneTools]);
 
+  const wwwcSynchronizer = useMemo(
+    () =>
+      new cornerstoneTools.Synchronizer(
+        // Cornerstone event that should trigger synchronizer
+        'cornerstoneimagerendered',
+        // Logic that should run on target elements when event is observed on source elements
+        cornerstoneTools.wwwcSynchronizer
+      ),
+    [cornerstoneTools]
+  );
+
   const wwwcRegionTool = useCallback(() => {
-    cornerstoneTools.setToolActive('WwwcRegion', { mouseButtonMask: 1 });
-  }, [cornerstoneTools]);
+    cornerstoneTools.setToolActive('WwwcRegion', {
+      mouseButtonMask: 1,
+      synchronizationContext: wwwcSynchronizer,
+    });
+  }, [cornerstoneTools, wwwcSynchronizer]);
 
   return {
     imageInfos,
@@ -192,6 +204,7 @@ export const useToolManageService = () => {
     arrowAnnotateTool,
     wwwcRegionTool,
     exportImage,
+    wwwcSynchronizer,
   };
 };
 

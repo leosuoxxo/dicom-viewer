@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { IconButton, Tooltip } from '@material-ui/core';
 import { CropDin } from '@material-ui/icons';
+
 import { ToolManageService } from '../../services/toolManageService';
 import { useCornerstone } from '../../services/cornerstoneService';
 
@@ -10,8 +11,7 @@ export const WwwcRegionTool = () => {
 
   const clickHandler = () => {
     cornerstoneTools.init();
-    const WwwcRegionTool = cornerstoneTools.WwwcRegionTool;
-    cornerstoneTools.addTool(WwwcRegionTool);
+    cornerstoneTools.addTool(cornerstoneTools.WwwcRegionTool);
     toolManageService.wwwcRegionTool();
   };
 
