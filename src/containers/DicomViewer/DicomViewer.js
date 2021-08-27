@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, useContext } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Box, ButtonBase } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
@@ -14,22 +14,14 @@ const ImageContainer = styled(Box)`
 
 export const DicomViewer = ({ imageId, position }) => {
   const { cornerstone, cornerstoneTools } = useCornerstone();
-  const { selectedPosition, setSelectedPosition, wwwcSynchronizer } =
-    useContext(ToolManageService);
+  const {
+    selectedPosition,
+    setSelectedPosition,
+    wwwcSynchronizer,
+    activateTool,
+  } = useContext(ToolManageService);
 
   const elementRef = useRef();
-
-  const createTools = useCallback(() => {
-    const ZoomMouseWheelTool = cornerstoneTools.ZoomMouseWheelTool;
-
-    cornerstoneTools.addTool(ZoomMouseWheelTool);
-    cornerstoneTools.setToolActive('ZoomMouseWheel', { mouseButtonMask: 1 });
-
-    const PanTool = cornerstoneTools.PanTool;
-
-    cornerstoneTools.addTool(PanTool);
-    cornerstoneTools.setToolActive('Pan', { mouseButtonMask: 1 });
-  }, [cornerstoneTools]);
 
   useEffect(() => {
     const element = elementRef.current;
@@ -41,12 +33,13 @@ export const DicomViewer = ({ imageId, position }) => {
       .then((image) => {
         cornerstone.displayImage(element, image);
         wwwcSynchronizer.add(element);
-        createTools();
+        activateTool('ZoomMouseWheel');
+        activateTool('Pan');
       })
       .catch((err) => {
         console.log('err', err);
       });
-  }, [imageId, cornerstone, cornerstoneTools, wwwcSynchronizer, createTools]);
+  }, [imageId, cornerstone, cornerstoneTools, wwwcSynchronizer, activateTool]);
 
   return (
     <ImageContainer
