@@ -1,61 +1,78 @@
-import React, { useState } from 'react';
-import { IconButton, Menu, MenuItem, ListItemIcon } from '@material-ui/core';
-import { Build } from '@material-ui/icons';
+import React, { useContext, useState } from 'react';
+import {
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  Tooltip,
+} from '@material-ui/core';
+import {
+  Build,
+  FormatClear,
+  PanTool,
+  FormatLineSpacing,
+  BorderColor,
+  AspectRatio,
+  SquareFoot,
+  DonutLarge,
+  Colorize,
+  TextFields,
+} from '@material-ui/icons';
+import { map } from 'lodash';
 
 import { Box } from '../elements';
-import {
-  EraserTool,
-  HandTool,
-  LengthTool,
-  FreeHandRoiTool,
-  AngleTool,
-  RectangleRoiTool,
-  EllipticalRoiTool,
-  ProbeTool,
-  ArrowAnnotateTool,
-} from './';
-import { map } from 'lodash';
+import { ToolManageService } from '../../services/toolManageService';
 
 const annotationTools = [
   {
-    name: 'EraserTool',
-    comp: <EraserTool />,
+    name: 'Eraser',
+    tip: '移除標註',
+    icon: <FormatClear />,
   },
   {
-    name: 'HandTool',
-    comp: <HandTool />,
+    name: 'Pan',
+    tip: 'Pan Tool',
+    icon: <PanTool />,
   },
   {
-    name: 'LengthTool',
-    comp: <LengthTool />,
+    name: 'Length',
+    tip: '長度測量',
+    icon: <FormatLineSpacing />,
   },
   {
-    name: 'FreeHandRoiTool',
-    comp: <FreeHandRoiTool />,
+    name: 'FreeHandRoi',
+    tip: '面積測量',
+    icon: <BorderColor />,
   },
   {
-    name: 'AngleTool',
-    comp: <AngleTool />,
+    name: 'Angle',
+    tip: '角度測量',
+    icon: <SquareFoot />,
   },
   {
-    name: 'RectangleRoiTool',
-    comp: <RectangleRoiTool />,
+    name: 'RectangleRoi',
+    tip: '面積測量(方形)',
+    icon: <AspectRatio />,
   },
   {
-    name: 'EllipticalRoiTool',
-    comp: <EllipticalRoiTool />,
+    name: 'EllipticalRoi',
+    tip: '面積測量(圓形)',
+    icon: <DonutLarge />,
   },
   {
-    name: 'ProbeTool',
-    comp: <ProbeTool />,
+    name: 'Probe',
+    tip: '顏色探測',
+    icon: <Colorize />,
   },
   {
-    name: 'ArrowAnnotateTool',
-    comp: <ArrowAnnotateTool />,
+    name: 'ArrowAnnotate',
+    tip: '文字標註',
+    icon: <TextFields />,
   },
 ];
 
 export const ToolMenu = () => {
+  const { activateTool } = useContext(ToolManageService);
   const [anchorMenu, setAnchorMenu] = useState(null);
 
   const onOpenMenu = (event) => {
@@ -78,8 +95,14 @@ export const ToolMenu = () => {
         onClose={onCloseMenu}
       >
         <MenuItem>
-          {map(annotationTools, ({ name, comp }) => (
-            <ListItemIcon key={name}>{comp}</ListItemIcon>
+          {map(annotationTools, ({ name, tip, icon }) => (
+            <ListItemIcon key={name}>
+              <Tooltip title={tip}>
+                <IconButton onClick={() => activateTool(name)}>
+                  {icon}
+                </IconButton>
+              </Tooltip>
+            </ListItemIcon>
           ))}
         </MenuItem>
       </Menu>

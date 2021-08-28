@@ -7,7 +7,7 @@ import React, {
   useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
-import { concat, filter, find, isEmpty, isNil, map } from 'lodash';
+import { concat, filter, find, get, isEmpty, isNil, map } from 'lodash';
 import Tiff from 'tiff.js';
 
 import { useCornerstone } from './cornerstoneService';
@@ -134,57 +134,42 @@ export const useToolManageService = () => {
     cornerstoneTools.toolColors.setToolColor(TOOL_COLORS[0]);
   }, [cornerstoneTools]);
 
-  const eraserTool = useCallback(() => {
-    cornerstoneTools.setToolActive('Eraser', { mouseButtonMask: 1 });
-  }, [cornerstoneTools]);
+  const activateTool = useCallback(
+    (toolName) => {
+      cornerstoneTools.init();
+      cornerstoneTools.addTool(get(cornerstoneTools, `${toolName}Tool`));
+      cornerstoneTools.setToolActive(toolName, { mouseButtonMask: 1 });
+    },
+    [cornerstoneTools]
+  );
 
-  const handTool = useCallback(() => {
-    cornerstoneTools.setToolActive('Pan', { mouseButtonMask: 1 });
-  }, [cornerstoneTools]);
+  const wwwcSynchronizer = useMemo(
+    () =>
+      new cornerstoneTools.Synchronizer(
+        // Cornerstone event that should trigger synchronizer
+        'cornerstoneimagerendered',
+        // Logic that should run on target elements when event is observed on source elements
+        cornerstoneTools.wwwcSynchronizer
+      ),
+    [cornerstoneTools]
+  );
 
-  const lengthTool = useCallback(() => {
-    cornerstoneTools.setToolActive('Length', { mouseButtonMask: 1 });
-  }, [cornerstoneTools]);
-
-  const angleTool = useCallback(() => {
-    cornerstoneTools.setToolActive('Angle', { mouseButtonMask: 1 });
-  }, [cornerstoneTools]);
-
-  const freehandRoiTool = useCallback(() => {
-    cornerstoneTools.setToolActive('FreehandRoi', { mouseButtonMask: 1 });
-  }, [cornerstoneTools]);
-
-  const rectangleRoiTool = useCallback(() => {
-    cornerstoneTools.setToolActive('RectangleRoi', { mouseButtonMask: 1 });
-  }, [cornerstoneTools]);
-
-  const ellipticalRoiTool = useCallback(() => {
-    cornerstoneTools.setToolActive('EllipticalRoi', { mouseButtonMask: 1 });
-  }, [cornerstoneTools]);
-
-  const probeTool = useCallback(() => {
-    cornerstoneTools.setToolActive('Probe', { mouseButtonMask: 1 });
-  }, [cornerstoneTools]);
-
-  const arrowAnnotateTool = useCallback(() => {
-    cornerstoneTools.setToolActive('ArrowAnnotate', { mouseButtonMask: 1 });
-  }, [cornerstoneTools]);
+  const wwwcRegionTool = useCallback(() => {
+    cornerstoneTools.setToolActive('WwwcRegion', {
+      mouseButtonMask: 1,
+      synchronizationContext: wwwcSynchronizer,
+    });
+  }, [cornerstoneTools, wwwcSynchronizer]);
 
   return {
     imageInfos,
     selectedPosition,
     setSelectedPosition,
     imageUpload,
-    eraserTool,
-    handTool,
-    lengthTool,
-    angleTool,
-    freehandRoiTool,
-    rectangleRoiTool,
-    ellipticalRoiTool,
-    probeTool,
-    arrowAnnotateTool,
+    activateTool,
+    wwwcRegionTool,
     exportImage,
+    wwwcSynchronizer,
   };
 };
 

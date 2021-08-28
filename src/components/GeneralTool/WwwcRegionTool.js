@@ -1,24 +1,24 @@
 import React, { useContext } from 'react';
 import { IconButton, Tooltip } from '@material-ui/core';
-import { SquareFoot } from '@material-ui/icons';
+import { CropDin } from '@material-ui/icons';
+
 import { ToolManageService } from '../../services/toolManageService';
 import { useCornerstone } from '../../services/cornerstoneService';
 
-export const AngleTool = () => {
+export const WwwcRegionTool = () => {
   const { cornerstoneTools } = useCornerstone();
   const toolManageService = useContext(ToolManageService);
 
   const clickHandler = () => {
     cornerstoneTools.init();
-    const AngleTool = cornerstoneTools.AngleTool;
-    cornerstoneTools.addTool(AngleTool);
-    toolManageService.angleTool();
+    cornerstoneTools.addTool(cornerstoneTools.WwwcRegionTool);
+    toolManageService.wwwcRegionTool();
   };
 
   return (
-    <Tooltip title="角度測量">
+    <Tooltip title="區域平均灰階">
       <IconButton onClick={clickHandler}>
-        <SquareFoot />
+        <CropDin />
       </IconButton>
     </Tooltip>
   );
