@@ -8,6 +8,7 @@ import {
   FileUploadTool,
   ExportImageTool,
   MultipleViewerTool,
+  WwwcRegionTool,
 } from '../../components/GeneralTool';
 
 export const ToolBar = () => {
@@ -17,6 +18,7 @@ export const ToolBar = () => {
         {/*Frequently used tools*/}
         <FileUploadTool />
         <HandTool />
+        <WwwcRegionTool />
         <Flex style={{ flexGrow: 1 }} />
 
         {/*Annotate Tool*/}

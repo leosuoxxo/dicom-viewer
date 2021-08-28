@@ -9,6 +9,5 @@ export { RectangleRoiTool } from './RectangleRoiTool';
 export { EllipticalRoiTool } from './EllipticalRoiTool';
 export { ProbeTool } from './ProbeTool';
 export { ArrowAnnotateTool } from './ArrowAnnotateTool';
-export { WwwcRegionTool } from './WwwcRegionTool';
 
 export { ToolMenu } from './ToolMenu';

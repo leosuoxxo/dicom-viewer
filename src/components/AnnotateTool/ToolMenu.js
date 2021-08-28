@@ -13,7 +13,6 @@ import {
   EllipticalRoiTool,
   ProbeTool,
   ArrowAnnotateTool,
-  WwwcRegionTool,
 } from './';
 import { map } from 'lodash';
 
@@ -53,10 +52,6 @@ const annotationTools = [
   {
     name: 'ArrowAnnotateTool',
     comp: <ArrowAnnotateTool />,
-  },
-  {
-    name: 'WwwcRegionTool',
-    comp: <WwwcRegionTool />,
   },
 ];
 
