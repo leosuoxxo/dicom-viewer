@@ -39,10 +39,15 @@ export const useToolManageService = () => {
           position: selectedPosition,
           id: uploadedImageId,
         });
-      return map(imageInfos, () => ({
-        position: selectedPosition,
-        id: uploadedImageId,
-      }));
+
+      return map(imageInfos, (imageInfo) => {
+        if (get(imageInfo, 'position') === selectedPosition)
+          return {
+            position: selectedPosition,
+            id: uploadedImageId,
+          };
+        return imageInfo;
+      });
     },
     [selectedPosition]
   );
