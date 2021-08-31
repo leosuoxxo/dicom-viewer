@@ -21,18 +21,18 @@ export const DicomViewer = ({ imageId, position }) => {
     activateTool,
   } = useContext(ToolManageService);
 
-  const elementRef = useRef();
+  const canvasRef = useRef();
 
   useEffect(() => {
-    const element = elementRef.current;
-    if (isNil(imageId) || !element) return;
-    cornerstone.enable(element);
-
+    const canvas = canvasRef.current;
+    if (isNil(imageId) || !canvas) return;
+    cornerstone.enable(canvas);
     cornerstone
       .loadImage(imageId)
       .then((image) => {
-        cornerstone.displayImage(element, image);
-        wwwcSynchronizer.add(element);
+        cornerstone.displayImage(canvas, image);
+        cornerstone.reset(canvas);
+        wwwcSynchronizer.add(canvas);
         activateTool('ZoomMouseWheel');
         activateTool('Pan');
       })
@@ -61,7 +61,7 @@ export const DicomViewer = ({ imageId, position }) => {
           <Skeleton width="100%" height="100%" />
         ) : (
           <span
-            ref={elementRef}
+            ref={canvasRef}
             style={{
               width: '100%',
               height: '100%',
