@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
+import { map } from 'lodash';
+import { FirebaseAuthProvider } from '../services/firebaseAuthService';
 
 export const RouteView = (route) => {
   return (
@@ -14,18 +16,30 @@ export const RouteView = (route) => {
   );
 };
 
-export const AppRoutes = ({ routes = [] }) => {
+export const AppRoutes = ({ routes = [], backstageRoutes = [] }) => {
   return (
     <Switch>
-      {routes.map((route, index) => (
+      {map(routes, (route, index) => (
         <RouteView key={index} {...route} />
       ))}
+      <FirebaseAuthProvider>
+        {map(backstageRoutes, (route, index) => (
+          <RouteView key={index} {...route} />
+        ))}
+      </FirebaseAuthProvider>
     </Switch>
   );
 };
 
 AppRoutes.propTypes = {
   routes: PropTypes.arrayOf(
+    PropTypes.shape({
+      path: PropTypes.string.isRequired,
+      component: PropTypes.func.isRequired,
+      exact: PropTypes.bool,
+    })
+  ),
+  backstageRoutes: PropTypes.arrayOf(
     PropTypes.shape({
       path: PropTypes.string.isRequired,
       component: PropTypes.func.isRequired,

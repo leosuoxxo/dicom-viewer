@@ -1,9 +1,9 @@
 import React from 'react';
 import { AppRoutes } from './routes';
-import { routes } from './routes/routesConfig';
+import { routes, backstageRoutes } from './routes/routesConfig';
 
 function App() {
-  return <AppRoutes routes={routes} />;
+  return <AppRoutes routes={routes} backstageRoutes={backstageRoutes} />;
 }
 
 export default App;
