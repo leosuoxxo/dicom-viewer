@@ -1,23 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
-import { CornerstoneServiceProvider } from './services/cornerstoneService';
-import { ToolManageServiceProvider } from './services/toolManageService';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import App from './App';
 import theme from './theme';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
+const queryClient = new QueryClient();
+
 ReactDOM.render(
   <React.StrictMode>
+    <CssBaseline />
     <MuiThemeProvider theme={theme}>
       <ThemeProvider theme={theme}>
-        <CornerstoneServiceProvider>
-          <ToolManageServiceProvider>
+        <BrowserRouter>
+          <QueryClientProvider client={queryClient}>
             <App />
-          </ToolManageServiceProvider>
-        </CornerstoneServiceProvider>
+          </QueryClientProvider>
+        </BrowserRouter>
       </ThemeProvider>
     </MuiThemeProvider>
   </React.StrictMode>,

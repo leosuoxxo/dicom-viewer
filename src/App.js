@@ -1,56 +1,9 @@
-import React, { useContext } from 'react';
-
-import { Flex } from './components/elements';
-import ToolBar from './containers/ToolBar';
-import DicomViewer from './containers/DicomViewer';
-import { ToolManageService } from './services/toolManageService';
-import ConfigContext, { useConfigContext } from './ConfigContext';
-import { TOOLBAR_HEIGHT, VIEWER_LAYOUT } from './constants';
-import { find, isNil } from 'lodash';
-
-function AppInner() {
-  const { imageInfos } = useContext(ToolManageService);
-  const { currentLayout } = useContext(ConfigContext);
-
-  const getImageIdFromPosition = (position) => {
-    const imageInfo = find(imageInfos, { position });
-    return isNil(imageInfo) ? null : imageInfo.id;
-  };
-
-  return (
-    <>
-      <ToolBar />
-      <Flex
-        style={{
-          height: `calc(100% - ${TOOLBAR_HEIGHT})`,
-          marginTop: TOOLBAR_HEIGHT,
-        }}
-      >
-        {currentLayout >= VIEWER_LAYOUT[0] && (
-          <DicomViewer
-            imageId={getImageIdFromPosition(VIEWER_LAYOUT[0])}
-            position={VIEWER_LAYOUT[0]}
-          />
-        )}
-        {currentLayout === VIEWER_LAYOUT[1] && (
-          <DicomViewer
-            imageId={getImageIdFromPosition(VIEWER_LAYOUT[1])}
-            position={VIEWER_LAYOUT[1]}
-          />
-        )}
-      </Flex>
-    </>
-  );
-}
+import React from 'react';
+import { AppRoutes } from './routes';
+import { routes } from './routes/routesConfig';
 
 function App() {
-  const configContext = useConfigContext();
-
-  return (
-    <ConfigContext.Provider value={configContext}>
-      <AppInner />
-    </ConfigContext.Provider>
-  );
+  return <AppRoutes routes={routes} />;
 }
 
 export default App;
