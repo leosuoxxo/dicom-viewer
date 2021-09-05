@@ -11,8 +11,10 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Button,
 } from '@material-ui/core';
 import { backstageMenus } from '../config/menu';
+import { useFirebaseAuthService } from '../services/firebaseAuthService';
 
 const drawerWidth = 240;
 
@@ -23,6 +25,10 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
+  },
+  title: {
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   drawer: {
     width: drawerWidth,
@@ -42,14 +48,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BackstageLayout({ children }) {
   const classes = useStyles();
-
+  const { signOut } = useFirebaseAuthService();
   return (
     <div className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
+        <Toolbar className={classes.title}>
           <Typography variant="h6" noWrap>
             dicom-viewer 後台管理系統
           </Typography>
+          <Button color="inherit" onClick={signOut}>
+            登出
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer
