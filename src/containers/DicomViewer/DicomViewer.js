@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useContext,
+  useCallback,
+  useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import { Box, ButtonBase } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
@@ -13,7 +19,7 @@ const ImageContainer = styled(Box)`
 `;
 
 export const DicomViewer = ({ imageId, position }) => {
-  const { cornerstone, cornerstoneTools } = useCornerstone();
+  const { cornerstone } = useCornerstone();
   const {
     selectedPosition,
     setSelectedPosition,
@@ -23,6 +29,24 @@ export const DicomViewer = ({ imageId, position }) => {
 
   const canvasRef = useRef();
 
+  const onLoadImage = useCallback(
+    (element, image) => {
+      cornerstone.displayImage(element, image);
+      cornerstone.reset(element);
+      wwwcSynchronizer.add(element);
+      activateTool('ZoomMouseWheel');
+      activateTool('Pan');
+    },
+    [cornerstone, wwwcSynchronizer, activateTool]
+  );
+
+  const [zoom, setZoom] = useState(null);
+  const onImageRendered = useCallback(() => {
+    const canvas = canvasRef.current;
+    const viewport = cornerstone.getViewport(canvas);
+    setZoom(Math.round(viewport.scale.toFixed(2) * 100));
+  }, [canvasRef, cornerstone]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (isNil(imageId) || !canvas) return;
@@ -30,16 +54,13 @@ export const DicomViewer = ({ imageId, position }) => {
     cornerstone
       .loadImage(imageId)
       .then((image) => {
-        cornerstone.displayImage(canvas, image);
-        cornerstone.reset(canvas);
-        wwwcSynchronizer.add(canvas);
-        activateTool('ZoomMouseWheel');
-        activateTool('Pan');
+        onLoadImage(canvas, image);
+        canvas.addEventListener('cornerstoneimagerendered', onImageRendered);
       })
       .catch((err) => {
         console.log('err', err);
       });
-  }, [imageId, cornerstone, cornerstoneTools, wwwcSynchronizer, activateTool]);
+  }, [imageId, cornerstone, onLoadImage, onImageRendered]);
 
   return (
     <ImageContainer
@@ -66,7 +87,21 @@ export const DicomViewer = ({ imageId, position }) => {
               width: '100%',
               height: '100%',
             }}
-          />
+          >
+            {!isNil(zoom) && (
+              <Box
+                style={{
+                  position: 'absolute',
+                  color: 'white',
+                  bottom: 4,
+                  right: 4,
+                  fontSize: 24,
+                }}
+              >
+                {`Zoom: ${zoom}%`}
+              </Box>
+            )}
+          </span>
         )}
       </ButtonBase>
     </ImageContainer>
