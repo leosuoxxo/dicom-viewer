@@ -9,6 +9,7 @@ import {
   ExportImageTool,
   MultipleViewerTool,
   WwwcRegionTool,
+  DicomTagsButton,
 } from '../../components/GeneralTool';
 
 export const ToolBar = () => {
@@ -19,6 +20,7 @@ export const ToolBar = () => {
         <FileUploadTool />
         <HandTool />
         <WwwcRegionTool />
+        <DicomTagsButton />
         <Flex style={{ flexGrow: 1 }} />
 
         {/*Annotate Tool*/}
