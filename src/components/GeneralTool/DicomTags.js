@@ -1,26 +1,34 @@
-import React, { useContext } from 'react';
-import { IconButton, Tooltip } from '@material-ui/core';
+import React, { useContext, useState } from 'react';
+import { IconButton, Tooltip, Drawer } from '@material-ui/core';
 import { LocalOffer } from '@material-ui/icons';
 import { includes, isEmpty, map } from 'lodash';
+import styled from 'styled-components';
 
 import { ToolManageService } from '../../services/toolManageService';
-import { useCornerstone } from '../../services/cornerstoneService';
 import { DCM_TAGS, SPECIFIC_SERIAL, UIDS } from '../../constants';
+import { Box } from '../elements';
+
+const StyledSidebar = styled(Drawer)`
+  && .MuiDrawer-paper {
+    width: 40vw;
+  }
+`;
 
 export const DicomTagsButton = () => {
-  const { cornerstone } = useCornerstone();
-  console.log(cornerstone);
   const { getSelectedElement } = useContext(ToolManageService);
+
+  const [open, setOpen] = useState(false);
+  const [tagList, setTagList] = useState([]);
 
   const clickHandler = () => {
     const element = getSelectedElement();
-    if (isEmpty(element)) return;
-    console.log(element);
-    const tagList = map(DCM_TAGS, ({ text, serial }) => {
+    if (isEmpty(element)) {
+      alert('請先上傳圖檔');
+      return;
+    }
+    const list = map(DCM_TAGS, ({ text, serial }) => {
       if (includes(SPECIFIC_SERIAL, serial)) {
-        const value =
-          UIDS[element.image.data.string(serial)] ||
-          element.image.data.string(serial);
+        const value = UIDS[element.image.data.string(serial)];
 
         return {
           name: text,
@@ -32,14 +40,30 @@ export const DicomTagsButton = () => {
         value: element.image.data.string(serial),
       };
     });
-    console.log('list', tagList);
+    setOpen(true);
+    setTagList(list);
   };
 
   return (
-    <Tooltip title="標籤">
-      <IconButton onClick={clickHandler}>
-        <LocalOffer />
-      </IconButton>
-    </Tooltip>
+    <>
+      <Tooltip title="標籤">
+        <IconButton onClick={clickHandler}>
+          <LocalOffer />
+        </IconButton>
+      </Tooltip>
+      <StyledSidebar
+        anchor={'right'}
+        open={open}
+        onClose={() => setOpen(false)}
+      >
+        {map(tagList, ({ name, value }) => (
+          <Box
+            style={{
+              margin: '3px 0',
+            }}
+          >{`${name}: ${value || '❌'}`}</Box>
+        ))}
+      </StyledSidebar>
+    </>
   );
 };
