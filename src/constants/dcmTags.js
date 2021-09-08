@@ -70,3 +70,5 @@ export const SPECIFIC_SERIAL = [
   'x0020000d',
   'x0020000e',
 ];
+
+export const PIXEL_DATA_SERIAL = 'x7fe00010';

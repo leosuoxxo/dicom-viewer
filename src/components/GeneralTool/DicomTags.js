@@ -5,7 +5,12 @@ import { includes, isEmpty, map } from 'lodash';
 import styled from 'styled-components';
 
 import { ToolManageService } from '../../services/toolManageService';
-import { DCM_TAGS, SPECIFIC_SERIAL, UIDS } from '../../constants';
+import {
+  DCM_TAGS,
+  SPECIFIC_SERIAL,
+  UIDS,
+  PIXEL_DATA_SERIAL,
+} from '../../constants';
 import { Box } from '../elements';
 
 const StyledSidebar = styled(Drawer)`
@@ -26,15 +31,20 @@ export const DicomTagsButton = () => {
       alert('請先上傳圖檔');
       return;
     }
-    const list = map(DCM_TAGS, ({ text, serial }) => {
-      if (includes(SPECIFIC_SERIAL, serial)) {
-        const value = UIDS[element.image.data.string(serial)];
 
+    const list = map(DCM_TAGS, ({ text, serial }) => {
+      if (PIXEL_DATA_SERIAL === serial)
         return {
           name: text,
-          value: value,
+          value: `Array of ${element.image.getPixelData().length} elements`,
         };
-      }
+
+      if (includes(SPECIFIC_SERIAL, serial))
+        return {
+          name: text,
+          value: UIDS[element.image.data.string(serial)],
+        };
+
       return {
         name: text,
         value: element.image.data.string(serial),
@@ -61,7 +71,7 @@ export const DicomTagsButton = () => {
             style={{
               margin: '3px 0',
             }}
-          >{`${name}: ${value || '❌'}`}</Box>
+          >{`${name}: ${value || ' ❌ '}`}</Box>
         ))}
       </StyledSidebar>
     </>
