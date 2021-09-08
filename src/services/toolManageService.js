@@ -135,6 +135,15 @@ export const useToolManageService = () => {
     [cornerstone, toTiffUrl, selectedImageId]
   );
 
+  const getSelectedElement = useCallback(() => {
+    if (isEmpty(cornerstone.getEnabledElements())) return;
+    const [element] = filter(
+      cornerstone.getEnabledElements(),
+      (e) => e.image.imageId === selectedImageId
+    );
+    return element;
+  }, [cornerstone, selectedImageId]);
+
   useEffect(() => {
     cornerstoneTools.toolColors.setToolColor(TOOL_COLORS[0]);
   }, [cornerstoneTools]);
@@ -175,6 +184,7 @@ export const useToolManageService = () => {
     wwwcRegionTool,
     exportImage,
     wwwcSynchronizer,
+    getSelectedElement,
   };
 };
 
