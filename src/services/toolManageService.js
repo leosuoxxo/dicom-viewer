@@ -135,13 +135,13 @@ export const useToolManageService = () => {
     [cornerstone, toTiffUrl, selectedImageId]
   );
 
-  const getDicomTags = useCallback(() => {
+  const getSelectedElement = useCallback(() => {
     if (isEmpty(cornerstone.getEnabledElements())) return;
     const [element] = filter(
       cornerstone.getEnabledElements(),
       (e) => e.image.imageId === selectedImageId
     );
-    console.log('ee', element);
+    return element;
   }, [cornerstone, selectedImageId]);
 
   useEffect(() => {
@@ -184,7 +184,7 @@ export const useToolManageService = () => {
     wwwcRegionTool,
     exportImage,
     wwwcSynchronizer,
-    getDicomTags,
+    getSelectedElement,
   };
 };
 
