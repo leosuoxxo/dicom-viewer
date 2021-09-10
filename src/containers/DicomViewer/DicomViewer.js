@@ -20,12 +20,8 @@ const ImageContainer = styled(Box)`
 
 export const DicomViewer = ({ imageId, position }) => {
   const { cornerstone } = useCornerstone();
-  const {
-    selectedPosition,
-    setSelectedPosition,
-    wwwcSynchronizer,
-    activateTool,
-  } = useContext(ToolManageService);
+  const { selectedPosition, setSelectedPosition, activateTool } =
+    useContext(ToolManageService);
 
   const canvasRef = useRef();
 
@@ -33,11 +29,10 @@ export const DicomViewer = ({ imageId, position }) => {
     (element, image) => {
       cornerstone.displayImage(element, image);
       cornerstone.reset(element);
-      wwwcSynchronizer.add(element);
       activateTool('ZoomMouseWheel');
       activateTool('Pan');
     },
-    [cornerstone, wwwcSynchronizer, activateTool]
+    [cornerstone, activateTool]
   );
 
   const [zoom, setZoom] = useState(null);
@@ -83,6 +78,7 @@ export const DicomViewer = ({ imageId, position }) => {
         ) : (
           <span
             ref={canvasRef}
+            id={imageId}
             style={{
               width: '100%',
               height: '100%',
