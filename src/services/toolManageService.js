@@ -135,14 +135,23 @@ export const useToolManageService = () => {
     [cornerstone, toTiffUrl, selectedImageId]
   );
 
-  const getSelectedElement = useCallback(() => {
+  const getValidElements = useCallback(() => {
     if (isEmpty(cornerstone.getEnabledElements())) return;
-    const [element] = filter(
+    const elements = filter(
       cornerstone.getEnabledElements(),
+      (e) => !isNil(e.image)
+    );
+    return elements;
+  }, [cornerstone]);
+
+  const getSelectedElement = useCallback(() => {
+    if (isEmpty(getValidElements())) return;
+    const [element] = filter(
+      getValidElements(),
       (e) => e.image.imageId === selectedImageId
     );
     return element;
-  }, [cornerstone, selectedImageId]);
+  }, [selectedImageId, getValidElements]);
 
   useEffect(() => {
     cornerstoneTools.toolColors.setToolColor(TOOL_COLORS[0]);
@@ -185,6 +194,7 @@ export const useToolManageService = () => {
     exportImage,
     wwwcSynchronizer,
     getSelectedElement,
+    getValidElements,
   };
 };
 
