@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-
+import { Redirect } from 'react-router-dom';
 import { Flex } from '../../components/elements';
 import ToolBar from '../../containers/ToolBar';
 import DicomViewer from '../../containers/DicomViewer';
@@ -21,6 +21,10 @@ function HomeInner() {
     const imageInfo = find(imageInfos, { position });
     return isNil(imageInfo) ? null : imageInfo.id;
   };
+
+  if (!localStorage.getItem('code')) {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <>
