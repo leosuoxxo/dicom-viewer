@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useRequest, useUpdateEffect } from 'ahooks';
 import { Button, TextField, Select, MenuItem } from '@material-ui/core';
 import { Box } from '../../components/elements';
 import BackstageLayout from '../../layouts/BackstageLayout';
@@ -32,21 +32,21 @@ const useDialog = () => {
 
 const useEdit = () => {
   const { isOpen, open, close } = useDialog();
-  const [target, setTarget] = useState({});
+  const [targetId, setTarget] = useState('');
 
   const handleEdit = useCallback(
-    (target) => {
+    (targetId) => {
       open();
-      setTarget(target);
+      setTarget(targetId);
     },
-    [open]
+    [open, setTarget]
   );
 
   return {
     isOpen,
     open,
     close,
-    target,
+    targetId,
     handleEdit,
   };
 };
@@ -54,15 +54,20 @@ const useEdit = () => {
 export function BackstageHomePage() {
   const [page, setPage] = useState(1);
   const [name, setName] = useState('');
-  const { data, isLoading } = useQuery(['organizations', page, name], () =>
-    repository.get({ page, name })
+
+  const { data, loading, refresh } = useRequest(
+    () => repository.get({ page, name }),
+    {
+      refreshDeps: [page, name],
+      tthrottleInterval: 300,
+    }
   );
 
   const {
     isOpen: isEditOpen,
     handleEdit,
     close: editClose,
-    target,
+    targetId,
   } = useEdit();
 
   const {
@@ -75,6 +80,12 @@ export function BackstageHomePage() {
   const handleChange = (event) => {
     setSearchField(event.target.value);
   };
+
+  useUpdateEffect(() => {
+    if (!isCreateOpen || !isCreateOpen) {
+      refresh();
+    }
+  }, [isEditOpen, isCreateOpen]);
 
   return (
     <BackstageLayout>
@@ -94,7 +105,7 @@ export function BackstageHomePage() {
         </Button>
       </Box>
       <OrganizationTable
-        loading={isLoading}
+        loading={loading}
         data={data?.organizations}
         count={data?.total}
         onCreate={handleCreate}
@@ -102,7 +113,7 @@ export function BackstageHomePage() {
         page={page}
         onPageChange={setPage}
       />
-      <EditDialog open={isEditOpen} data={target} onClose={editClose} />
+      <EditDialog open={isEditOpen} targetId={targetId} onClose={editClose} />
       <CreateDialog open={isCreateOpen} onClose={createClose} />
     </BackstageLayout>
   );

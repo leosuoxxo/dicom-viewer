@@ -4,13 +4,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import App from './App';
 import theme from './theme';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-
-const queryClient = new QueryClient();
 
 ReactDOM.render(
   <React.StrictMode>
@@ -18,9 +15,7 @@ ReactDOM.render(
     <MuiThemeProvider theme={theme}>
       <ThemeProvider theme={theme}>
         <BrowserRouter>
-          <QueryClientProvider client={queryClient}>
-            <App />
-          </QueryClientProvider>
+          <App />
         </BrowserRouter>
       </ThemeProvider>
     </MuiThemeProvider>

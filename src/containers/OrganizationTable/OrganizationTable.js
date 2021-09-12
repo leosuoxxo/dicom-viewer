@@ -67,7 +67,13 @@ export const OrganizationTable = ({
     onPageChange(newPage);
   };
 
-  const handleEditClick = useCallback((value) => () => onEdit(value), [onEdit]);
+  const handleEditClick = useCallback(
+    (id) => () => {
+      if (!id) return;
+      onEdit(id);
+    },
+    [onEdit]
+  );
 
   return (
     <StyledPaper>
@@ -104,7 +110,7 @@ export const OrganizationTable = ({
                     <IconButton
                       aria-label="edit"
                       size="small"
-                      onClick={handleEditClick(row)}
+                      onClick={handleEditClick(row?.id)}
                     >
                       <Edit size="small" />
                     </IconButton>
