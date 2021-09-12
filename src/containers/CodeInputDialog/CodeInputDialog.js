@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
-import { useRequest } from 'ahooks';
 import {
   Dialog,
   DialogContent,
@@ -14,31 +12,11 @@ import { Alert } from '@material-ui/lab';
 import RemoveIcon from '@material-ui/icons/Remove';
 import ReactCodeInput from 'react-code-input';
 import { Box } from '../../components/elements';
-import {
-  RepositoryName,
-  RepositoryFactory,
-} from '../../repository/RepositoryFactory';
-const repository = RepositoryFactory[RepositoryName.Organization];
+import { useAuthenticationCode } from '../../services/authenticationCode';
 
 export const CodeInputDialog = ({ open }) => {
-  const history = useHistory();
-  const [code, setCode] = useState(['', '', '', '']);
-  const authenticationCode = code.join('-');
-
-  const { loading, run, error } = useRequest(
-    ({ code }) => repository.authenticateCode({ code }),
-    {
-      manual: true,
-      throwOnError: true,
-      onSuccess: () => {
-        localStorage.setItem('code', authenticationCode);
-        history.push('/');
-      },
-      onError: () => {
-        localStorage.removeItem('code');
-      },
-    }
-  );
+  const { code, setCode, loading, run, error, authenticationCode } =
+    useAuthenticationCode();
 
   const changeHandler = (index) => (value) => {
     setCode((prev) => {
@@ -51,12 +29,6 @@ export const CodeInputDialog = ({ open }) => {
   const submit = () => {
     run({ code: authenticationCode });
   };
-
-  useEffect(() => {
-    const code = localStorage.getItem('code');
-    if (!code) return;
-    run({ code });
-  }, [run]);
 
   return (
     <Dialog maxWidth="lg" open={open}>

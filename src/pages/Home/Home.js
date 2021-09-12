@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { Redirect } from 'react-router-dom';
 import { Flex } from '../../components/elements';
 import ToolBar from '../../containers/ToolBar';
 import DicomViewer from '../../containers/DicomViewer';
@@ -8,6 +7,7 @@ import {
   ToolManageServiceProvider,
   ToolManageService,
 } from '../../services/toolManageService';
+import { useAuthenticationCode } from '../../services/authenticationCode';
 
 import ConfigContext, { useConfigContext } from '../../ConfigContext';
 import { TOOLBAR_HEIGHT, VIEWER_LAYOUT } from '../../constants';
@@ -22,9 +22,7 @@ function HomeInner() {
     return isNil(imageInfo) ? null : imageInfo.id;
   };
 
-  if (!localStorage.getItem('code')) {
-    return <Redirect to="/login" />;
-  }
+  useAuthenticationCode();
 
   return (
     <>
