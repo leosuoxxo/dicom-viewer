@@ -34,6 +34,7 @@ export const CornerstoneServiceProvider = ({ children }) => {
 
     cornerstoneWADOImageLoaderRef.current.external.cornerstone = cornerstone;
     cornerstoneWADOImageLoaderRef.current.external.dicomParser = dicomParser;
+
     cornerstoneWADOImageLoaderRef.current.webWorkerManager.initialize({
       maxWebWorkers: navigator.hardwareConcurrency || 1,
       startWebWorkersOnDemand: true,

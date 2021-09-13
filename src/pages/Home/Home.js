@@ -2,12 +2,8 @@ import React, { useContext } from 'react';
 import { Flex } from '../../components/elements';
 import ToolBar from '../../containers/ToolBar';
 import DicomViewer from '../../containers/DicomViewer';
-import { CornerstoneServiceProvider } from '../../services/cornerstoneService';
-import {
-  ToolManageServiceProvider,
-  ToolManageService,
-} from '../../services/toolManageService';
-import { useAuthenticationCode } from '../../services/authenticationCode';
+import { ToolManageService } from '../../services/toolManageService';
+import { useAuthenticationCodeService } from '../../services/authenticationCode';
 
 import ConfigContext, { useConfigContext } from '../../ConfigContext';
 import { TOOLBAR_HEIGHT, VIEWER_LAYOUT } from '../../constants';
@@ -21,8 +17,6 @@ function HomeInner() {
     const imageInfo = find(imageInfos, { position });
     return isNil(imageInfo) ? null : imageInfo.id;
   };
-
-  useAuthenticationCode();
 
   return (
     <>
@@ -54,14 +48,11 @@ function HomeInner() {
 
 export function HomePage() {
   const configContext = useConfigContext();
+  useAuthenticationCodeService();
 
   return (
-    <CornerstoneServiceProvider>
-      <ToolManageServiceProvider>
-        <ConfigContext.Provider value={configContext}>
-          <HomeInner />
-        </ConfigContext.Provider>
-      </ToolManageServiceProvider>
-    </CornerstoneServiceProvider>
+    <ConfigContext.Provider value={configContext}>
+      <HomeInner />
+    </ConfigContext.Provider>
   );
 }
