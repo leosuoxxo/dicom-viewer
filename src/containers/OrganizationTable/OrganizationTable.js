@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { Pagination } from '@material-ui/lab';
 import {
   Paper,
   Table,
@@ -8,25 +9,26 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
   IconButton,
   CircularProgress,
   colors,
 } from '@material-ui/core';
 import { CheckCircle, Edit } from '@material-ui/icons';
+import { Box } from '../../components/elements';
 import dayjs from 'dayjs';
 import { map } from 'lodash';
 
 const StyledPaper = styled(Paper)`
-  display: flex;
+  /* display: flex; */
   align-items: center;
   justify-content: center;
-  min-height: 600px;
+  height: 90%;
 `;
 
 const StyledTableContainer = styled(TableContainer)`
-  min-height: 600px;
+  height: 90%;
+  max-height: 100%;
 `;
 
 const columns = [
@@ -80,57 +82,56 @@ export const OrganizationTable = ({
       {loading ? (
         <CircularProgress />
       ) : (
-        <StyledTableContainer>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {map(columns, (column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-                <TableCell>操作</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {map(data, (row) => (
-                <TableRow hover key={row.id}>
+        <>
+          <StyledTableContainer>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
                   {map(columns, (column) => (
-                    <TableCell key={column.id} align={column.align}>
-                      {column?.format
-                        ? column.format(row[column.id])
-                        : row[column.id]}
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth }}
+                    >
+                      {column.label}
                     </TableCell>
                   ))}
-                  <TableCell>
-                    <IconButton
-                      aria-label="edit"
-                      size="small"
-                      onClick={handleEditClick(row?.id)}
-                    >
-                      <Edit size="small" />
-                    </IconButton>
-                  </TableCell>
+                  <TableCell>操作</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <TablePagination
-            component="div"
-            rowsPerPageOptions={[25]}
-            rowsPerPage={25}
-            count={count}
-            page={page}
-            onPageChange={handleChangePage}
-            labelDisplayedRows={({ count, page }) =>
-              `第${page}頁，共${count}筆`
-            }
-          />
-        </StyledTableContainer>
+              </TableHead>
+              <TableBody>
+                {map(data, (row) => (
+                  <TableRow hover key={row.id}>
+                    {map(columns, (column) => (
+                      <TableCell key={column.id} align={column.align}>
+                        {column?.format
+                          ? column.format(row[column.id])
+                          : row[column.id]}
+                      </TableCell>
+                    ))}
+                    <TableCell>
+                      <IconButton
+                        aria-label="edit"
+                        size="small"
+                        onClick={handleEditClick(row?.id)}
+                      >
+                        <Edit size="small" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </StyledTableContainer>
+          <Box width="100%" display="flex" justifyContent="end" py={3}>
+            <Pagination
+              count={Math.ceil(count / 25)}
+              color="primary"
+              page={page}
+              onChange={handleChangePage}
+            />
+          </Box>
+        </>
       )}
     </StyledPaper>
   );

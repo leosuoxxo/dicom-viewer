@@ -12,11 +12,11 @@ import { Alert } from '@material-ui/lab';
 import RemoveIcon from '@material-ui/icons/Remove';
 import ReactCodeInput from 'react-code-input';
 import { Box } from '../../components/elements';
-import { useAuthenticationCode } from '../../services/authenticationCode';
+import { useAuthenticationCodeService } from '../../services/authenticationCode';
 
 export const CodeInputDialog = ({ open }) => {
   const { code, setCode, loading, run, error, authenticationCode } =
-    useAuthenticationCode();
+    useAuthenticationCodeService();
 
   const changeHandler = (index) => (value) => {
     setCode((prev) => {

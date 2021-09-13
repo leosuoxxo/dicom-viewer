@@ -306,9 +306,7 @@ export const EditDialog = ({ targetId, open, onClose }) => {
   const isError = error || renewError || updateError;
 
   useEffect(() => {
-    if (open) {
-      setSuccess(false);
-    }
+    setSuccess(false);
   }, [open, setSuccess]);
 
   return (
@@ -338,12 +336,16 @@ EditDialog.propTypes = {
 };
 
 export const CreateDialog = ({ open, onClose }) => {
+  const [success, setSuccess] = useState(false);
   const [organization, setOrganization] = useState();
-  const { data, loading, error, run } = useRequest(
+  const { loading, error, run } = useRequest(
     (organization) => repository.create(organization),
     {
       manual: true,
       throwOnError: true,
+      onSuccess: () => {
+        setSuccess(true);
+      },
     }
   );
 
@@ -352,6 +354,7 @@ export const CreateDialog = ({ open, onClose }) => {
   };
 
   useEffect(() => {
+    setSuccess(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
@@ -364,7 +367,7 @@ export const CreateDialog = ({ open, onClose }) => {
       loading={loading}
       error={error}
       errorMessage={error}
-      success={data}
+      success={success}
       successMessage="建立成功"
       onEdit={setOrganization}
       onSubmit={handleSubmit}
