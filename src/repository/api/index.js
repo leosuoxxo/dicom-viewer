@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseDomain = 'http://localhost:5000/dicom-viewer-dac76/asia-east2';
+const baseDomain = process.env.REACT_APP_API_DOMAIN;
 const baseURL = `${baseDomain}`;
 
 const api = axios.create({

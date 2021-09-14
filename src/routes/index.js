@@ -3,9 +3,6 @@ import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 import { map } from 'lodash';
 import { FirebaseAuthProvider } from '../services/firebaseAuthService';
-import { AuthenticationCodeProvider } from '../services/authenticationCode';
-import { CornerstoneServiceProvider } from '../services/cornerstoneService';
-import { ToolManageServiceProvider } from '../services/toolManageService';
 
 export const RouteView = (route) => {
   return (
@@ -22,15 +19,9 @@ export const RouteView = (route) => {
 export const AppRoutes = ({ routes = [], backstageRoutes = [] }) => {
   return (
     <Switch>
-      <AuthenticationCodeProvider>
-        <CornerstoneServiceProvider>
-          <ToolManageServiceProvider>
-            {map(routes, (route, index) => (
-              <RouteView key={index} {...route} />
-            ))}
-          </ToolManageServiceProvider>
-        </CornerstoneServiceProvider>
-      </AuthenticationCodeProvider>
+      {map(routes, (route, index) => (
+        <RouteView key={index} {...route} />
+      ))}
       <FirebaseAuthProvider>
         {map(backstageRoutes, (route, index) => (
           <RouteView key={index} {...route} />

@@ -2,8 +2,12 @@ import React, { useContext } from 'react';
 import { Flex } from '../../components/elements';
 import ToolBar from '../../containers/ToolBar';
 import DicomViewer from '../../containers/DicomViewer';
-import { ToolManageService } from '../../services/toolManageService';
-import { useAuthenticationCodeService } from '../../services/authenticationCode';
+import {
+  ToolManageService,
+  ToolManageServiceProvider,
+} from '../../services/toolManageService';
+import { useAuthenticationCode } from '../../services/authenticationCode';
+import { CornerstoneServiceProvider } from '../../services/cornerstoneService';
 
 import ConfigContext, { useConfigContext } from '../../ConfigContext';
 import { TOOLBAR_HEIGHT, VIEWER_LAYOUT } from '../../constants';
@@ -48,11 +52,17 @@ function HomeInner() {
 
 export function HomePage() {
   const configContext = useConfigContext();
-  useAuthenticationCodeService();
+  const { isSuccess } = useAuthenticationCode();
 
   return (
-    <ConfigContext.Provider value={configContext}>
-      <HomeInner />
-    </ConfigContext.Provider>
+    isSuccess && (
+      <CornerstoneServiceProvider>
+        <ToolManageServiceProvider>
+          <ConfigContext.Provider value={configContext}>
+            <HomeInner />
+          </ConfigContext.Provider>
+        </ToolManageServiceProvider>
+      </CornerstoneServiceProvider>
+    )
   );
 }

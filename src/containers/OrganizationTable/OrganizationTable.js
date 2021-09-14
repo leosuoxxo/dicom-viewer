@@ -20,9 +20,6 @@ import dayjs from 'dayjs';
 import { map } from 'lodash';
 
 const StyledPaper = styled(Paper)`
-  /* display: flex; */
-  align-items: center;
-  justify-content: center;
   height: 90%;
 `;
 
@@ -80,7 +77,15 @@ export const OrganizationTable = ({
   return (
     <StyledPaper>
       {loading ? (
-        <CircularProgress />
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          width="100%"
+          height="100%"
+        >
+          <CircularProgress />
+        </Box>
       ) : (
         <>
           <StyledTableContainer>
