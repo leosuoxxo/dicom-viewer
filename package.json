@@ -49,7 +49,7 @@
     "eslint-fix": "eslint --fix ./src",
     "electron-build": "electron-builder",
     "build-electron:release": "env-cmd -e electron-release react-scripts build && electron-builder --publish=always",
-    "build-electron": "env-cmd -e electron-dev react-scripts build && npm run electron-build",
+    "build-electron": "env-cmd -e electron-dev react-scripts build && electron-builder",
     "start:electron": "concurrently \"env-cmd -e electron-dev react-scripts start\" \"wait-on http://localhost:3000 && electron .\""
   },
   "eslintConfig": {
