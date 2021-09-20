@@ -27,10 +27,8 @@ jobs:
         with:
           node-version: 14
       
-      - name: install yarn
-        uses: borales/actions-yarn@v2.3.0
-        with:
-          cmd: install # will run `yarn install` command
+      - name: install dependencies
+        run: npm install
 
       - name: build electron
         uses: samuelmeuli/action-electron-builder@v1
