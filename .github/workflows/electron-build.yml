@@ -6,28 +6,9 @@ name: Manual workflow
 # or API.
 on:
   workflow_dispatch:
-    # Inputs the workflow accepts.
-    inputs:
-      branch:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Choose branch'
-        # Default value if no value is explicitly provided
-        default: 'dev'
-        # Input has to be provided for the workflow to run
-        required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "greet"
-  greet:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-    # Runs a single command using the runners shell
-    - name: Send greeting
-      run: echo "Hello ${{ github.event.inputs.name }}"
 
   build_electron_on_windows:
     runs-on: windows-latest
@@ -40,8 +21,6 @@ jobs:
 
       - name: Check out git repository
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.inputs.branch }}
 
       - name: Install Node.js
         uses: actions/setup-node@master
@@ -67,7 +46,7 @@ jobs:
           name: dicom-viewer-app
           path: dist
 
-        id: upload artifacts
+      - name: upload artifacts
         uses: google-github-actions/upload-cloud-storage@main
         with:
           path: dist
