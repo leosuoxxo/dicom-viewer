@@ -84,5 +84,12 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "prettier": "^2.3.2",
     "wait-on": "^6.0.0"
+  },
+  "build": {
+    "appId": "com.example.dicom-viewer",
+    "files": [
+      "./build/**/*",
+      "./public/electron.js"
+    ]
   }
 }
