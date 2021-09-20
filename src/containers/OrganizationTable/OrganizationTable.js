@@ -30,8 +30,6 @@ const StyledTableContainer = styled(TableContainer)`
 
 const columns = [
   { id: 'name', label: '名稱', minWidth: 150 },
-  { id: 'contactPerson', label: '聯絡人', minWidth: 100 },
-  { id: 'taxIdNumber', label: '統一編號', minWidth: 100 },
   {
     id: 'expiredAt',
     label: '使用期限',

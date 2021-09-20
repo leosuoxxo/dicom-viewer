@@ -1,14 +1,14 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
-import PropTypes from 'prop-types';
+import { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useRequest } from 'ahooks';
+import { validateMachineId } from '../utils/crypto';
 import {
   RepositoryName,
   RepositoryFactory,
 } from '../repository/RepositoryFactory';
 const repository = RepositoryFactory[RepositoryName.Organization];
 
-export const useAuthenticationCode = () => {
+export const useOnlineAuthenticationCode = () => {
   const history = useHistory();
   const [code, setCode] = useState(['', '', '', '']);
   const [isSuccess, setSuccess] = useState(false);
@@ -50,16 +50,53 @@ export const useAuthenticationCode = () => {
   };
 };
 
-export const Context = createContext({});
-export const useAuthenticationCodeService = () => useContext(Context);
-export const AuthenticationCodeProvider = ({ children }) => {
-  return (
-    <Context.Provider value={useAuthenticationCode()}>
-      {children}
-    </Context.Provider>
+export const useOfflineAuthenticationCode = () => {
+  const history = useHistory();
+  const [code, setCode] = useState('');
+  const [error, setError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  useEffect(() => {
+    setError(false);
+  }, [code]);
+
+  const authenticationCode = useCallback(
+    async (code) => {
+      const isValidated = await validateMachineId(code);
+      if (!isValidated) {
+        setError(true);
+        history.push('/login');
+        return;
+      } else {
+        localStorage.setItem('code', code);
+        setIsSuccess(true);
+        setError(false);
+        history.push('/');
+      }
+    },
+    [history]
   );
+
+  useEffect(() => {
+    const code = localStorage.getItem('code');
+    if (!code) {
+      history.push('/login');
+      return;
+    }
+
+    authenticationCode(code);
+  }, [history, authenticationCode]);
+
+  return {
+    isSuccess,
+    error,
+    code,
+    setCode,
+    authenticationCode,
+  };
 };
 
-AuthenticationCodeProvider.propTypes = {
-  children: PropTypes.node,
-};
+export const useAuthenticationCode =
+  process.env.REACT_APP_PLATFORM === 'web'
+    ? useOnlineAuthenticationCode
+    : useOfflineAuthenticationCode;

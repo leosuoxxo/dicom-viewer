@@ -25,40 +25,40 @@ jobs:
           channelId: live
           projectId: dicom-viewer-dac76
 
-  build_electron_on_windows:
-    runs-on: windows-latest
-    steps:
+  # build_electron_on_windows:
+  #   runs-on: windows-latest
+  #   steps:
 
-      - name: Set git to use LF
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
+  #     - name: Set git to use LF
+  #       run: |
+  #         git config --global core.autocrlf false
+  #         git config --global core.eol lf
 
-      - name: Check out git repository
-        uses: actions/checkout@v2
+  #     - name: Check out git repository
+  #       uses: actions/checkout@v2
 
-      - name: Install Node.js
-        uses: actions/setup-node@master
-        with:
-          node-version: 14
+  #     - name: Install Node.js
+  #       uses: actions/setup-node@master
+  #       with:
+  #         node-version: 14
       
-      - name: install yarn
-        run: npm install yarn
+  #     - name: install yarn
+  #       run: npm install yarn
 
-      - name: install dependencies
-        run: yarn install
+  #     - name: install dependencies
+  #       run: yarn install
 
-      - name: build electron
-        uses: samuelmeuli/action-electron-builder@v1
-        with:
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.github_token }}
+  #     - name: build electron
+  #       uses: samuelmeuli/action-electron-builder@v1
+  #       with:
+  #         # GitHub token, automatically provided to the action
+  #         # (No need to define this secret in the repo settings)
+  #         github_token: ${{ secrets.github_token }}
 
-      - name: upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: dicom-viewer-app
-          path: dist
+  #     - name: upload artifacts
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: dicom-viewer-app
+  #         path: dist
 
     

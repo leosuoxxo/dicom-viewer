@@ -8,7 +8,8 @@ import {
   RepositoryName,
   RepositoryFactory,
 } from '../../repository/RepositoryFactory';
-import { EditDialog, CreateDialog } from './EditDialog';
+import { EditDialog } from './EditDialog';
+import { CreateDialog } from './CreateDialog';
 
 const repository = RepositoryFactory[RepositoryName.Organization];
 
