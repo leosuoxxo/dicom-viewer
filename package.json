@@ -87,11 +87,6 @@
     "wait-on": "^6.0.0"
   },
   "build": {
-    "appId": "com.example.dicom-viewer",
-    "files": [
-      "./build/**/*",
-      "./public/electron.js",
-      "package.json"
-    ]
+    "appId": "com.example.dicom-viewer"
   }
 }
