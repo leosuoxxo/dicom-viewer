@@ -90,7 +90,8 @@
     "appId": "com.example.dicom-viewer",
     "files": [
       "./build/**/*",
-      "./public/electron.js"
+      "./public/electron.js",
+      "package.json"
     ]
   }
 }
