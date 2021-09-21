@@ -31,12 +31,7 @@ jobs:
         run: npm install
 
       - name: build electron
-        uses: samuelmeuli/action-electron-builder@v1
-        with:
-          build_script_name: build-electron:win
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.github_token }}
+        run: npm run build-electron:win
 
       - name: upload artifacts
         uses: actions/upload-artifact@v2
