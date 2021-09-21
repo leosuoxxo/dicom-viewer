@@ -39,13 +39,7 @@ jobs:
           github_token: ${{ secrets.github_token }}
 
       - name: upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: dicom-viewer-app
-          path: dist
-
-      - name: upload artifacts
         uses: google-github-actions/upload-cloud-storage@main
         with:
           path: dist
-          destination: dicom-viewer-dac76.appspot.com/${{github.event.inputs.version}}
+          destination: dicom-viewer-dac76.appspot.com/artifacts
