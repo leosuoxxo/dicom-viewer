@@ -41,5 +41,6 @@ jobs:
       - name: upload artifacts
         uses: google-github-actions/upload-cloud-storage@main
         with:
+          credentials: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DICOM_VIEWER_DAC76 }}
           path: dist
           destination: dicom-viewer-dac76.appspot.com/artifacts
