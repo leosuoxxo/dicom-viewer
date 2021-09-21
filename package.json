@@ -48,8 +48,9 @@
     "eslint": "eslint ./src",
     "eslint-fix": "eslint --fix ./src",
     "electron-build": "electron-builder",
+    "electron-pack:win": "set NODE_OPTIONS=--max_old_space_size=4096 env-cmd -e electron-dev react-scripts build",
     "build-electron:release": "env-cmd -e electron-release react-scripts build && electron-builder --publish=always",
-    "build-electron:win": "set NODE_OPTIONS=--max_old_space_size=4096 env-cmd -e electron-dev react-scripts build && electron-builder",
+    "build-electron:win": "npm run electron-pack:win && electron-builder",
     "start:electron": "concurrently \"env-cmd -e electron-dev react-scripts start\" \"wait-on http://localhost:3000 && electron .\""
   },
   "eslintConfig": {
