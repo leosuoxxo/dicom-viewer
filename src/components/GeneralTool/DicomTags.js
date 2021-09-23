@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { IconButton, Tooltip, Drawer } from '@material-ui/core';
 import { LocalOffer } from '@material-ui/icons';
-import { includes, isEmpty, map } from 'lodash';
+import { compact, includes, isEmpty, join, keys, map, slice } from 'lodash';
 import styled from 'styled-components';
 
 import { ToolManageService } from '../../services/toolManageService';
@@ -20,11 +20,17 @@ const StyledSidebar = styled(Drawer)`
   }
 `;
 
+const StyledHeader = styled(Box)`
+  font-size: 20px;
+  margin: 10px;
+`;
+
 export const DicomTagsButton = () => {
   const { getSelectedElement } = useContext(ToolManageService);
 
   const [open, setOpen] = useState(false);
   const [tagList, setTagList] = useState([]);
+  const [undefinedTagList, setUndefinedTagList] = useState([]);
 
   const clickHandler = () => {
     const element = getSelectedElement();
@@ -33,7 +39,7 @@ export const DicomTagsButton = () => {
       return;
     }
 
-    const list = map(DCM_TAGS, ({ text, serial }) => {
+    const dcmHeader = map(DCM_TAGS, ({ text, serial }) => {
       if (PIXEL_DATA_SERIAL === serial)
         return {
           name: text,
@@ -57,8 +63,29 @@ export const DicomTagsButton = () => {
         value: element.image.data.string(serial),
       };
     });
+
+    const undefinedDcmHeader = compact(
+      map(keys(element.image.data.elements), (tags) => {
+        if (
+          !includes(
+            map(DCM_TAGS, ({ serial }) => serial),
+            tags
+          )
+        ) {
+          return {
+            name: `（${join(slice(tags, 1, 5), '')}，${join(
+              slice(tags, 5),
+              ''
+            )}）`,
+            value: element.image.data.string(tags),
+          };
+        }
+      })
+    );
+
     setOpen(true);
-    setTagList(list);
+    setTagList(dcmHeader);
+    setUndefinedTagList(undefinedDcmHeader);
   };
 
   return (
@@ -73,7 +100,16 @@ export const DicomTagsButton = () => {
         open={open}
         onClose={() => setOpen(false)}
       >
+        <StyledHeader>規範</StyledHeader>
         {map(tagList, ({ name, value }) => (
+          <Box
+            style={{
+              margin: '3px 0',
+            }}
+          >{`${name}: ${value || ' ❌ '}`}</Box>
+        ))}
+        <StyledHeader>未規範</StyledHeader>
+        {map(undefinedTagList, ({ name, value }) => (
           <Box
             style={{
               margin: '3px 0',
