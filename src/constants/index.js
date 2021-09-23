@@ -13,5 +13,5 @@ export {
   DCM_TAGS,
   SPECIFIC_SERIAL,
   PIXEL_DATA_SERIAL,
-  ROW_COLUMN_SERIAL,
+  UINT_SERIAL,
 } from './dcmTags';
