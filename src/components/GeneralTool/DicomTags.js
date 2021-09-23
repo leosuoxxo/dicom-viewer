@@ -10,6 +10,7 @@ import {
   SPECIFIC_SERIAL,
   UIDS,
   PIXEL_DATA_SERIAL,
+  ROW_COLUMN_SERIAL,
 } from '../../constants';
 import { Box } from '../elements';
 
@@ -43,6 +44,12 @@ export const DicomTagsButton = () => {
         return {
           name: text,
           value: UIDS[element.image.data.string(serial)],
+        };
+
+      if (includes(ROW_COLUMN_SERIAL, serial))
+        return {
+          name: text,
+          value: element.image.data.uint16(serial),
         };
 
       return {

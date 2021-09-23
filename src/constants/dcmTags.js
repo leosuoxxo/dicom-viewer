@@ -72,3 +72,5 @@ export const SPECIFIC_SERIAL = [
 ];
 
 export const PIXEL_DATA_SERIAL = 'x7fe00010';
+
+export const ROW_COLUMN_SERIAL = ['x00280010', 'x00280011'];
