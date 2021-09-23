@@ -72,3 +72,12 @@ export const SPECIFIC_SERIAL = [
 ];
 
 export const PIXEL_DATA_SERIAL = 'x7fe00010';
+
+export const UINT_SERIAL = [
+  'x00280010',
+  'x00280011',
+  'x00280002',
+  'x00280100',
+  'x00280101',
+  'x00280102',
+];

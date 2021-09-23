@@ -9,4 +9,9 @@ export const TOOLBAR_HEIGHT = '64px';
 export const TOOL_COLORS = ['deepSkyBlue'];
 
 export { UIDS } from './uids';
-export { DCM_TAGS, SPECIFIC_SERIAL, PIXEL_DATA_SERIAL } from './dcmTags';
+export {
+  DCM_TAGS,
+  SPECIFIC_SERIAL,
+  PIXEL_DATA_SERIAL,
+  UINT_SERIAL,
+} from './dcmTags';
