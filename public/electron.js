@@ -11,15 +11,16 @@ function createWindow() {
     height: 680,
     webPreferences: {
       nodeIntegration: true,
-      preload: path.join(__dirname, 'preload.js'),
+      preload: __dirname + '/preload.js',
     },
   });
+
   mainWindow.maximize();
   mainWindow.loadURL(
     isDev
       ? 'http://localhost:3000'
       : url.format({
-          pathname: '../build/index.html',
+          pathname: 'index.html',
           protocol: 'file:',
           slashes: true,
         })
