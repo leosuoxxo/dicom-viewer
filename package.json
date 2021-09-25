@@ -88,9 +88,11 @@
   },
   "build": {
     "appId": "com.example.dicom-viewer",
+    "productName": "dicom-viewer",
     "files": [
       "./build/**/*",
       "./public/electron.js"
-    ]
+    ],
+    "extends": null
   }
 }
