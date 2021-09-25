@@ -61,10 +61,6 @@ export const useFirebaseAuth = () => {
     auth.signOut();
   };
 
-  useEffect(() => {
-    console.log('isSignedIn', isSignedIn);
-  }, [history, isSignedIn]);
-
   return {
     auth,
     signInWithEmail,
