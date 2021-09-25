@@ -10,7 +10,7 @@ function createWindow() {
     height: 680,
     webPreferences: {
       nodeIntegration: true,
-      preload: __dirname + '/preload.js',
+      preload: path.join(__dirname, 'preload.js'),
     },
   });
   mainWindow.maximize();
@@ -20,7 +20,7 @@ function createWindow() {
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
   mainWindow.on('closed', () => (mainWindow = null));
 }
 

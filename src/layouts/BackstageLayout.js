@@ -13,6 +13,7 @@ import {
   ListItemText,
   Button,
 } from '@material-ui/core';
+import { CloudDownload } from '@material-ui/icons';
 import { backstageMenus } from '../config/menu';
 import { useFirebaseAuthService } from '../services/firebaseAuthService';
 
@@ -49,6 +50,13 @@ const useStyles = makeStyles((theme) => ({
 export default function BackstageLayout({ children }) {
   const classes = useStyles();
   const { signOut } = useFirebaseAuthService();
+
+  const downloadApp = () => {
+    window.open(
+      'https://storage.googleapis.com/dicom-viewer-dac76.appspot.com/artifacts/dist/dicom-viewer%20Setup%200.1.0.exe'
+    );
+  };
+
   return (
     <div className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>
@@ -80,7 +88,15 @@ export default function BackstageLayout({ children }) {
               <ListItemText primary={menu.label} />
             </ListItem>
           ))}
+          <Divider />
+          <ListItem button onClick={downloadApp}>
+            <ListItemIcon>
+              <CloudDownload />
+            </ListItemIcon>
+            <ListItemText primary="下載" />
+          </ListItem>
         </List>
+        <Divider />
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
