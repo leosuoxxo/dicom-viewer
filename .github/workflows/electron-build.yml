@@ -18,7 +18,6 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-
       - name: Check out git repository
         uses: actions/checkout@v2
 
@@ -31,16 +30,16 @@ jobs:
         run: npm install
 
       - name: build electron
-        run: npm run build-electron:win
-
-      - name: upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: samuelmeuli/action-electron-builder@v1
         with:
-          name: dicom-viewer-app
-          path: dist
+          build_script_name: build-electron:win
+          # GitHub token, automatically provided to the action
+          # (No need to define this secret in the repo settings)
+          github_token: ${{ secrets.github_token }}
 
       - name: upload artifacts
         uses: google-github-actions/upload-cloud-storage@main
         with:
+          credentials: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DICOM_VIEWER_DAC76 }}
           path: dist
-          destination: dicom-viewer-dac76.appspot.com/${{github.event.inputs.version}}
+          destination: dicom-viewer-dac76.appspot.com/artifacts
