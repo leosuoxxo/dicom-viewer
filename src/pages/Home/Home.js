@@ -53,7 +53,6 @@ function HomeInner() {
 export function HomePage() {
   const configContext = useConfigContext();
   const { isSuccess } = useAuthenticationCode();
-
   return (
     isSuccess && (
       <CornerstoneServiceProvider>

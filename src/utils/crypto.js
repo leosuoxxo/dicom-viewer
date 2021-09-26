@@ -2,6 +2,11 @@ import CryptoJS from 'crypto-js';
 
 const salt = 'asw355dj+eudh_!ewhjw12_!665el';
 
+export const getMachineId = async () => {
+  const machineId = await window.electron.getMachineId();
+  return machineId;
+};
+
 export const encryptMachineId = (machineId) => {
   return CryptoJS.AES.encrypt(machineId, salt).toString();
 };

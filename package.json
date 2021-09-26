@@ -42,7 +42,7 @@
   },
   "scripts": {
     "start": "env-cmd -e web-dev react-scripts start",
-    "build": "NODE_OPTIONS=--max-old-space-size=4096 env-cmd -e web-dev react-scripts build",
+    "build": "NODE_OPTIONS=--max-old-space-size=4096 && env-cmd -e web-dev react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "eslint": "eslint ./src",
@@ -50,7 +50,7 @@
     "electron-build": "electron-builder",
     "prebuild:electron": "env-cmd -e electron-dev react-scripts build",
     "build-electron:release": "env-cmd -e electron-release react-scripts build && electron-builder --publish=always",
-    "build-electron:win": "set NODE_OPTIONS=--max_old_space_size=4096 npm run prebuild:electron && electron-builder",
+    "build-electron:win": "set NODE_OPTIONS=--max_old_space_size=4096 && npm run prebuild:electron && electron-builder",
     "start:electron": "concurrently \"env-cmd -e electron-dev react-scripts start\" \"wait-on http://localhost:3000 && electron .\""
   },
   "eslintConfig": {
@@ -91,7 +91,8 @@
     "productName": "dicom-viewer",
     "files": [
       "./build/**/*",
-      "./public/electron.js"
+      "./public/electron.js",
+      "./public/preload.js"
     ],
     "extends": null
   }
