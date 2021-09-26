@@ -94,6 +94,22 @@
       "./public/electron.js",
       "./public/preload.js"
     ],
-    "extends": null
+    "extends": null,
+    "compression": "normal",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "mac": {
+      "icon": "public/icon.icns",
+      "type": "distribution",
+      "target": [
+        "dmg"
+      ]
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "public/icon.ico"
+    }
   }
 }

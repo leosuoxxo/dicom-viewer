@@ -13,6 +13,7 @@ function createWindow() {
       preload: __dirname + '/preload.js',
     },
   });
+
   mainWindow.maximize();
   mainWindow.loadURL(
     isDev
@@ -20,7 +21,7 @@ function createWindow() {
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
   mainWindow.on('closed', () => (mainWindow = null));
 }
 
