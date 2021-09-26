@@ -24,6 +24,9 @@ export const useToolManageService = () => {
   } = useCornerstone();
   const { toTiffUrl } = useCanvasToTiffService();
 
+  console.log('s', cornerstone);
+  console.log('t', cornerstoneTools);
+
   const [selectedPosition, setSelectedPosition] = useState('1*1');
   const [imageInfos, setImageInfos] = useState([]);
 
@@ -166,6 +169,15 @@ export const useToolManageService = () => {
     [cornerstoneTools]
   );
 
+  const activateCustomTool = useCallback(
+    (tool, toolName) => {
+      cornerstoneTools.init();
+      cornerstoneTools.addTool(tool);
+      cornerstoneTools.setToolActive(toolName, { mouseButtonMask: 1 });
+    },
+    [cornerstoneTools]
+  );
+
   const wwwcSynchronizer = useMemo(
     () =>
       new cornerstoneTools.Synchronizer(
@@ -190,6 +202,7 @@ export const useToolManageService = () => {
     setSelectedPosition,
     imageUpload,
     activateTool,
+    activateCustomTool,
     wwwcRegionTool,
     exportImage,
     wwwcSynchronizer,

@@ -1,28 +1,27 @@
-import React from 'react';
 import csTools from 'cornerstone-tools';
 const BaseAnnotationTool = csTools.importInternal('base/BaseAnnotationTool');
 
 // State
-import { getToolState } from './../../stateManagement/toolState.js';
-import toolStyle from './../../stateManagement/toolStyle.js';
-import toolColors from './../../stateManagement/toolColors.js';
+import { getToolState } from './stateManagement/toolState.js';
+import toolStyle from './stateManagement/toolStyle.js';
+import toolColors from './stateManagement/toolColors.js';
+
 // Drawing
 import {
   getNewContext,
   draw,
   setShadow,
   drawLine,
-} from './../../drawing/index.js';
-import drawLinkedTextBox from './../../drawing/drawLinkedTextBox.js';
-import drawHandles from './../../drawing/drawHandles.js';
-import lineSegDistance from './../../util/lineSegDistance.js';
-import { lengthCursor } from '../cursors/index.js';
-import { getLogger } from '../../util/logger.js';
-import getPixelSpacing from '../../util/getPixelSpacing';
-import throttle from '../../util/throttle';
-import { getModule } from '../../store/index';
+} from './drawing/index.js';
+import drawLinkedTextBox from './drawing/drawLinkedTextBox.js';
+import drawHandles from './drawing/drawHandles.js';
 
-const logger = getLogger('tools:annotation:LengthTool');
+import { lengthCursor } from './cursors';
+import { getModule } from './store/index';
+
+import lineSegDistance from './util/lineSegDistance.js';
+import getPixelSpacing from './util/getPixelSpacing';
+import throttle from './util/throttle';
 
 /**
  * @public
@@ -31,10 +30,10 @@ const logger = getLogger('tools:annotation:LengthTool');
  * @classdesc Tool for measuring distances.
  * @extends Tools.Base.BaseAnnotationTool
  */
-export default class LengthTool extends BaseAnnotationTool {
+export default class CustomLengthTool extends BaseAnnotationTool {
   constructor(props = {}) {
     const defaultProps = {
-      name: 'Length',
+      name: 'CustomLength',
       supportedInteractionTypes: ['Mouse', 'Touch'],
       svgCursor: lengthCursor,
       configuration: {
@@ -56,7 +55,7 @@ export default class LengthTool extends BaseAnnotationTool {
       eventData && eventData.currentPoints && eventData.currentPoints.image;
 
     if (!goodEventData) {
-      logger.error(
+      console.log(
         `required eventData not supplied to tool ${this.name}'s createNewMeasurement`
       );
 
@@ -109,7 +108,7 @@ export default class LengthTool extends BaseAnnotationTool {
     const validParameters = hasStartAndEndHandles;
 
     if (!validParameters) {
-      logger.warn(
+      console.log(
         `invalid parameters supplied to tool ${this.name}'s pointNearTool`
       );
 
@@ -173,7 +172,7 @@ export default class LengthTool extends BaseAnnotationTool {
         continue;
       }
 
-      draw(context, context => {
+      draw(context, (context) => {
         // Configurable shadow
         setShadow(context, this.configuration);
 
