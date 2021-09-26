@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { map } from 'lodash';
 import { FirebaseAuthProvider } from '../services/firebaseAuthService';
 
@@ -22,11 +22,16 @@ export const AppRoutes = ({ routes = [], backstageRoutes = [] }) => {
       {map(routes, (route, index) => (
         <RouteView key={index} {...route} />
       ))}
-      <FirebaseAuthProvider>
-        {map(backstageRoutes, (route, index) => (
-          <RouteView key={index} {...route} />
-        ))}
-      </FirebaseAuthProvider>
+
+      {process.env.REACT_APP_PLATFORM === 'web' && (
+        <FirebaseAuthProvider>
+          {map(backstageRoutes, (route, index) => (
+            <RouteView key={index} {...route} />
+          ))}
+        </FirebaseAuthProvider>
+      )}
+
+      <Redirect to="/" />
     </Switch>
   );
 };

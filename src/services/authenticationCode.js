@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useRequest } from 'ahooks';
-import { validateMachineId } from '../utils/crypto';
+import { validateMachineId, getMachineId } from '../utils/crypto';
 import {
   RepositoryName,
   RepositoryFactory,
@@ -47,6 +47,7 @@ export const useOnlineAuthenticationCode = () => {
     run,
     error,
     setCode,
+    getMachineId: null,
   };
 };
 
@@ -55,7 +56,6 @@ export const useOfflineAuthenticationCode = () => {
   const [code, setCode] = useState('');
   const [error, setError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-
   useEffect(() => {
     setError(false);
   }, [code]);
@@ -93,6 +93,7 @@ export const useOfflineAuthenticationCode = () => {
     code,
     setCode,
     authenticationCode,
+    getMachineId,
   };
 };
 

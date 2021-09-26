@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Dialog,
@@ -14,8 +14,10 @@ import { Box } from '../../components/elements';
 import { useOfflineAuthenticationCode } from '../../services/authenticationCode';
 
 export const OfflineCodeInputDialog = ({ open }) => {
-  const { code, setCode, loading, error, authenticationCode } =
+  const { code, setCode, loading, error, authenticationCode, getMachineId } =
     useOfflineAuthenticationCode();
+
+  const [machineId, setMachineId] = useState('');
 
   const handleChange = (event) => {
     const { value } = event.target;
@@ -26,10 +28,18 @@ export const OfflineCodeInputDialog = ({ open }) => {
     authenticationCode(code);
   };
 
+  useEffect(() => {
+    if (!getMachineId) return;
+    getMachineId().then((machineId) => {
+      setMachineId(machineId);
+    });
+  }, [getMachineId, setMachineId]);
+
   return (
     <Dialog maxWidth="lg" open={open}>
       <DialogContent>
         <DialogContentText>請輸入驗證碼</DialogContentText>
+        <DialogContentText>machineId: {machineId}</DialogContentText>
         {error && (
           <Alert variant="filled" severity="error">
             驗證失敗
