@@ -37,7 +37,7 @@ function _cancelActiveManipulatorsForElementUUID(enabledElementUUID) {
 function cancelActiveManipulators() {
   const { activeManipulators } = state;
 
-  Object.keys(activeManipulators).forEach(enabledElementUUID =>
+  Object.keys(activeManipulators).forEach((enabledElementUUID) =>
     _cancelActiveManipulatorsForElementUUID(enabledElementUUID)
   );
 }

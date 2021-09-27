@@ -2,7 +2,6 @@ import { getToolState } from '../../../stateManagement/toolState.js';
 import state from './state';
 import getElement from './getElement';
 
-
 /**
  * Returns the brush color as a rgba CSS color for the active segment of the active
  * `Labelmap3D` for the `BrushStackState` displayed on the element.

@@ -58,7 +58,7 @@ export { pushState, undo, redo };
 function applyState(labelmap3D, operations, replaceIndex) {
   const { labelmaps2D } = labelmap3D;
 
-  operations.forEach(operation => {
+  operations.forEach((operation) => {
     const { imageIdIndex, diff } = operation;
     const labelmap2D = labelmaps2D[imageIdIndex];
     const pixelData = labelmap2D.pixelData;

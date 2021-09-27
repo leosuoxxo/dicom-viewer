@@ -8,7 +8,6 @@ import state from './state';
 import ARRAY_TYPES from './arrayTypes';
 import { getModule } from '../../index.js';
 
-
 const { UINT_16_ARRAY, FLOAT_32_ARRAY } = ARRAY_TYPES;
 
 /**

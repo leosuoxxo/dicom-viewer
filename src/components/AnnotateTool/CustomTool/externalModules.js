@@ -1,6 +1,6 @@
-let cornerstone = window.cornerstone;
-let cornerstoneMath = window.cornerstoneMath;
-let Hammer = window.Hammer;
+import cornerstone from 'cornerstone-core';
+import cornerstoneMath from 'cornerstone-math';
+import Hammer from 'hammerjs';
 
 export default {
   set cornerstone(cs) {

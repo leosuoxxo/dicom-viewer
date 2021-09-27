@@ -1,4 +1,3 @@
-
 import state from './state';
 import { getModule } from '../../index.js';
 

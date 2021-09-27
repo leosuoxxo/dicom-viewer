@@ -17,7 +17,7 @@ const configuration = {
 };
 
 const setters = {
-  defaultOptions: newOptions => {
+  defaultOptions: (newOptions) => {
     Object.assign(configuration, newOptions);
   },
 };

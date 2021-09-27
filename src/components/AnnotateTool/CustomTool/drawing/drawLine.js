@@ -26,7 +26,7 @@ export default function drawLine(
   options,
   coordSystem = 'pixel'
 ) {
-  path(context, options, context => {
+  path(context, options, (context) => {
     if (coordSystem === 'pixel') {
       start = external.cornerstone.pixelToCanvas(element, start);
       end = external.cornerstone.pixelToCanvas(element, end);

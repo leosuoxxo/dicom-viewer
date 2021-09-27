@@ -11,7 +11,7 @@ import external from '../externalModules.js';
  * @param  {Object} coords  The coordinates of the point.
  * @returns {name}         The distance between the line and the point.
  */
-export default function(element, start, end, coords) {
+export default function (element, start, end, coords) {
   const cornerstone = external.cornerstone;
 
   const lineSegment = {

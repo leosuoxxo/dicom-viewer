@@ -15,7 +15,7 @@ import drawLine from './drawLine.js';
  * @param  {number} lineWidth        The line width of the link.
  * @returns {undefined}
  */
-export default function(
+export default function (
   linkAnchorPoints,
   refPoint,
   boundingBox,

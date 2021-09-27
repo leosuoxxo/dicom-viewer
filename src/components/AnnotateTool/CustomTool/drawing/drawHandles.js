@@ -20,7 +20,7 @@ import { state } from './../store/index.js';
  * @param {Number} [options.handleRadius=6]
  * @returns {undefined}
  */
-export default function(context, evtDetail, handles, options = {}) {
+export default function (context, evtDetail, handles, options = {}) {
   const element = evtDetail.element;
   const defaultColor = toolColors.getToolColor();
 
@@ -54,7 +54,7 @@ export default function(context, evtDetail, handles, options = {}) {
       pathOptions.lineDash = options.lineDash;
     }
 
-    path(context, pathOptions, context => {
+    path(context, pathOptions, (context) => {
       const handleCanvasCoords = external.cornerstone.pixelToCanvas(
         element,
         handle

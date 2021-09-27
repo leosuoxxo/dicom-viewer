@@ -149,7 +149,8 @@ function newImageIdSpecificToolStateManager() {
 
 // A global imageIdSpecificToolStateManager - the most common case is to share state between all
 // Visible enabled images
-const globalImageIdSpecificToolStateManager = newImageIdSpecificToolStateManager();
+const globalImageIdSpecificToolStateManager =
+  newImageIdSpecificToolStateManager();
 
 export {
   newImageIdSpecificToolStateManager,

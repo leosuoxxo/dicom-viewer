@@ -2,7 +2,6 @@ import { getToolState } from '../../../stateManagement/toolState.js';
 import getElement from './getElement';
 import state from './state';
 
-
 /**
  * Returns the `Labelmap3D` objects associated with the series displayed
  * in the element, the `activeLabelmapIndex` and the `currentImageIdIndex`.

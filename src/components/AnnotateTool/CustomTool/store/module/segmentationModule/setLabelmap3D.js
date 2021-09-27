@@ -134,7 +134,7 @@ function setLabelmap3DByFirstImageId(
       ? segmentsOnLabelmapArray[i]
       : getSegmentsOnPixelData(pixelData);
 
-    if (segmentsOnLabelmap && segmentsOnLabelmap.some(segment => segment)) {
+    if (segmentsOnLabelmap && segmentsOnLabelmap.some((segment) => segment)) {
       labelmaps2D[i] = {
         pixelData,
         segmentsOnLabelmap,

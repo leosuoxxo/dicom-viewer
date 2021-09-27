@@ -5,7 +5,6 @@ import cursor from './module/cursorModule';
 import globalConfiguration from './module/globalConfigurationModule';
 import external from '../externalModules.js';
 
-
 export const state = {
   // Global
   globalTools: {},
@@ -29,16 +28,16 @@ export const state = {
 
 export const getters = {
   mouseTools: () =>
-    state.tools.filter(tool =>
+    state.tools.filter((tool) =>
       tool.supportedInteractionTypes.includes('Mouse')
     ),
   touchTools: () =>
-    state.tools.filter(tool =>
+    state.tools.filter((tool) =>
       tool.supportedInteractionTypes.includes('Touch')
     ),
-  enabledElementByUID: enabledElementUID =>
+  enabledElementByUID: (enabledElementUID) =>
     state.enabledElements.find(
-      element =>
+      (element) =>
         external.cornerstone.getEnabledElement(element).uuid ===
         enabledElementUID
     ),

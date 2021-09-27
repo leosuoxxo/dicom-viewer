@@ -62,9 +62,8 @@ export default function deleteSegment(
       const pixelData = labelmap2D.pixelData;
 
       // Remove this segment from the list.
-      const indexOfSegment = labelmap2D.segmentsOnLabelmap.indexOf(
-        segmentIndex
-      );
+      const indexOfSegment =
+        labelmap2D.segmentsOnLabelmap.indexOf(segmentIndex);
 
       labelmap2D.segmentsOnLabelmap.splice(indexOfSegment, 1);
 

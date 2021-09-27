@@ -1,18 +1,8 @@
 import csTools from 'cornerstone-tools';
 const BaseAnnotationTool = csTools.importInternal('base/BaseAnnotationTool');
 
-// State
-import { getToolState } from './stateManagement/toolState.js';
-import toolStyle from './stateManagement/toolStyle.js';
-import toolColors from './stateManagement/toolColors.js';
-
 // Drawing
-import {
-  getNewContext,
-  draw,
-  setShadow,
-  drawLine,
-} from './drawing/index.js';
+import { getNewContext, draw, setShadow, drawLine } from './drawing/index.js';
 import drawLinkedTextBox from './drawing/drawLinkedTextBox.js';
 import drawHandles from './drawing/drawHandles.js';
 
@@ -23,13 +13,6 @@ import lineSegDistance from './util/lineSegDistance.js';
 import getPixelSpacing from './util/getPixelSpacing';
 import throttle from './util/throttle';
 
-/**
- * @public
- * @class LengthTool
- * @memberof Tools.Annotation
- * @classdesc Tool for measuring distances.
- * @extends Tools.Base.BaseAnnotationTool
- */
 export default class CustomLengthTool extends BaseAnnotationTool {
   constructor(props = {}) {
     const defaultProps = {
@@ -94,14 +77,6 @@ export default class CustomLengthTool extends BaseAnnotationTool {
     };
   }
 
-  /**
-   *
-   *
-   * @param {*} element
-   * @param {*} data
-   * @param {*} coords
-   * @returns {Boolean}
-   */
   pointNearTool(element, data, coords) {
     const hasStartAndEndHandles =
       data && data.handles && data.handles.start && data.handles.end;
@@ -151,7 +126,7 @@ export default class CustomLengthTool extends BaseAnnotationTool {
       renderDashed,
       digits,
     } = this.configuration;
-    const toolData = getToolState(evt.currentTarget, this.name);
+    const toolData = csTools.getToolState(evt.currentTarget, this.name);
 
     if (!toolData) {
       return;
@@ -162,7 +137,7 @@ export default class CustomLengthTool extends BaseAnnotationTool {
     const { image, element } = eventData;
     const { rowPixelSpacing, colPixelSpacing } = getPixelSpacing(image);
 
-    const lineWidth = toolStyle.getToolWidth();
+    const lineWidth = csTools.toolStyle.getToolWidth();
     const lineDash = getModule('globalConfiguration').configuration.lineDash;
 
     for (let i = 0; i < toolData.data.length; i++) {
@@ -176,7 +151,7 @@ export default class CustomLengthTool extends BaseAnnotationTool {
         // Configurable shadow
         setShadow(context, this.configuration);
 
-        const color = toolColors.getColorIfActive(data);
+        const color = csTools.toolColors.getColorIfActive(data);
 
         const lineOptions = { color };
 

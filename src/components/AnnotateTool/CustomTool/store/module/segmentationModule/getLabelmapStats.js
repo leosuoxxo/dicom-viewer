@@ -3,7 +3,6 @@ import { getToolState } from '../../../stateManagement/toolState.js';
 import state from './state';
 import external from '../../../externalModules';
 
-
 /**
  * Returns the maximum pixel value, mean and standard deviation of the segment
  * given by the `segmentIndex` and `labelmapIndex`.
@@ -33,7 +32,7 @@ export default function getLabelmapStats(
   const imageIds = stackState.data[0].imageIds;
   const firstImageId = imageIds[0];
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const brushStackState = state.series[firstImageId];
 
     if (!brushStackState) {
@@ -62,7 +61,7 @@ export default function getLabelmapStats(
       imagePromises.push(cornerstone.loadAndCacheImage(imageIds[i]));
     }
 
-    Promise.all(imagePromises).then(images => {
+    Promise.all(imagePromises).then((images) => {
       const stats = _calculateLabelmapStats(
         labelmap3D,
         images,
@@ -141,7 +140,7 @@ export function _calculateLabelmapStats(
 
     let sum = 0;
 
-    values.forEach(value => {
+    values.forEach((value) => {
       if (value > max) {
         max = value;
       } else if (value < min) {
@@ -164,7 +163,7 @@ export function _calculateLabelmapStats(
 
     let stdDevSum = 0;
 
-    values.forEach(value => {
+    values.forEach((value) => {
       stdDevSum += Math.pow(value - volumeWeightedMean, 2);
     });
 
