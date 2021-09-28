@@ -5,12 +5,12 @@ import { ToolManageService } from '../../services/toolManageService';
 import CustomLengthTool from './CustomTool/CustomLengthTool';
 
 export const LengthTool = () => {
-  const { activateCustomTool } = useContext(ToolManageService);
+  const { activateLengthTool } = useContext(ToolManageService);
 
   return (
     <Tooltip title="長度測量">
       <IconButton
-        onClick={() => activateCustomTool(CustomLengthTool, 'CustomLength')}
+        onClick={() => activateLengthTool(CustomLengthTool, 'CustomLength')}
       >
         <PanTool />
       </IconButton>

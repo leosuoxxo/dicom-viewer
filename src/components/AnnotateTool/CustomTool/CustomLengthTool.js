@@ -210,7 +210,13 @@ export default class CustomLengthTool extends BaseAnnotationTool {
           }
         }
 
-        const text = textBoxText(data, rowPixelSpacing, colPixelSpacing);
+        const pixelToMm = this._options.pixelToMm;
+        const text = textBoxText(
+          data,
+          rowPixelSpacing,
+          colPixelSpacing,
+          pixelToMm
+        );
 
         drawLinkedTextBox(
           context,
@@ -228,19 +234,28 @@ export default class CustomLengthTool extends BaseAnnotationTool {
     }
 
     // - SideEffect: Updates annotation 'suffix'
-    function textBoxText(annotation, rowPixelSpacing, colPixelSpacing) {
-      const measuredValue = _sanitizeMeasuredValue(annotation.length);
+    function textBoxText(
+      annotation,
+      rowPixelSpacing,
+      colPixelSpacing,
+      pixelToMm
+    ) {
+      let measuredValue = _sanitizeMeasuredValue(annotation.length);
 
       // Measured value is not defined, return empty string
       if (!measuredValue) {
         return '';
       }
 
-      // Set the length text suffix depending on whether or not pixelSpacing is available
       let suffix = 'mm';
 
-      if (!rowPixelSpacing || !colPixelSpacing) {
-        suffix = 'pixels';
+      if (!(rowPixelSpacing && colPixelSpacing)) {
+        if (pixelToMm.mode === 'default') {
+          suffix = 'pixels';
+        }
+        if (pixelToMm.mode === 'custom') {
+          measuredValue = measuredValue * pixelToMm.ratio;
+        }
       }
 
       annotation.unit = suffix;
