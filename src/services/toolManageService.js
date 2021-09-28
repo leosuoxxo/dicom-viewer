@@ -14,6 +14,7 @@ import { useCornerstone } from './cornerstoneService';
 import { useCanvasToTiffService } from './canvasToTiffService';
 import { getFileExtension, fileToBuffer, convertDiconde } from '../utils';
 import { IMAGE_TYPE, TOOL_COLORS } from '../constants';
+import CustomLengthTool from '../components/AnnotateTool/CustomTool/CustomLengthTool';
 
 export const useToolManageService = () => {
   const {
@@ -166,15 +167,13 @@ export const useToolManageService = () => {
     [cornerstoneTools]
   );
 
-  const [pixelToMmRatio, setPixelToMmRation] = useState(null);
-
   const activateLengthTool = useCallback(
-    (tool, toolName) => {
+    (pixelToMm) => {
       cornerstoneTools.init();
-      cornerstoneTools.addTool(tool);
-      cornerstoneTools.setToolActive(toolName, {
+      cornerstoneTools.addTool(CustomLengthTool);
+      cornerstoneTools.setToolActive('CustomLength', {
         mouseButtonMask: 1,
-        pixelToMm: { mode: 'custom', ratio: '0.26' },
+        pixelToMm,
       });
     },
     [cornerstoneTools]
@@ -210,7 +209,6 @@ export const useToolManageService = () => {
     wwwcSynchronizer,
     getSelectedElement,
     getValidElements,
-    setPixelToMmRation,
   };
 };
 
