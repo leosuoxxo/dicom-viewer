@@ -46,14 +46,14 @@ function newImageIdSpecificToolStateManager() {
 
   function addImageIdToolState(imageId, toolName, data) {
     // If we don't have any tool state for this imageId, add an empty object
-    if (toolState.hasOwnProperty(imageId) === false) {
+    if (toolState.prototype.hasOwnProperty.call(imageId) === false) {
       toolState[imageId] = {};
     }
 
     const imageIdToolState = toolState[imageId];
 
     // If we don't have tool state for this tool name, add an empty object
-    if (imageIdToolState.hasOwnProperty(toolName) === false) {
+    if (imageIdToolState.prototype.hasOwnProperty.call(toolName) === false) {
       imageIdToolState[toolName] = {
         data: [],
       };
@@ -80,14 +80,14 @@ function newImageIdSpecificToolStateManager() {
   // That save state persistently
   function getImageIdToolState(imageId, toolName) {
     // If we don't have any tool state for this imageId, return undefined
-    if (toolState.hasOwnProperty(imageId) === false) {
+    if (toolState.prototype.hasOwnProperty.call(imageId) === false) {
       return;
     }
 
     const imageIdToolState = toolState[imageId];
 
     // If we don't have tool state for this tool name, return undefined
-    if (imageIdToolState.hasOwnProperty(toolName) === false) {
+    if (imageIdToolState.prototype.hasOwnProperty.call(toolName) === false) {
       return;
     }
 
@@ -123,7 +123,7 @@ function newImageIdSpecificToolStateManager() {
   }
 
   function clearImageIdToolState(imageId) {
-    if (toolState.hasOwnProperty(imageId) === false) {
+    if (toolState.prototype.hasOwnProperty.call(imageId) === false) {
       return;
     }
 

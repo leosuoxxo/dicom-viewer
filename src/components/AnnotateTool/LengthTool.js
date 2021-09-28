@@ -90,7 +90,7 @@ const LengthToolDialog = ({ open, onClose }) => {
 LengthToolDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-}
+};
 
 export const LengthTool = () => {
   const [open, setOpen] = useState(false);
