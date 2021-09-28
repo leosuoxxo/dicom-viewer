@@ -3,7 +3,7 @@ import { AppBar, Toolbar, IconButton } from '@material-ui/core';
 import { ExitToApp } from '@material-ui/icons';
 
 import { Flex } from '../../components/elements';
-import { HandTool, ToolMenu } from '../../components/AnnotateTool';
+import { HandTool, ToolMenu, LengthTool } from '../../components/AnnotateTool';
 import {
   FileUploadTool,
   ExportImageTool,
@@ -19,6 +19,7 @@ export const ToolBar = () => {
         {/*Frequently used tools*/}
         <FileUploadTool />
         <HandTool />
+        <LengthTool />
         <WwwcRegionTool />
         <DicomTagsButton />
         <Flex style={{ flexGrow: 1 }} />
