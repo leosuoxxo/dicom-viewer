@@ -6,7 +6,7 @@ import { ToolManageService } from '../../services/toolManageService';
 import { useCornerstone } from '../../services/cornerstoneService';
 import { forEach, map } from 'lodash';
 
-export const WwwcRegionTool = () => {
+export const TempWwwcTool = () => {
   const { cornerstoneTools } = useCornerstone();
   const toolManageService = useContext(ToolManageService);
 
@@ -19,7 +19,7 @@ export const WwwcRegionTool = () => {
       });
     }
     cornerstoneTools.init();
-    cornerstoneTools.addTool(cornerstoneTools.WwwcRegionTool);
+    cornerstoneTools.addTool(cornerstoneTools.WwwcTool);
     toolManageService.wwwcRegionTool();
   };
 

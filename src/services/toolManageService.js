@@ -15,6 +15,7 @@ import { useCanvasToTiffService } from './canvasToTiffService';
 import { getFileExtension, fileToBuffer, convertDiconde } from '../utils';
 import { IMAGE_TYPE, TOOL_COLORS } from '../constants';
 import CustomLengthTool from '../components/AnnotateTool/CustomTool/CustomLengthTool';
+import CustomWwwcRegionTool from '../components/AnnotateTool/CustomTool/CustomWwwcRegionTool';
 
 export const useToolManageService = () => {
   const {
@@ -179,6 +180,14 @@ export const useToolManageService = () => {
     [cornerstoneTools]
   );
 
+  const activateWwwcTool = useCallback(() => {
+    cornerstoneTools.init();
+    cornerstoneTools.addTool(CustomWwwcRegionTool);
+    cornerstoneTools.setToolActive('Wwwc', {
+      mouseButtonMask: 1,
+    });
+  }, [cornerstoneTools]);
+
   const wwwcSynchronizer = useMemo(
     () =>
       new cornerstoneTools.Synchronizer(
@@ -191,7 +200,7 @@ export const useToolManageService = () => {
   );
 
   const wwwcRegionTool = useCallback(() => {
-    cornerstoneTools.setToolActive('WwwcRegion', {
+    cornerstoneTools.setToolActive('Wwwc', {
       mouseButtonMask: 1,
       synchronizationContext: wwwcSynchronizer,
     });
@@ -204,6 +213,7 @@ export const useToolManageService = () => {
     imageUpload,
     activateTool,
     activateLengthTool,
+    activateWwwcTool,
     wwwcRegionTool,
     exportImage,
     wwwcSynchronizer,

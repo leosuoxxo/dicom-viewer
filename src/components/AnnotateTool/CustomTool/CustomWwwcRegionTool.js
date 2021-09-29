@@ -12,7 +12,7 @@ import { wwwcRegionCursor } from './cursors/index.js';
 
 /**
  * @public
- * @class WwwcRegionTool
+ * @class WwwcTool
  * @memberof Tools
  *
  * @classdesc Tool for setting wwwc based on a rectangular region.
@@ -22,7 +22,7 @@ export default class CustomWwwcRegionTool extends BaseTool {
   /** @inheritdoc */
   constructor(props = {}) {
     const defaultProps = {
-      name: 'CustomWwwcRegionTool',
+      name: 'CustomWwwcTool',
       supportedInteractionTypes: ['Mouse', 'Touch'],
       configuration: {
         minWindowWidth: 10,
@@ -70,7 +70,7 @@ export default class CustomWwwcRegionTool extends BaseTool {
    * Render hook: draws the WWWCRegion's "box" when selecting
    *
    * @param {Cornerstone.event#cornerstoneimagerendered} evt cornerstoneimagerendered event
-   * @memberof Tools.WwwcRegionTool
+   * @memberof Tools.WwwcTool
    * @returns {void}
    */
   renderToolData(evt) {
