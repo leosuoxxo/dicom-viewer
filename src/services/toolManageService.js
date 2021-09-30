@@ -206,23 +206,6 @@ export const useToolManageService = () => {
     [cornerstoneTools, getValidElements]
   );
 
-  const wwwcSynchronizer = useMemo(
-    () =>
-      new cornerstoneTools.Synchronizer(
-        // Cornerstone event that should trigger synchronizer
-        'cornerstoneimagerendered',
-        // Logic that should run on target elements when event is observed on source elements
-        cornerstoneTools.wwwcSynchronizer
-      ),
-    [cornerstoneTools]
-  );
-
-  const wwwcRegionTool = useCallback(() => {
-    cornerstoneTools.setToolActive('Wwwc', {
-      mouseButtonMask: 1,
-      synchronizationContext: wwwcSynchronizer,
-    });
-  }, [cornerstoneTools, wwwcSynchronizer]);
 
   return {
     imageInfos,
@@ -232,9 +215,7 @@ export const useToolManageService = () => {
     activateTool,
     activateLengthTool,
     activateWwwcTool,
-    wwwcRegionTool,
     exportImage,
-    wwwcSynchronizer,
     getSelectedElement,
     getValidElements,
   };
