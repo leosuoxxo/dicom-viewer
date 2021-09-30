@@ -9,6 +9,7 @@ import clip from './util/clip.js';
 import getLuminance from './util/getLuminance.js';
 
 import { wwwcRegionCursor } from './cursors/index.js';
+import { forEach } from 'lodash';
 
 /**
  * @public
@@ -22,7 +23,7 @@ export default class CustomWwwcRegionTool extends BaseTool {
   /** @inheritdoc */
   constructor(props = {}) {
     const defaultProps = {
-      name: 'CustomWwwcTool',
+      name: 'CustomWwwc',
       supportedInteractionTypes: ['Mouse', 'Touch'],
       configuration: {
         minWindowWidth: 10,
@@ -143,7 +144,8 @@ export default class CustomWwwcRegionTool extends BaseTool {
     }
 
     evt.detail.handles = this.handles;
-    _applyWWWCRegion(evt, this.configuration);
+
+    _applyWWWCRegion(evt, this.configuration, this._options.targetElements);
     this._resetHandles();
   }
 
@@ -183,7 +185,7 @@ const _isEmptyObject = (obj) =>
  * @param {Object} config The tool's configuration object
  * @returns {void}
  */
-const _applyWWWCRegion = function (evt, config) {
+const _applyWWWCRegion = function (evt, config, targetElements) {
   const eventData = evt.detail;
   const { image, element } = eventData;
   const { start: startPoint, end: endPoint } = evt.detail.handles;
@@ -211,23 +213,25 @@ const _applyWWWCRegion = function (evt, config) {
   );
 
   // Adjust the viewport window width and center based on the calculated values
-  const viewport = eventData.viewport;
+  forEach(targetElements, (e) => {
+    const viewport = e.viewport;
 
-  if (config.minWindowWidth === undefined) {
-    config.minWindowWidth = 10;
-  }
+    if (config.minWindowWidth === undefined) {
+      config.minWindowWidth = 10;
+    }
 
-  viewport.voi.windowWidth = Math.max(
-    Math.abs(minMaxMean.max - minMaxMean.min),
-    config.minWindowWidth
-  );
-  viewport.voi.windowCenter = minMaxMean.mean;
+    viewport.voi.windowWidth = Math.max(
+      Math.abs(minMaxMean.max - minMaxMean.min),
+      config.minWindowWidth
+    );
+    viewport.voi.windowCenter = minMaxMean.mean;
 
-  // Unset any existing VOI LUT
-  viewport.voiLUT = undefined;
+    // Unset any existing VOI LUT
+    viewport.voiLUT = undefined;
 
-  external.cornerstone.setViewport(element, viewport);
-  external.cornerstone.updateImage(element);
+    external.cornerstone.setViewport(e.element, viewport);
+    external.cornerstone.updateImage(e.element);
+  });
 };
 
 /**

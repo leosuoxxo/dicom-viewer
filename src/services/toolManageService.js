@@ -7,7 +7,16 @@ import React, {
   useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
-import { concat, filter, find, get, isEmpty, isNil, map } from 'lodash';
+import {
+  concat,
+  filter,
+  find,
+  get,
+  includes,
+  isEmpty,
+  isNil,
+  map,
+} from 'lodash';
 import Tiff from 'tiff.js';
 
 import { useCornerstone } from './cornerstoneService';
@@ -180,13 +189,22 @@ export const useToolManageService = () => {
     [cornerstoneTools]
   );
 
-  const activateWwwcTool = useCallback(() => {
-    cornerstoneTools.init();
-    cornerstoneTools.addTool(CustomWwwcRegionTool);
-    cornerstoneTools.setToolActive('Wwwc', {
-      mouseButtonMask: 1,
-    });
-  }, [cornerstoneTools]);
+  const activateWwwcTool = useCallback(
+    (targetImageIds) => {
+      cornerstoneTools.init();
+      cornerstoneTools.addTool(CustomWwwcRegionTool);
+      const elements = getValidElements();
+      const targetElements = filter(elements, (ele) =>
+        includes(targetImageIds, ele.image.imageId)
+      );
+
+      cornerstoneTools.setToolActive('CustomWwwc', {
+        mouseButtonMask: 1,
+        targetElements,
+      });
+    },
+    [cornerstoneTools, getValidElements]
+  );
 
   const wwwcSynchronizer = useMemo(
     () =>
