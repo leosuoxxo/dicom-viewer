@@ -17,6 +17,7 @@ import draw from './draw.js';
 import drawHandles from './drawHandles.js';
 import drawLine from './drawLine.js';
 import drawLink from './drawLink.js';
+import drawRect from './drawRect';
 import drawLinkedTextBox from './drawLinkedTextBox.js';
 import drawTextBox from './drawTextBox.js';
 import fillBox from './fillBox.js';
@@ -31,6 +32,7 @@ export {
   drawHandles,
   drawLine,
   drawLink,
+  drawRect,
   drawLinkedTextBox,
   drawTextBox,
   fillBox,

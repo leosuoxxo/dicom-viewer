@@ -7,7 +7,16 @@ import React, {
   useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
-import { concat, filter, find, get, isEmpty, isNil, map } from 'lodash';
+import {
+  concat,
+  filter,
+  find,
+  get,
+  includes,
+  isEmpty,
+  isNil,
+  map,
+} from 'lodash';
 import Tiff from 'tiff.js';
 
 import { useCornerstone } from './cornerstoneService';
@@ -15,6 +24,7 @@ import { useCanvasToTiffService } from './canvasToTiffService';
 import { getFileExtension, fileToBuffer, convertDiconde } from '../utils';
 import { IMAGE_TYPE, TOOL_COLORS } from '../constants';
 import CustomLengthTool from '../components/AnnotateTool/CustomTool/CustomLengthTool';
+import CustomWwwcRegionTool from '../components/AnnotateTool/CustomTool/CustomWwwcRegionTool';
 
 export const useToolManageService = () => {
   const {
@@ -179,23 +189,23 @@ export const useToolManageService = () => {
     [cornerstoneTools]
   );
 
-  const wwwcSynchronizer = useMemo(
-    () =>
-      new cornerstoneTools.Synchronizer(
-        // Cornerstone event that should trigger synchronizer
-        'cornerstoneimagerendered',
-        // Logic that should run on target elements when event is observed on source elements
-        cornerstoneTools.wwwcSynchronizer
-      ),
-    [cornerstoneTools]
+  const activateWwwcTool = useCallback(
+    (targetImageIds) => {
+      cornerstoneTools.init();
+      cornerstoneTools.addTool(CustomWwwcRegionTool);
+      const elements = getValidElements();
+      const targetElements = filter(elements, (ele) =>
+        includes(targetImageIds, ele.image.imageId)
+      );
+
+      cornerstoneTools.setToolActive('CustomWwwc', {
+        mouseButtonMask: 1,
+        targetElements,
+      });
+    },
+    [cornerstoneTools, getValidElements]
   );
 
-  const wwwcRegionTool = useCallback(() => {
-    cornerstoneTools.setToolActive('WwwcRegion', {
-      mouseButtonMask: 1,
-      synchronizationContext: wwwcSynchronizer,
-    });
-  }, [cornerstoneTools, wwwcSynchronizer]);
 
   return {
     imageInfos,
@@ -204,9 +214,8 @@ export const useToolManageService = () => {
     imageUpload,
     activateTool,
     activateLengthTool,
-    wwwcRegionTool,
+    activateWwwcTool,
     exportImage,
-    wwwcSynchronizer,
     getSelectedElement,
     getValidElements,
   };
