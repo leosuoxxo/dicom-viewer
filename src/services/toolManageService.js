@@ -191,19 +191,19 @@ export const useToolManageService = () => {
 
   const activateWwwcTool = useCallback(
     (targetImageIds) => {
-      cornerstoneTools.init();
-      cornerstoneTools.addTool(CustomWwwcRegionTool);
       const elements = getValidElements();
       const targetElements = filter(elements, (ele) =>
         includes(targetImageIds, ele.image.imageId)
       );
-
-      cornerstoneTools.setToolActive('CustomWwwc', {
+      const selectedElement = document.getElementById(selectedImageId);
+      cornerstoneTools.init();
+      cornerstoneTools.addToolForElement(selectedElement, CustomWwwcRegionTool);
+      cornerstoneTools.setToolActiveForElement(selectedElement, 'CustomWwwc', {
         mouseButtonMask: 1,
         targetElements,
       });
     },
-    [cornerstoneTools, getValidElements]
+    [cornerstoneTools, getValidElements, selectedImageId]
   );
 
   return {
