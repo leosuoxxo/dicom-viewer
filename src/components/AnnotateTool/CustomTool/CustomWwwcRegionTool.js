@@ -232,6 +232,7 @@ const _applyWWWCRegion = function (evt, config, targetElements) {
     external.cornerstone.setViewport(e.element, viewport);
     external.cornerstone.updateImage(e.element);
   });
+  external.cornerstone.updateImage(element);
 };
 
 /**
