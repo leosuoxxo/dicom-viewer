@@ -37,7 +37,6 @@ const LengthToolDialog = ({ open, onClose }) => {
   const [mode, setMode] = useState(PIXEL_TO_MM_MODE[0]);
 
   const onConfirm = useCallback(() => {
-
     if (mode === PIXEL_TO_MM_MODE[0]) {
       activateLengthTool({ mode });
     }
@@ -51,14 +50,16 @@ const LengthToolDialog = ({ open, onClose }) => {
     onClose();
   }, [activateLengthTool, ratio, mode, onClose]);
 
-
-  const handleRatio = useCallback((event) => {
-    const { value } = event.target;
-    setRatio(value);
-    if (!value) {
-      setMode(PIXEL_TO_MM_MODE[0])
-    }
-  }, [setRatio, setMode])
+  const handleRatio = useCallback(
+    (event) => {
+      const { value } = event.target;
+      setRatio(value);
+      if (!value) {
+        setMode(PIXEL_TO_MM_MODE[0]);
+      }
+    },
+    [setRatio, setMode]
+  );
 
   return (
     <StyledDialog open={open} onClose={onClose}>
