@@ -206,7 +206,6 @@ export const useToolManageService = () => {
     [cornerstoneTools, getValidElements]
   );
 
-
   return {
     imageInfos,
     selectedPosition,
