@@ -25,7 +25,7 @@ const StyledDialog = styled(Dialog)`
 `;
 
 const StyledButton = styled(Button)`
-  && .MuiButton-root {
+  &.MuiButton-root {
     margin: 20px 0 0 0;
   }
 `;
@@ -37,6 +37,7 @@ const LengthToolDialog = ({ open, onClose }) => {
   const [mode, setMode] = useState(PIXEL_TO_MM_MODE[0]);
 
   const onConfirm = useCallback(() => {
+
     if (mode === PIXEL_TO_MM_MODE[0]) {
       activateLengthTool({ mode });
     }
@@ -49,6 +50,15 @@ const LengthToolDialog = ({ open, onClose }) => {
     }
     onClose();
   }, [activateLengthTool, ratio, mode, onClose]);
+
+
+  const handleRatio = useCallback((event) => {
+    const { value } = event.target;
+    setRatio(value);
+    if (!value) {
+      setMode(PIXEL_TO_MM_MODE[0])
+    }
+  }, [setRatio, setMode])
 
   return (
     <StyledDialog open={open} onClose={onClose}>
@@ -72,7 +82,7 @@ const LengthToolDialog = ({ open, onClose }) => {
       <TextField
         label="1 Pixel ="
         value={ratio}
-        onChange={(event) => setRatio(event.target.value)}
+        onChange={handleRatio}
         sx={{ m: 1, width: '25ch' }}
         InputProps={{
           endAdornment: <InputAdornment position="start">mm</InputAdornment>,
