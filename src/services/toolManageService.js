@@ -25,6 +25,7 @@ import { getFileExtension, fileToBuffer, convertDiconde } from '../utils';
 import { IMAGE_TYPE, TOOL_COLORS } from '../constants';
 import CustomLengthTool from '../components/AnnotateTool/CustomTool/CustomLengthTool';
 import CustomWwwcRegionTool from '../components/AnnotateTool/CustomTool/CustomWwwcRegionTool';
+import CustomColorRegionTool from '../components/AnnotateTool/CustomTool/CustomColorRegionTool';
 
 export const useToolManageService = () => {
   const {
@@ -206,6 +207,14 @@ export const useToolManageService = () => {
     [cornerstoneTools, getValidElements, selectedImageId]
   );
 
+  const activateColorRegionTool = useCallback(() => {
+    cornerstoneTools.init();
+    cornerstoneTools.addTool(CustomColorRegionTool);
+    cornerstoneTools.setToolActive('CustomColorRegion', {
+      mouseButtonMask: 1,
+    });
+  }, [cornerstoneTools]);
+
   return {
     imageInfos,
     selectedPosition,
@@ -214,6 +223,7 @@ export const useToolManageService = () => {
     activateTool,
     activateLengthTool,
     activateWwwcTool,
+    activateColorRegionTool,
     exportImage,
     getSelectedElement,
     getValidElements,

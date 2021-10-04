@@ -8,6 +8,7 @@ import {
   ToolMenu,
   LengthTool,
   WwwcTool,
+  ColorRegionTool,
 } from '../../components/AnnotateTool';
 import {
   FileUploadTool,
@@ -25,12 +26,13 @@ export const ToolBar = () => {
         <HandTool />
         <LengthTool />
         <WwwcTool />
-        <DicomTagsButton />
+        <ColorRegionTool />
         <Flex style={{ flexGrow: 1 }} />
 
         {/*Annotate Tool*/}
         <ToolMenu />
         {/*General function*/}
+        <DicomTagsButton />
         <MultipleViewerTool />
         {/*TBD: list all of supported tools*/}
         <ExportImageTool />
