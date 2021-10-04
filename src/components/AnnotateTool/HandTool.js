@@ -7,7 +7,7 @@ export const HandTool = () => {
   const { activateTool } = useContext(ToolManageService);
 
   return (
-    <Tooltip title="Pan Tool">
+    <Tooltip title="無工具">
       <IconButton onClick={() => activateTool('Pan')}>
         <PanTool />
       </IconButton>
