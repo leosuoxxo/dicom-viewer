@@ -36,10 +36,15 @@ export const DicomViewer = ({ imageId, position }) => {
   );
 
   const [zoom, setZoom] = useState(null);
+  const [wwwc, setWwwc] = useState(null);
   const onImageRendered = useCallback(() => {
     const canvas = canvasRef.current;
     const viewport = cornerstone.getViewport(canvas);
     setZoom(Math.round(viewport.scale.toFixed(2) * 100));
+    setWwwc([
+      Math.round(viewport.voi.windowWidth),
+      Math.round(viewport.voi.windowCenter),
+    ]);
   }, [canvasRef, cornerstone]);
 
   useEffect(() => {
@@ -95,6 +100,19 @@ export const DicomViewer = ({ imageId, position }) => {
                 }}
               >
                 {`Zoom: ${zoom}%`}
+              </Box>
+            )}
+            {!isNil(wwwc) && (
+              <Box
+                style={{
+                  position: 'absolute',
+                  color: 'white',
+                  bottom: 4,
+                  left: 4,
+                  fontSize: 24,
+                }}
+              >
+                {`WW/WC: ${wwwc[0]}/${wwwc[1]}`}
               </Box>
             )}
           </span>
