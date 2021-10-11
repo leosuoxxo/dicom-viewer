@@ -7,6 +7,7 @@ import external from './externalModules.js';
 import { draw, drawRect, getNewContext } from './drawing/index.js';
 import clip from './util/clip.js';
 import getLuminance from './util/getLuminance.js';
+import getAverageColor from './util/getAverageColor';
 
 import { wwwcRegionCursor } from './cursors/index.js';
 import { forEach } from 'lodash';
@@ -188,6 +189,7 @@ const _isEmptyObject = (obj) =>
 const _applyWWWCRegion = function (evt, config, targetElements) {
   const eventData = evt.detail;
   const { image, element } = eventData;
+
   const { start: startPoint, end: endPoint } = evt.detail.handles;
 
   // Get the rectangular region defined by the handles

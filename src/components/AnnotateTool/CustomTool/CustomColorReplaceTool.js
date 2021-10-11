@@ -88,7 +88,6 @@ export default class CustomColorReplaceTool extends BaseAnnotationTool {
     if (x >= 0 && y >= 0 && x < image.columns && y < image.rows) {
       stats.x = x;
       stats.y = y;
-
       if (image.color) {
         stats.storedPixels = getRGBPixels(element, x, y, 1, 1);
       } else {
@@ -131,6 +130,35 @@ export default class CustomColorReplaceTool extends BaseAnnotationTool {
         continue;
       }
 
+      const pointCoords = external.cornerstone.pixelToCanvas(
+        eventData.element,
+        {
+          x: data.handles.end.x,
+          y: data.handles.end.y,
+        }
+      );
+      var imgData = context.getImageData(pointCoords.x, pointCoords.y, 1, 1);
+      let rgb = { r: 0, g: 0, b: 0 };
+      //Read image and make changes on the fly as it's read
+      for (var j = 0; j < imgData.data.length; j += 4) {
+        rgb.r += imgData.data[j];
+        rgb.g += imgData.data[j + 1];
+        rgb.b += imgData.data[j + 2];
+      }
+      for (var k = 0; k < imgData.data.length; k += 4) {
+        if (
+          imgData.data[k] == rgb.r &&
+          imgData.data[k + 1] == rgb.g &&
+          imgData.data[k + 2] == rgb.b
+        ) {
+          // change to your new rgb
+          imgData.data[k] = 0;
+          imgData.data[k + 1] = 0;
+          imgData.data[k + 2] = 0;
+        }
+      }
+      console.log(rgb);
+
       draw(context, (context) => {
         const color = csTools.toolColors.getColorIfActive(data);
 
@@ -170,7 +198,6 @@ export default class CustomColorReplaceTool extends BaseAnnotationTool {
               str += ` SUV: ${parseFloat(suv.toFixed(3))}`;
             }
           }
-
           // Coords for text
           const coords = {
             // Translate the x/y away from the cursor

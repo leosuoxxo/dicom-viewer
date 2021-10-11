@@ -81,7 +81,6 @@ export default function (context, textLines, x, y, color, options) {
     if (options && options.centering && options.centering.y === true) {
       y -= boundingBox.height / 2;
     }
-
     boundingBox.left = x;
     boundingBox.top = y;
 
