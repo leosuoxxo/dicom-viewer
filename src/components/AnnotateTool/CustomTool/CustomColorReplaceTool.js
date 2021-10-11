@@ -181,43 +181,6 @@ export default class CustomColorReplaceTool extends BaseAnnotationTool {
             this.updateCachedStats(image, element, data);
           }
         }
-
-        let text, str;
-
-        const { x, y, storedPixels, sp, mo, suv } = data.cachedStats;
-
-        if (x >= 0 && y >= 0 && x < image.columns && y < image.rows) {
-          text = `${x}, ${y}`;
-
-          if (image.color) {
-            str = `R: ${storedPixels[0]} G: ${storedPixels[1]} B: ${storedPixels[2]}`;
-          } else {
-            // Draw text
-            str = `SP: ${sp} MO: ${parseFloat(mo.toFixed(3))}`;
-            if (suv) {
-              str += ` SUV: ${parseFloat(suv.toFixed(3))}`;
-            }
-          }
-          // Coords for text
-          const coords = {
-            // Translate the x/y away from the cursor
-            x: data.handles.end.x + 3,
-            y: data.handles.end.y - 3,
-          };
-          const textCoords = external.cornerstone.pixelToCanvas(
-            eventData.element,
-            coords
-          );
-
-          drawTextBox(
-            context,
-            str,
-            textCoords.x,
-            textCoords.y + fontHeight + 5,
-            color
-          );
-          drawTextBox(context, text, textCoords.x, textCoords.y, color);
-        }
       });
     }
   }

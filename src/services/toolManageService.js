@@ -25,7 +25,7 @@ import { getFileExtension, fileToBuffer, convertDiconde } from '../utils';
 import { IMAGE_TYPE, TOOL_COLORS } from '../constants';
 import CustomLengthTool from '../components/AnnotateTool/CustomTool/CustomLengthTool';
 import CustomWwwcRegionTool from '../components/AnnotateTool/CustomTool/CustomWwwcRegionTool';
-import CustomColorReplaceTool from '../components/AnnotateTool/CustomTool/CustomColorReplaceTool';
+import CustomColorReplaceTool from '../components/AnnotateTool/CustomTool/test';
 
 export const useToolManageService = () => {
   const {
@@ -209,11 +209,12 @@ export const useToolManageService = () => {
 
   const activateColorReplaceTool = useCallback(() => {
     const selectedElement = document.getElementById(selectedImageId);
+    const elements = getValidElements();
     cornerstoneTools.init();
     cornerstoneTools.addTool(CustomColorReplaceTool);
     cornerstoneTools.setToolActive('CustomColorReplace', {
       mouseButtonMask: 1,
-      targetElement: selectedElement,
+      targetElements: elements,
       targetColor: {
         red: 0,
         green: 0,
