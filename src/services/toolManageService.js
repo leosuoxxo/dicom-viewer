@@ -26,6 +26,7 @@ import { IMAGE_TYPE, TOOL_COLORS } from '../constants';
 import CustomLengthTool from '../components/AnnotateTool/CustomTool/CustomLengthTool';
 import CustomWwwcRegionTool from '../components/AnnotateTool/CustomTool/CustomWwwcRegionTool';
 import CustomColorReplaceTool from '../components/AnnotateTool/CustomTool/test';
+import CustomGrayscaleRegionTool from '../components/AnnotateTool/CustomTool/CustomGrayscaleRegionTool';
 
 export const useToolManageService = () => {
   const {
@@ -208,7 +209,7 @@ export const useToolManageService = () => {
   );
 
   const activateColorReplaceTool = useCallback(() => {
-    const selectedElement = document.getElementById(selectedImageId);
+    // const selectedElement = document.getElementById(selectedImageId);
     const elements = getValidElements();
     cornerstoneTools.init();
     cornerstoneTools.addTool(CustomColorReplaceTool);
@@ -221,7 +222,32 @@ export const useToolManageService = () => {
         blue: 0,
       },
     });
-  }, [cornerstoneTools, selectedImageId]);
+  }, [cornerstoneTools, getValidElements]);
+
+  const activateGrayscaleRegionTool = useCallback(
+    (targetImageIds) => {
+      console.log('activateGrayscaleRegionTool');
+      const elements = getValidElements();
+      const targetElements = filter(elements, (ele) =>
+        includes(targetImageIds, ele.image.imageId)
+      );
+      const selectedElement = document.getElementById(selectedImageId);
+      cornerstoneTools.init();
+      cornerstoneTools.addToolForElement(
+        selectedElement,
+        CustomGrayscaleRegionTool
+      );
+      cornerstoneTools.setToolActiveForElement(
+        selectedElement,
+        'CustomGrayscaleRegionTool',
+        {
+          mouseButtonMask: 1,
+          targetElements,
+        }
+      );
+    },
+    [cornerstoneTools, getValidElements, selectedImageId]
+  );
 
   return {
     imageInfos,
@@ -232,6 +258,7 @@ export const useToolManageService = () => {
     activateLengthTool,
     activateWwwcTool,
     activateColorReplaceTool,
+    activateGrayscaleRegionTool,
     exportImage,
     getSelectedElement,
     getValidElements,
