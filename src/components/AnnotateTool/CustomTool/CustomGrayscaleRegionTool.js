@@ -4,7 +4,7 @@ import csTools from 'cornerstone-tools';
 import { draw, drawRect, getNewContext } from './drawing/index.js';
 import clip from './util/clip.js';
 import getGrayscale from './util/getGrayscale.js';
-import getLuminance from './util/getLuminance.js';
+// import getLuminance from './util/getLuminance.js';
 import { wwwcRegionCursor } from './cursors/index.js';
 import { forEach } from 'lodash';
 

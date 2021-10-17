@@ -7,7 +7,7 @@ import external from './externalModules.js';
 import { draw, drawRect, getNewContext } from './drawing/index.js';
 import clip from './util/clip.js';
 import getLuminance from './util/getLuminance.js';
-import getAverageColor from './util/getAverageColor';
+// import getAverageColor from './util/getAverageColor';
 
 import { wwwcRegionCursor } from './cursors/index.js';
 import { forEach } from 'lodash';

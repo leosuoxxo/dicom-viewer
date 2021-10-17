@@ -185,6 +185,7 @@ const _applyWWWCRegion = function (evt, config, targetElements) {
   const pixelLuminanceData = getLuminance(element, left, top, width, height);
 
   // Calculate the minimum and maximum pixel values
+  // eslint-disable-next-line no-unused-vars
   const minMaxMean = _calculateMinMaxMean(
     pixelLuminanceData,
     image.minPixelValue,
