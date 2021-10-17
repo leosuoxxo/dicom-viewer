@@ -7,10 +7,9 @@ import external from './externalModules.js';
 import { draw, drawRect, getNewContext } from './drawing/index.js';
 import clip from './util/clip.js';
 import getLuminance from './util/getLuminance.js';
-import getAverageColor from './util/getAverageColor';
 
 import { wwwcRegionCursor } from './cursors/index.js';
-import { forEach } from 'lodash';
+import { forEach, isEmpty } from 'lodash';
 
 /**
  * @public
@@ -20,11 +19,11 @@ import { forEach } from 'lodash';
  * @classdesc Tool for setting wwwc based on a rectangular region.
  * @extends Tools.Base.BaseTool
  */
-export default class CustomWwwcRegionTool extends BaseTool {
+export default class CustomColorReplaceTool extends BaseTool {
   /** @inheritdoc */
   constructor(props = {}) {
     const defaultProps = {
-      name: 'CustomWwwc',
+      name: 'CustomColorReplace',
       supportedInteractionTypes: ['Mouse', 'Touch'],
       configuration: {
         minWindowWidth: 10,
@@ -68,18 +67,44 @@ export default class CustomWwwcRegionTool extends BaseTool {
     this.mouseUpCallback = this._applyStrategy.bind(this);
   }
 
-  /**
-   * Render hook: draws the WWWCRegion's "box" when selecting
-   *
-   * @param {Cornerstone.event#cornerstoneimagerendered} evt cornerstoneimagerendered event
-   * @memberof Tools.WwwcTool
-   * @returns {void}
-   */
   renderToolData(evt) {
     const eventData = evt.detail;
+
+    if (isEmpty(this.handles.end)) return;
     const { element } = eventData;
     const color = csTools.toolColors.getColorIfActive({ active: true });
     const context = getNewContext(eventData.canvasContext.canvas);
+
+    const pointCoords = external.cornerstone.pixelToCanvas(eventData.element, {
+      x: this.handles.end.x,
+      y: this.handles.end.y,
+    });
+
+    var pointData = context.getImageData(pointCoords.x, pointCoords.y, 1, 1);
+    let rgb = { r: 0, g: 0, b: 0 };
+    //Read image and make changes on the fly as it's read
+    for (var j = 0; j < pointData.data.length; j += 4) {
+      rgb.r += pointData.data[j];
+      rgb.g += pointData.data[j + 1];
+      rgb.b += pointData.data[j + 2];
+    }
+
+    var imgData = context.getImageData(
+      0,
+      0,
+      eventData.image.width,
+      eventData.image.height
+    );
+
+    for (var k = 0; k < imgData.data.length; k += 4) {
+      if (imgData.data[k] >= rgb.r - 5 && imgData.data[k] <= rgb.r + 5) {
+        // change to your new rgb
+        imgData.data[k] = 200;
+        imgData.data[k + 1] = 113;
+        imgData.data[k + 2] = 113;
+      }
+    }
+    context.putImageData(imgData, 0, 0);
 
     draw(context, (context) => {
       drawRect(context, element, this.handles.start, this.handles.end, {
@@ -88,13 +113,6 @@ export default class CustomWwwcRegionTool extends BaseTool {
     });
   }
 
-  /**
-   * Sets the start handle point and claims the eventDispatcher event
-   *
-   * @private
-   * @param {*} evt // mousedown, touchstart, click
-   * @returns {Boolean} True
-   */
   _startOutliningRegion(evt) {
     const consumeEvent = true;
     const element = evt.detail.element;
@@ -112,14 +130,6 @@ export default class CustomWwwcRegionTool extends BaseTool {
     return consumeEvent;
   }
 
-  /**
-   * This function will update the handles and updateImage to force re-draw
-   *
-   * @private
-   * @method _setHandlesAndUpdate
-   * @param {(CornerstoneTools.event#TOUCH_DRAG|CornerstoneTools.event#MOUSE_DRAG|CornerstoneTools.event#MOUSE_MOVE)} evt  Interaction event emitted by an enabledElement
-   * @returns {void}
-   */
   _setHandlesAndUpdate(evt) {
     const element = evt.detail.element;
     const image = evt.detail.currentPoints.image;
@@ -128,14 +138,6 @@ export default class CustomWwwcRegionTool extends BaseTool {
     external.cornerstone.updateImage(element);
   }
 
-  /**
-   * Event handler for MOUSE_UP/TOUCH_END during handle drag event loop.
-   *
-   * @private
-   * @method _applyStrategy
-   * @param {(CornerstoneTools.event#MOUSE_UP|CornerstoneTools.event#TOUCH_END)} evt Interaction event emitted by an enabledElement
-   * @returns {void}
-   */
   _applyStrategy(evt) {
     if (
       _isEmptyObject(this.handles.start) ||
@@ -150,13 +152,6 @@ export default class CustomWwwcRegionTool extends BaseTool {
     this._resetHandles();
   }
 
-  /**
-   * Sets the start and end handle points to empty objects
-   *
-   * @private
-   * @method _resetHandles
-   * @returns {undefined}
-   */
   _resetHandles() {
     this.handles = {
       start: {},
@@ -164,30 +159,12 @@ export default class CustomWwwcRegionTool extends BaseTool {
     };
   }
 }
-
-/**
- * Helper to determine if an object has no keys and is the correct type (is empty)
- *
- * @private
- * @function _isEmptyObject
- * @param {Object} obj The object to check
- * @returns {Boolean} true if the object is empty
- */
 const _isEmptyObject = (obj) =>
   Object.keys(obj).length === 0 && obj.constructor === Object;
 
-/**
- * Calculates the minimum and maximum value in the given pixel array
- * and updates the viewport of the element in the event.
- *
- * @private
- * @method _applyWWWCRegion
- * @param {(CornerstoneTools.event#MOUSE_UP|CornerstoneTools.event#TOUCH_END)} evt Interaction event emitted by an enabledElement
- * @param {Object} config The tool's configuration object
- * @returns {void}
- */
 const _applyWWWCRegion = function (evt, config, targetElements) {
   const eventData = evt.detail;
+  console.log('1', eventData);
   const { image, element } = eventData;
 
   const { start: startPoint, end: endPoint } = evt.detail.handles;
@@ -217,19 +194,6 @@ const _applyWWWCRegion = function (evt, config, targetElements) {
   // Adjust the viewport window width and center based on the calculated values
   forEach(targetElements, (e) => {
     const viewport = e.viewport;
-
-    if (config.minWindowWidth === undefined) {
-      config.minWindowWidth = 10;
-    }
-
-    viewport.voi.windowWidth = Math.max(
-      Math.abs(minMaxMean.max - minMaxMean.min),
-      config.minWindowWidth
-    );
-    viewport.voi.windowCenter = minMaxMean.mean;
-
-    // Unset any existing VOI LUT
-    viewport.voiLUT = undefined;
 
     external.cornerstone.setViewport(e.element, viewport);
     external.cornerstone.updateImage(e.element);

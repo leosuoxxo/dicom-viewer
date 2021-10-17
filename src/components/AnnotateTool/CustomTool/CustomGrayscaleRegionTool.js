@@ -1,30 +1,28 @@
-import csTools from 'cornerstone-tools';
-const BaseTool = csTools.importInternal('base/BaseTool');
-
 import external from './externalModules.js';
-
+import csTools from 'cornerstone-tools';
 // Drawing
 import { draw, drawRect, getNewContext } from './drawing/index.js';
 import clip from './util/clip.js';
+import getGrayscale from './util/getGrayscale.js';
 import getLuminance from './util/getLuminance.js';
-import getAverageColor from './util/getAverageColor';
-
 import { wwwcRegionCursor } from './cursors/index.js';
 import { forEach } from 'lodash';
 
+const BaseTool = csTools.importInternal('base/BaseTool');
+
 /**
  * @public
- * @class WwwcTool
+ * @class CustomGrayscaleRegionTool
  * @memberof Tools
  *
  * @classdesc Tool for setting wwwc based on a rectangular region.
  * @extends Tools.Base.BaseTool
  */
-export default class CustomWwwcRegionTool extends BaseTool {
+export default class CustomGrayscaleRegionTool extends BaseTool {
   /** @inheritdoc */
   constructor(props = {}) {
     const defaultProps = {
-      name: 'CustomWwwc',
+      name: 'CustomGrayscaleRegionTool',
       supportedInteractionTypes: ['Mouse', 'Touch'],
       configuration: {
         minWindowWidth: 10,
@@ -72,7 +70,7 @@ export default class CustomWwwcRegionTool extends BaseTool {
    * Render hook: draws the WWWCRegion's "box" when selecting
    *
    * @param {Cornerstone.event#cornerstoneimagerendered} evt cornerstoneimagerendered event
-   * @memberof Tools.WwwcTool
+   * @memberof Tools.WwwcRegionTool
    * @returns {void}
    */
   renderToolData(evt) {
@@ -145,7 +143,6 @@ export default class CustomWwwcRegionTool extends BaseTool {
     }
 
     evt.detail.handles = this.handles;
-
     _applyWWWCRegion(evt, this.configuration, this._options.targetElements);
     this._resetHandles();
   }
@@ -189,7 +186,6 @@ const _isEmptyObject = (obj) =>
 const _applyWWWCRegion = function (evt, config, targetElements) {
   const eventData = evt.detail;
   const { image, element } = eventData;
-
   const { start: startPoint, end: endPoint } = evt.detail.handles;
 
   // Get the rectangular region defined by the handles
@@ -205,7 +201,7 @@ const _applyWWWCRegion = function (evt, config, targetElements) {
   height = Math.floor(Math.min(height, Math.abs(image.height - top)));
 
   // Get the pixel data in the rectangular region
-  const pixelLuminanceData = getLuminance(element, left, top, width, height);
+  const pixelLuminanceData = getGrayscale(element, left, top, width, height);
 
   // Calculate the minimum and maximum pixel values
   const minMaxMean = _calculateMinMaxMean(
@@ -214,7 +210,6 @@ const _applyWWWCRegion = function (evt, config, targetElements) {
     image.maxPixelValue
   );
 
-  // Adjust the viewport window width and center based on the calculated values
   forEach(targetElements, (e) => {
     const viewport = e.viewport;
 
@@ -222,10 +217,11 @@ const _applyWWWCRegion = function (evt, config, targetElements) {
       config.minWindowWidth = 10;
     }
 
-    viewport.voi.windowWidth = Math.max(
-      Math.abs(minMaxMean.max - minMaxMean.min),
-      config.minWindowWidth
-    );
+    viewport.voi.windowWidth = Math.max(minMaxMean.mean, config.minWindowWidth);
+    // viewport.voi.windowWidth = Math.max(
+    //   Math.abs(minMaxMean.max - minMaxMean.min),
+    //   config.minWindowWidth
+    // );
     viewport.voi.windowCenter = minMaxMean.mean;
 
     // Unset any existing VOI LUT
@@ -234,7 +230,6 @@ const _applyWWWCRegion = function (evt, config, targetElements) {
     external.cornerstone.setViewport(e.element, viewport);
     external.cornerstone.updateImage(e.element);
   });
-  external.cornerstone.updateImage(element);
 };
 
 /**
