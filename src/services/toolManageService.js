@@ -25,8 +25,6 @@ import { getFileExtension, fileToBuffer, convertDiconde } from '../utils';
 import { IMAGE_TYPE, TOOL_COLORS } from '../constants';
 import CustomLengthTool from '../components/AnnotateTool/CustomTool/CustomLengthTool';
 import CustomWwwcRegionTool from '../components/AnnotateTool/CustomTool/CustomWwwcRegionTool';
-import CustomColorReplaceTool from '../components/AnnotateTool/CustomTool/test';
-import CustomGrayscaleRegionTool from '../components/AnnotateTool/CustomTool/CustomGrayscaleRegionTool';
 
 export const useToolManageService = () => {
   const {
@@ -208,47 +206,6 @@ export const useToolManageService = () => {
     [cornerstoneTools, getValidElements, selectedImageId]
   );
 
-  const activateColorReplaceTool = useCallback(() => {
-    // const selectedElement = document.getElementById(selectedImageId);
-    const elements = getValidElements();
-    cornerstoneTools.init();
-    cornerstoneTools.addTool(CustomColorReplaceTool);
-    cornerstoneTools.setToolActive('CustomColorReplace', {
-      mouseButtonMask: 1,
-      targetElements: elements,
-      targetColor: {
-        red: 0,
-        green: 0,
-        blue: 0,
-      },
-    });
-  }, [cornerstoneTools, getValidElements]);
-
-  const activateGrayscaleRegionTool = useCallback(
-    (targetImageIds) => {
-      console.log('activateGrayscaleRegionTool');
-      const elements = getValidElements();
-      const targetElements = filter(elements, (ele) =>
-        includes(targetImageIds, ele.image.imageId)
-      );
-      const selectedElement = document.getElementById(selectedImageId);
-      cornerstoneTools.init();
-      cornerstoneTools.addToolForElement(
-        selectedElement,
-        CustomGrayscaleRegionTool
-      );
-      cornerstoneTools.setToolActiveForElement(
-        selectedElement,
-        'CustomGrayscaleRegionTool',
-        {
-          mouseButtonMask: 1,
-          targetElements,
-        }
-      );
-    },
-    [cornerstoneTools, getValidElements, selectedImageId]
-  );
-
   return {
     imageInfos,
     selectedPosition,
@@ -257,8 +214,6 @@ export const useToolManageService = () => {
     activateTool,
     activateLengthTool,
     activateWwwcTool,
-    activateColorReplaceTool,
-    activateGrayscaleRegionTool,
     exportImage,
     getSelectedElement,
     getValidElements,
