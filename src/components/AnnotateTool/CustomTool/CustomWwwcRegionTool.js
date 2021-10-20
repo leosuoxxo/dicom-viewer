@@ -191,7 +191,6 @@ const _applyWWWCRegion = function (evt, config, targetElements) {
   const { image, element } = eventData;
 
   const { start: startPoint, end: endPoint } = evt.detail.handles;
-
   // Get the rectangular region defined by the handles
   let left = Math.min(startPoint.x, endPoint.x);
   let top = Math.min(startPoint.y, endPoint.y);
@@ -203,6 +202,8 @@ const _applyWWWCRegion = function (evt, config, targetElements) {
   top = clip(top, 0, image.height);
   width = Math.floor(Math.min(width, Math.abs(image.width - left)));
   height = Math.floor(Math.min(height, Math.abs(image.height - top)));
+
+  const { windowCenter, windowWidth } = image;
 
   // Get the pixel data in the rectangular region
   const pixelLuminanceData = getLuminance(element, left, top, width, height);
@@ -216,17 +217,19 @@ const _applyWWWCRegion = function (evt, config, targetElements) {
 
   // Adjust the viewport window width and center based on the calculated values
   forEach(targetElements, (e) => {
+    const targetImage = e.image;
     const viewport = e.viewport;
-
     if (config.minWindowWidth === undefined) {
       config.minWindowWidth = 10;
     }
 
     viewport.voi.windowWidth = Math.max(
-      Math.abs(minMaxMean.max - minMaxMean.min),
+      targetImage.windowWidth *
+        (Math.abs(minMaxMean.max - minMaxMean.min) / windowWidth),
       config.minWindowWidth
     );
-    viewport.voi.windowCenter = minMaxMean.mean;
+    viewport.voi.windowCenter =
+      targetImage.windowCenter * (minMaxMean.mean / windowCenter);
 
     // Unset any existing VOI LUT
     viewport.voiLUT = undefined;

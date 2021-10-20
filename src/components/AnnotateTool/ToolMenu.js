@@ -18,6 +18,7 @@ import {
   Colorize,
   TextFields,
   InvertColors,
+  Brightness6,
 } from '@material-ui/icons';
 import { map } from 'lodash';
 
@@ -71,9 +72,14 @@ const annotationTools = [
     icon: <TextFields />,
   },
   {
-    name: 'Wwwc',
-    tip: '調整灰階',
+    name: 'InvertColors',
+    tip: '對比',
     icon: <InvertColors />,
+  },
+  {
+    name: 'Wwwc',
+    tip: 'WW/WC',
+    icon: <Brightness6 />,
   },
 ];
 
