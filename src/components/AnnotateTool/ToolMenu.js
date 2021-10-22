@@ -17,7 +17,6 @@ import {
   DonutLarge,
   Colorize,
   TextFields,
-  InvertColors,
   Brightness6,
 } from '@material-ui/icons';
 import { map } from 'lodash';
@@ -70,11 +69,6 @@ const annotationTools = [
     name: 'ArrowAnnotate',
     tip: '文字標註',
     icon: <TextFields />,
-  },
-  {
-    name: 'InvertColors',
-    tip: '對比',
-    icon: <InvertColors />,
   },
   {
     name: 'Wwwc',
