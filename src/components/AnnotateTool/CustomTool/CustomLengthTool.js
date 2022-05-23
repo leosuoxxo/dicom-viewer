@@ -158,7 +158,7 @@ export default class CustomLengthTool extends BaseAnnotationTool {
         if (renderDashed) {
           lineOptions.lineDash = lineDash;
         }
-
+        console.log('sss', lineOptions);
         // Draw the measurement line
         drawLine(
           context,

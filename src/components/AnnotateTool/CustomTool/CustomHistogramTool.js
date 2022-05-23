@@ -3,15 +3,13 @@ const BaseAnnotationTool = csTools.importInternal('base/BaseAnnotationTool');
 
 // Drawing
 import { getNewContext, draw, setShadow, drawLine } from './drawing/index.js';
-import drawLinkedTextBox from './drawing/drawLinkedTextBox.js';
-import drawHandles from './drawing/drawHandles.js';
 
 import { lengthCursor } from './cursors';
-import { getModule } from './store/index';
 
 import lineSegDistance from './util/lineSegDistance.js';
 import getPixelSpacing from './util/getPixelSpacing';
 import throttle from './util/throttle';
+import { castArray, last } from 'lodash';
 
 export default class CustomHistogramTool extends BaseAnnotationTool {
   constructor(props = {}) {
@@ -19,13 +17,6 @@ export default class CustomHistogramTool extends BaseAnnotationTool {
       name: 'CustomHistogram',
       supportedInteractionTypes: ['Mouse', 'Touch'],
       svgCursor: lengthCursor,
-      configuration: {
-        drawHandles: true,
-        drawHandlesOnHover: false,
-        hideHandlesIfMoving: false,
-        renderDashed: false,
-        digits: 2,
-      },
     };
 
     super(props, defaultProps);
@@ -64,14 +55,6 @@ export default class CustomHistogramTool extends BaseAnnotationTool {
           y,
           highlight: true,
           active: true,
-        },
-        textBox: {
-          active: false,
-          hasMoved: false,
-          movesIndependently: false,
-          drawnIndependently: true,
-          allowedOutsideImage: true,
-          hasBoundingBox: true,
         },
       },
     };
@@ -119,14 +102,11 @@ export default class CustomHistogramTool extends BaseAnnotationTool {
 
   renderToolData(evt) {
     const eventData = evt.detail;
-    const {
-      handleRadius,
-      drawHandlesOnHover,
-      hideHandlesIfMoving,
-      renderDashed,
-      digits,
-    } = this.configuration;
+
     const toolData = csTools.getToolState(evt.currentTarget, this.name);
+
+    // make sure only one line appear
+    toolData.data = castArray(last(toolData.data));
 
     if (!toolData) {
       return;
@@ -136,9 +116,6 @@ export default class CustomHistogramTool extends BaseAnnotationTool {
     const context = getNewContext(eventData.canvasContext.canvas);
     const { image, element } = eventData;
     const { rowPixelSpacing, colPixelSpacing } = getPixelSpacing(image);
-
-    const lineWidth = csTools.toolStyle.getToolWidth();
-    const lineDash = getModule('globalConfiguration').configuration.lineDash;
 
     for (let i = 0; i < toolData.data.length; i++) {
       const data = toolData.data[i];
@@ -151,15 +128,11 @@ export default class CustomHistogramTool extends BaseAnnotationTool {
         // Configurable shadow
         setShadow(context, this.configuration);
 
-        const color = csTools.toolColors.getColorIfActive(data);
+        const lineOptions = {
+          color: 'red',
+          lineWidth: 2,
+        };
 
-        const lineOptions = { color };
-
-        if (renderDashed) {
-          lineOptions.lineDash = lineDash;
-        }
-
-        // Draw the measurement line
         drawLine(
           context,
           element,
@@ -167,123 +140,7 @@ export default class CustomHistogramTool extends BaseAnnotationTool {
           data.handles.end,
           lineOptions
         );
-
-        // Draw the handles
-        const handleOptions = {
-          color,
-          handleRadius,
-          drawHandlesIfActive: drawHandlesOnHover,
-          hideHandlesIfMoving,
-        };
-
-        if (this.configuration.drawHandles) {
-          drawHandles(context, eventData, data.handles, handleOptions);
-        }
-
-        if (!data.handles.textBox.hasMoved) {
-          const coords = {
-            x: Math.max(data.handles.start.x, data.handles.end.x),
-          };
-
-          // Depending on which handle has the largest x-value,
-          // Set the y-value for the text box
-          if (coords.x === data.handles.start.x) {
-            coords.y = data.handles.start.y;
-          } else {
-            coords.y = data.handles.end.y;
-          }
-
-          data.handles.textBox.x = coords.x;
-          data.handles.textBox.y = coords.y;
-        }
-
-        // Move the textbox slightly to the right and upwards
-        // So that it sits beside the length tool handle
-        const xOffset = 10;
-
-        // Update textbox stats
-        if (data.invalidated === true) {
-          if (data.length) {
-            this.throttledUpdateCachedStats(image, element, data);
-          } else {
-            this.updateCachedStats(image, element, data);
-          }
-        }
-
-        const pixelToMm = this._options.pixelToMm;
-        const text = textBoxText(
-          data,
-          rowPixelSpacing,
-          colPixelSpacing,
-          pixelToMm
-        );
-
-        drawLinkedTextBox(
-          context,
-          element,
-          data.handles.textBox,
-          text,
-          data.handles,
-          textBoxAnchorPoints,
-          color,
-          lineWidth,
-          xOffset,
-          true
-        );
       });
     }
-
-    // - SideEffect: Updates annotation 'suffix'
-    function textBoxText(
-      annotation,
-      rowPixelSpacing,
-      colPixelSpacing,
-      pixelToMm
-    ) {
-      let measuredValue = _sanitizeMeasuredValue(annotation.length);
-
-      // Measured value is not defined, return empty string
-      if (!measuredValue) {
-        return '';
-      }
-
-      let suffix = 'mm';
-
-      if (!(rowPixelSpacing && colPixelSpacing)) {
-        if (pixelToMm.mode === 'default') {
-          suffix = 'pixels';
-        }
-        if (pixelToMm.mode === 'custom') {
-          measuredValue = measuredValue * pixelToMm.ratio;
-        }
-      }
-
-      annotation.unit = suffix;
-
-      return `${measuredValue.toFixed(digits)} ${suffix}`;
-    }
-
-    function textBoxAnchorPoints(handles) {
-      const midpoint = {
-        x: (handles.start.x + handles.end.x) / 2,
-        y: (handles.start.y + handles.end.y) / 2,
-      };
-
-      return [handles.start, midpoint, handles.end];
-    }
   }
-}
-
-/**
- * Attempts to sanitize a value by casting as a number; if unable to cast,
- * we return `undefined`
- *
- * @param {*} value
- * @returns a number or undefined
- */
-function _sanitizeMeasuredValue(value) {
-  const parsedValue = Number(value);
-  const isNumber = !isNaN(parsedValue);
-
-  return isNumber ? parsedValue : undefined;
 }

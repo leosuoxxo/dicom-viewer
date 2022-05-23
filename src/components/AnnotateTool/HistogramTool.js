@@ -21,10 +21,12 @@ export const HistogramTool = () => {
   }, [imageInfos]);
 
   const onClickIcon = () => {
+    /*
     if (imageInfos.length < 2) {
       alert('此工具需要上傳兩張圖檔');
       return;
     }
+    */
     activateHistogramTool(imageIds);
   };
 
