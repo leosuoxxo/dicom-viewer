@@ -10,6 +10,8 @@ import lineSegDistance from './util/lineSegDistance.js';
 import getPixelSpacing from './util/getPixelSpacing';
 import throttle from './util/throttle';
 import { castArray, last } from 'lodash';
+import getLuminance from './util/getLuminance.js';
+import getLineLuminance from './util/getLineLuminance.js';
 
 export default class CustomHistogramTool extends BaseAnnotationTool {
   constructor(props = {}) {
@@ -114,33 +116,30 @@ export default class CustomHistogramTool extends BaseAnnotationTool {
 
     // We have tool data for this element - iterate over each one and draw it
     const context = getNewContext(eventData.canvasContext.canvas);
-    const { image, element } = eventData;
-    const { rowPixelSpacing, colPixelSpacing } = getPixelSpacing(image);
+    const { element } = eventData;
 
-    for (let i = 0; i < toolData.data.length; i++) {
-      const data = toolData.data[i];
+    const data = toolData.data[0];
 
-      if (data.visible === false) {
-        continue;
-      }
+    console.log(
+      getLineLuminance(element, data.handles.start, data.handles.end)
+    );
 
-      draw(context, (context) => {
-        // Configurable shadow
-        setShadow(context, this.configuration);
+    draw(context, (context) => {
+      // Configurable shadow
+      setShadow(context, this.configuration);
 
-        const lineOptions = {
-          color: 'red',
-          lineWidth: 2,
-        };
+      const lineOptions = {
+        color: 'red',
+        lineWidth: 2,
+      };
 
-        drawLine(
-          context,
-          element,
-          data.handles.start,
-          data.handles.end,
-          lineOptions
-        );
-      });
-    }
+      drawLine(
+        context,
+        element,
+        data.handles.start,
+        data.handles.end,
+        lineOptions
+      );
+    });
   }
 }
