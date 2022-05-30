@@ -9,6 +9,7 @@ import {
   LengthTool,
   WwwcTool,
   InvertTool,
+  HistogramTool,
 } from '../../components/AnnotateTool';
 import {
   FileUploadTool,
@@ -37,6 +38,7 @@ export const ToolBar = () => {
         {/*TBD: list all of supported tools*/}
         <ExportImageTool />
         {/*TBD: licence related*/}
+        <HistogramTool />
         <IconButton>
           <ExitToApp />
         </IconButton>

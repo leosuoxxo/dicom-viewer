@@ -25,6 +25,7 @@ import { getFileExtension, fileToBuffer, convertDiconde } from '../utils';
 import { IMAGE_TYPE, TOOL_COLORS } from '../constants';
 import CustomLengthTool from '../components/AnnotateTool/CustomTool/CustomLengthTool';
 import CustomWwwcRegionTool from '../components/AnnotateTool/CustomTool/CustomWwwcRegionTool';
+import CustomHistogramTool from '../components/AnnotateTool/CustomTool/CustomHistogramTool';
 
 export const useToolManageService = () => {
   const {
@@ -206,6 +207,24 @@ export const useToolManageService = () => {
     [cornerstoneTools, getValidElements, selectedImageId]
   );
 
+  const activateHistogramTool = useCallback(
+    (targetImageIds, setHistogramData) => {
+      const elements = getValidElements();
+      const targetElements = filter(elements, (ele) =>
+        includes(targetImageIds, ele.image.imageId)
+      );
+
+      cornerstoneTools.init();
+      cornerstoneTools.addTool(CustomHistogramTool);
+      cornerstoneTools.setToolActive('CustomHistogram', {
+        mouseButtonMask: 1,
+        targetElements,
+        setHistogramData,
+      });
+    },
+    [cornerstoneTools, getValidElements]
+  );
+
   return {
     imageInfos,
     selectedPosition,
@@ -217,6 +236,7 @@ export const useToolManageService = () => {
     exportImage,
     getSelectedElement,
     getValidElements,
+    activateHistogramTool,
   };
 };
 
