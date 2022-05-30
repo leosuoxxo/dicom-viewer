@@ -1,8 +1,14 @@
 import React, { useContext, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { IconButton, Drawer, Tooltip } from '@material-ui/core';
+import { IconButton, Drawer, Tooltip, Paper, Box } from '@material-ui/core';
 import { BarChart } from '@material-ui/icons';
-import { map } from 'lodash';
+import {
+  ArgumentAxis,
+  ValueAxis,
+  Chart,
+  BarSeries,
+} from '@devexpress/dx-react-chart-material-ui';
+import { get, isEmpty, map } from 'lodash';
 
 import { ToolManageService } from '../../services/toolManageService';
 
@@ -12,22 +18,26 @@ const StyledSidebar = styled(Drawer)`
   }
 `;
 
+const StyledHeader = styled(Box)`
+  font-size: 20px;
+  margin: 10px;
+`;
+
 export const HistogramTool = () => {
   const { imageInfos, activateHistogramTool } = useContext(ToolManageService);
   const [open, setOpen] = useState(null);
+  const [histogramData, setHistogramData] = useState();
 
   const imageIds = useMemo(() => {
     return map(imageInfos, 'id');
   }, [imageInfos]);
 
   const onClickIcon = () => {
-    /*
-    if (imageInfos.length < 2) {
-      alert('此工具需要上傳兩張圖檔');
-      return;
+    if (isEmpty(histogramData)) {
+      activateHistogramTool(imageIds, setHistogramData);
+    } else {
+      setOpen(true);
     }
-    */
-    activateHistogramTool(imageIds);
   };
 
   return (
@@ -43,7 +53,30 @@ export const HistogramTool = () => {
         onClose={() => setOpen(false)}
       >
         <div style={{ marginTop: '48px' }}>
-          <div></div>
+          {get(histogramData, imageIds[0]) && (
+            <>
+              <StyledHeader>左圖</StyledHeader>
+              <Paper>
+                <Chart data={get(histogramData, imageIds[0])}>
+                  <ArgumentAxis />
+                  <ValueAxis />
+                  <BarSeries valueField="value" argumentField="argument" />
+                </Chart>
+              </Paper>
+            </>
+          )}
+          {get(histogramData, imageIds[1]) && (
+            <>
+              <StyledHeader>右圖</StyledHeader>
+              <Paper>
+                <Chart data={get(histogramData, imageIds[1])}>
+                  <ArgumentAxis />
+                  <ValueAxis />
+                  <BarSeries valueField="value" argumentField="argument" />
+                </Chart>
+              </Paper>
+            </>
+          )}
         </div>
       </StyledSidebar>
     </>

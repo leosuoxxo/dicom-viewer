@@ -9,8 +9,7 @@ import { lengthCursor } from './cursors';
 import lineSegDistance from './util/lineSegDistance.js';
 import getPixelSpacing from './util/getPixelSpacing';
 import throttle from './util/throttle';
-import { castArray, last } from 'lodash';
-import getLuminance from './util/getLuminance.js';
+import { castArray, last, map } from 'lodash';
 import getLineLuminance from './util/getLineLuminance.js';
 
 export default class CustomHistogramTool extends BaseAnnotationTool {
@@ -117,12 +116,22 @@ export default class CustomHistogramTool extends BaseAnnotationTool {
     // We have tool data for this element - iterate over each one and draw it
     const context = getNewContext(eventData.canvasContext.canvas);
     const { element } = eventData;
-
     const data = toolData.data[0];
 
-    console.log(
-      getLineLuminance(element, data.handles.start, data.handles.end)
+    const setHistogramData = this._options.setHistogramData;
+
+    const lineLuminance = getLineLuminance(
+      element,
+      data.handles.start,
+      data.handles.end
     );
+    setHistogramData((data) => ({
+      ...data,
+      [eventData.image.imageId]: map(lineLuminance, (luminance, index) => ({
+        argument: index,
+        value: luminance,
+      })),
+    }));
 
     draw(context, (context) => {
       // Configurable shadow
