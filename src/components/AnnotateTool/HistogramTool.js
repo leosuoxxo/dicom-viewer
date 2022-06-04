@@ -14,7 +14,6 @@ import { ToolManageService } from '../../services/toolManageService';
 
 const StyledSidebar = styled(Drawer)`
   && .MuiDrawer-paper {
-    width: 20vw;
   }
 `;
 
@@ -47,16 +46,19 @@ export const HistogramTool = () => {
           <BarChart />
         </IconButton>
       </Tooltip>
-      <StyledSidebar
-        anchor={'right'}
-        open={open}
-        onClose={() => setOpen(false)}
-      >
-        <div style={{ marginTop: '48px' }}>
+      <StyledSidebar anchor={'top'} open={open} onClose={() => setOpen(false)}>
+        <div
+          style={{
+            marginTop: '48px',
+            display: 'flex',
+            flexDirection: 'row',
+            width: '100%',
+          }}
+        >
           {get(histogramData, imageIds[0]) && (
             <>
               <StyledHeader>左圖</StyledHeader>
-              <Paper>
+              <Paper style={{ width: '50%' }}>
                 <Chart data={get(histogramData, imageIds[0])}>
                   <ArgumentAxis />
                   <ValueAxis />
@@ -68,7 +70,7 @@ export const HistogramTool = () => {
           {get(histogramData, imageIds[1]) && (
             <>
               <StyledHeader>右圖</StyledHeader>
-              <Paper>
+              <Paper style={{ width: '50%' }}>
                 <Chart data={get(histogramData, imageIds[1])}>
                   <ArgumentAxis />
                   <ValueAxis />
