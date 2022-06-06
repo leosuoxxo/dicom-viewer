@@ -8,14 +8,9 @@ import {
   Chart,
   BarSeries,
 } from '@devexpress/dx-react-chart-material-ui';
-import { get, isEmpty, map } from 'lodash';
+import { get, isEmpty, keys, map } from 'lodash';
 
 import { ToolManageService } from '../../services/toolManageService';
-
-const StyledSidebar = styled(Drawer)`
-  && .MuiDrawer-paper {
-  }
-`;
 
 const StyledHeader = styled(Box)`
   font-size: 20px;
@@ -25,15 +20,16 @@ const StyledHeader = styled(Box)`
 export const HistogramTool = () => {
   const { imageInfos, activateHistogramTool } = useContext(ToolManageService);
   const [open, setOpen] = useState(null);
-  const [histogramData, setHistogramData] = useState();
+  const [histogramData, setHistogramData] = useState(null);
+  const [toolData, setToolData] = useState(null);
 
   const imageIds = useMemo(() => {
     return map(imageInfos, 'id');
   }, [imageInfos]);
 
   const onClickIcon = () => {
-    if (isEmpty(histogramData)) {
-      activateHistogramTool(imageIds, setHistogramData);
+    if (isEmpty(histogramData) || keys(histogramData).length === 1) {
+      activateHistogramTool(setHistogramData, setToolData, toolData);
     } else {
       setOpen(true);
     }
@@ -46,7 +42,7 @@ export const HistogramTool = () => {
           <BarChart />
         </IconButton>
       </Tooltip>
-      <StyledSidebar anchor={'top'} open={open} onClose={() => setOpen(false)}>
+      <Drawer anchor={'top'} open={open} onClose={() => setOpen(false)}>
         <div
           style={{
             marginTop: '48px',
@@ -80,7 +76,7 @@ export const HistogramTool = () => {
             </>
           )}
         </div>
-      </StyledSidebar>
+      </Drawer>
     </>
   );
 };

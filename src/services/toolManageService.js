@@ -208,21 +208,23 @@ export const useToolManageService = () => {
   );
 
   const activateHistogramTool = useCallback(
-    (targetImageIds, setHistogramData) => {
-      const elements = getValidElements();
-      const targetElements = filter(elements, (ele) =>
-        includes(targetImageIds, ele.image.imageId)
-      );
+    (setHistogramData, setToolData, toolData) => {
+      const selectedElement = document.getElementById(selectedImageId);
 
       cornerstoneTools.init();
-      cornerstoneTools.addTool(CustomHistogramTool);
-      cornerstoneTools.setToolActive('CustomHistogram', {
-        mouseButtonMask: 1,
-        targetElements,
-        setHistogramData,
-      });
+      cornerstoneTools.addToolForElement(selectedElement, CustomHistogramTool);
+      cornerstoneTools.setToolActiveForElement(
+        selectedElement,
+        'CustomHistogram',
+        {
+          mouseButtonMask: 1,
+          setHistogramData,
+          setToolData,
+          toolData,
+        }
+      );
     },
-    [cornerstoneTools, getValidElements]
+    [cornerstoneTools, selectedImageId]
   );
 
   return {
