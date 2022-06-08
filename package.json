@@ -6,9 +6,9 @@
   "main": "public/electron.js",
   "dependencies": {
     "@date-io/dayjs": "1.3.13",
-    "@devexpress/dx-react-chart": "^3.0.3",
-    "@devexpress/dx-react-chart-material-ui": "^3.0.3",
-    "@devexpress/dx-react-core": "^3.0.3",
+    "@devexpress/dx-react-chart": "3.0.2",
+    "@devexpress/dx-react-chart-material-ui": "3.0.2",
+    "@devexpress/dx-react-core": "3.0.2",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@material-ui/core": "^4.12.4",
