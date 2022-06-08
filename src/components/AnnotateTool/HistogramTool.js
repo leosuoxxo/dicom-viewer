@@ -1,39 +1,54 @@
 import React, { useContext, useMemo, useState } from 'react';
-import styled from 'styled-components';
-import { IconButton, Drawer, Tooltip, Paper, Box } from '@material-ui/core';
+import {
+  IconButton,
+  Drawer,
+  Tooltip,
+  Paper,
+  TextField,
+} from '@material-ui/core';
 import { BarChart } from '@material-ui/icons';
 import {
   ArgumentAxis,
   ValueAxis,
   Chart,
   BarSeries,
+  LineSeries,
 } from '@devexpress/dx-react-chart-material-ui';
-import { get, isEmpty, keys, map } from 'lodash';
+import { filter, isEmpty, isNil, keys, map, mapValues, toNumber } from 'lodash';
 
 import { ToolManageService } from '../../services/toolManageService';
-
-const StyledHeader = styled(Box)`
-  font-size: 20px;
-  margin: 10px;
-`;
+import { Box } from '../../components/elements/Box';
 
 export const HistogramTool = () => {
-  const { imageInfos, activateHistogramTool } = useContext(ToolManageService);
+  const { activateHistogramTool } = useContext(ToolManageService);
   const [open, setOpen] = useState(null);
   const [histogramData, setHistogramData] = useState(null);
   const [toolData, setToolData] = useState(null);
 
-  const imageIds = useMemo(() => {
-    return map(imageInfos, 'id');
-  }, [imageInfos]);
-
   const onClickIcon = () => {
-    if (isEmpty(histogramData) || keys(histogramData).length === 1) {
+    if (isEmpty(histogramData)) {
       activateHistogramTool(setHistogramData, setToolData, toolData);
     } else {
       setOpen(true);
     }
   };
+
+  const [threshold, setThreshold] = useState(0);
+
+  const chartData = useMemo(() => {
+    return mapValues(histogramData, (data) =>
+      map(data, (d) => ({
+        ...d,
+        threshold,
+      }))
+    );
+  }, [histogramData, threshold]);
+
+  const higherValues = useMemo(() => {
+    return mapValues(histogramData, (data) =>
+      filter(data, (d) => d.value > threshold)
+    );
+  }, [histogramData, threshold]);
 
   return (
     <>
@@ -51,30 +66,43 @@ export const HistogramTool = () => {
             width: '100%',
           }}
         >
-          {get(histogramData, imageIds[0]) && (
-            <>
-              <StyledHeader>左圖</StyledHeader>
-              <Paper style={{ width: '50%' }}>
-                <Chart data={get(histogramData, imageIds[0])}>
-                  <ArgumentAxis />
-                  <ValueAxis />
-                  <BarSeries valueField="value" argumentField="argument" />
-                </Chart>
-              </Paper>
-            </>
-          )}
-          {get(histogramData, imageIds[1]) && (
-            <>
-              <StyledHeader>右圖</StyledHeader>
-              <Paper style={{ width: '50%' }}>
-                <Chart data={get(histogramData, imageIds[1])}>
-                  <ArgumentAxis />
-                  <ValueAxis />
-                  <BarSeries valueField="value" argumentField="argument" />
-                </Chart>
-              </Paper>
-            </>
-          )}
+          {!isNil(chartData) &&
+            map(keys(chartData), (imageId) => (
+              <>
+                <Paper style={{ width: '50%' }}>
+                  <Chart data={chartData[imageId]}>
+                    <ArgumentAxis />
+                    <ValueAxis />
+                    <BarSeries valueField="value" argumentField="argument" />
+                    <LineSeries
+                      valueField="threshold"
+                      argumentField="argument"
+                    />
+                  </Chart>
+                  <TextField
+                    style={{ margin: '5px 50px' }}
+                    onChange={(event) => {
+                      setThreshold(toNumber(event.target.value));
+                    }}
+                    label="閥值"
+                    type="number"
+                  />
+                  <Box
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      margin: '5px 50px',
+                    }}
+                  >
+                    <Box style={{ marginRight: 5 }}>Pixel</Box>
+                    {map(higherValues[imageId], ({ argument }) => (
+                      <Box>{`${argument}, `}</Box>
+                    ))}
+                    <Box style={{ marginLeft: 5 }}>高於閥值</Box>
+                  </Box>
+                </Paper>
+              </>
+            ))}
         </div>
       </Drawer>
     </>

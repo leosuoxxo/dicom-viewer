@@ -113,13 +113,13 @@ export default class CustomHistogramTool extends BaseAnnotationTool {
       return;
     }
 
+    // We have tool data for this element - iterate over each one and draw it
+    const context = getNewContext(eventData.canvasContext.canvas);
+
     if (!isNil(this._options.toolData)) {
       // Read tool data
       toolData.data = this._options.toolData;
     }
-
-    // We have tool data for this element - iterate over each one and draw it
-    const context = getNewContext(eventData.canvasContext.canvas);
 
     const data = toolData.data[0];
 
