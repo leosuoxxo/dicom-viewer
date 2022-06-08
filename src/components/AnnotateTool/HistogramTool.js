@@ -1,10 +1,13 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import {
   IconButton,
   Drawer,
-  Tooltip,
+  Tooltip as Tip,
   Paper,
   TextField,
+  Dialog,
+  InputAdornment,
+  Button,
 } from '@material-ui/core';
 import { BarChart } from '@material-ui/icons';
 import {
@@ -13,23 +16,71 @@ import {
   Chart,
   BarSeries,
   LineSeries,
+  Tooltip,
+  Title,
+  ZoomAndPan,
 } from '@devexpress/dx-react-chart-material-ui';
+import { EventTracker } from '@devexpress/dx-react-chart';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { filter, isEmpty, isNil, keys, map, mapValues, toNumber } from 'lodash';
 
 import { ToolManageService } from '../../services/toolManageService';
 import { Box } from '../../components/elements/Box';
 
+const StyledDialog = styled(Dialog)`
+  && .MuiDialog-paperWidthSm {
+    padding: 20px;
+  }
+`;
+
+const StyledButton = styled(Button)`
+  &.MuiButton-root {
+    margin: 20px 0 0 0;
+  }
+`;
+
+const RotationDialog = ({ open, onClose, setAngle, onConfirm }) => {
+  return (
+    <StyledDialog open={open} onClose={onClose}>
+      <TextField
+        label="順時針旋轉"
+        onChange={(event) => {
+          setAngle(toNumber(event.target.value));
+        }}
+        sx={{ m: 1, width: '25ch' }}
+        InputProps={{
+          endAdornment: <InputAdornment position="start">°</InputAdornment>,
+        }}
+        type="number"
+      />
+      <StyledButton variant="contained" onClick={onConfirm}>
+        確認
+      </StyledButton>
+    </StyledDialog>
+  );
+};
+
+RotationDialog.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  setAngle: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+};
+
 export const HistogramTool = () => {
   const { activateHistogramTool } = useContext(ToolManageService);
-  const [open, setOpen] = useState(null);
+  const [openGraph, setOpenGraph] = useState(null);
   const [histogramData, setHistogramData] = useState(null);
   const [toolData, setToolData] = useState(null);
 
   const onClickIcon = () => {
     if (isEmpty(histogramData)) {
-      activateHistogramTool(setHistogramData, setToolData, toolData);
+      activateHistogramTool({ setHistogramData, setToolData, toolData });
+    } else if (keys(histogramData).length === 1) {
+      setOpenDialog(true);
     } else {
-      setOpen(true);
+      setOpenGraph(true);
     }
   };
 
@@ -50,14 +101,44 @@ export const HistogramTool = () => {
     );
   }, [histogramData, threshold]);
 
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const [rotationAngle, setRotationAngle] = useState(null);
+
+  const onConfirm = useCallback(() => {
+    activateHistogramTool({
+      setHistogramData,
+      setToolData,
+      toolData,
+      rotationAngle,
+    });
+    setOpenDialog(false);
+  }, [
+    activateHistogramTool,
+    setHistogramData,
+    setToolData,
+    toolData,
+    rotationAngle,
+  ]);
+
   return (
     <>
-      <Tooltip title="灰階圖表">
+      <RotationDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        setAngle={setRotationAngle}
+        onConfirm={onConfirm}
+      />
+      <Tip title="灰階圖表">
         <IconButton onClick={onClickIcon}>
           <BarChart />
         </IconButton>
-      </Tooltip>
-      <Drawer anchor={'top'} open={open} onClose={() => setOpen(false)}>
+      </Tip>
+      <Drawer
+        anchor={'top'}
+        open={openGraph}
+        onClose={() => setOpenGraph(false)}
+      >
         <div
           style={{
             marginTop: '48px',
@@ -68,16 +149,21 @@ export const HistogramTool = () => {
         >
           {!isNil(chartData) &&
             map(keys(chartData), (imageId) => (
-              <>
-                <Paper style={{ width: '50%' }}>
+              <Box key={imageId} style={{ width: '50%' }}>
+                <Paper>
                   <Chart data={chartData[imageId]}>
-                    <ArgumentAxis />
                     <ValueAxis />
+                    <ArgumentAxis />
                     <BarSeries valueField="value" argumentField="argument" />
                     <LineSeries
                       valueField="threshold"
                       argumentField="argument"
                     />
+                    <Title text="灰階圖表" />
+                    <ZoomAndPan />
+
+                    <EventTracker />
+                    <Tooltip />
                   </Chart>
                   <TextField
                     style={{ margin: '5px 50px' }}
@@ -95,13 +181,24 @@ export const HistogramTool = () => {
                     }}
                   >
                     <Box style={{ marginRight: 5 }}>Pixel</Box>
-                    {map(higherValues[imageId], ({ argument }) => (
-                      <Box>{`${argument}, `}</Box>
-                    ))}
-                    <Box style={{ marginLeft: 5 }}>高於閥值</Box>
+                    <Box
+                      style={{
+                        width: '70vw',
+                        flexDirection: 'row',
+                        overflow: 'auto',
+                        display: 'flex',
+                      }}
+                    >
+                      {map(higherValues[imageId], ({ argument }) => (
+                        <Box key={argument}>{`${argument}, `}</Box>
+                      ))}
+                    </Box>
+                    <Box
+                      style={{ marginLeft: 5, width: '15vw' }}
+                    >{`高於閥值, 共${higherValues[imageId].length}個`}</Box>
                   </Box>
                 </Paper>
-              </>
+              </Box>
             ))}
         </div>
       </Drawer>

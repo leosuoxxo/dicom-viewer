@@ -121,6 +121,18 @@ export default class CustomHistogramTool extends BaseAnnotationTool {
       toolData.data = this._options.toolData;
     }
 
+    if (!isNil(this._options.rotationAngle)) {
+      const radians = this.toRadians(this._options.rotationAngle);
+      const handles = toolData.data[0].handles;
+      const newEndPoint = this.rotate(radians, handles.start, handles.end);
+      toolData.data[0].handles.end = {
+        ...newEndPoint,
+        active: false,
+        highlight: true,
+        moving: false,
+      };
+    }
+
     const data = toolData.data[0];
 
     const { setHistogramData, setToolData } = this._options;
@@ -159,5 +171,19 @@ export default class CustomHistogramTool extends BaseAnnotationTool {
         lineOptions
       );
     });
+  }
+
+  rotate(radians, startPoint, endPoint) {
+    const a = startPoint.x - endPoint.x;
+    const b = startPoint.y - endPoint.y;
+    const radius = Math.sqrt(a * a + b * b);
+    return {
+      x: startPoint.x + radius * Math.cos(radians),
+      y: startPoint.y + radius * Math.sin(radians),
+    };
+  }
+
+  toRadians(angle) {
+    return angle * (Math.PI / 180);
   }
 }
