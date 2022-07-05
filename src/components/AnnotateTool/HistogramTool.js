@@ -69,14 +69,21 @@ RotationDialog.propTypes = {
 };
 
 export const HistogramTool = () => {
-  const { activateHistogramTool } = useContext(ToolManageService);
+  const { activateHistogramTool, getValidElements } =
+    useContext(ToolManageService);
   const [openGraph, setOpenGraph] = useState(null);
   const [histogramData, setHistogramData] = useState(null);
   const [toolData, setToolData] = useState(null);
 
   const onClickIcon = () => {
+    const [leftImage] = getValidElements();
     if (isEmpty(histogramData)) {
-      activateHistogramTool({ setHistogramData, setToolData, toolData });
+      activateHistogramTool({
+        setHistogramData,
+        setToolData,
+        toolData,
+        targetImageId: leftImage.image.imageId,
+      });
     } else if (keys(histogramData).length === 1) {
       setOpenDialog(true);
     } else {
@@ -106,11 +113,13 @@ export const HistogramTool = () => {
   const [rotationAngle, setRotationAngle] = useState(null);
 
   const onConfirm = useCallback(() => {
+    const [, rightImage] = getValidElements();
     activateHistogramTool({
       setHistogramData,
       setToolData,
       toolData,
       rotationAngle,
+      targetImageId: rightImage.image.imageId,
     });
     setOpenDialog(false);
   }, [
@@ -119,6 +128,7 @@ export const HistogramTool = () => {
     setToolData,
     toolData,
     rotationAngle,
+    getValidElements,
   ]);
 
   return (

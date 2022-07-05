@@ -208,8 +208,14 @@ export const useToolManageService = () => {
   );
 
   const activateHistogramTool = useCallback(
-    ({ setHistogramData, setToolData, toolData, rotationAngle }) => {
-      const selectedElement = document.getElementById(selectedImageId);
+    ({
+      setHistogramData,
+      setToolData,
+      toolData,
+      rotationAngle,
+      targetImageId,
+    }) => {
+      const selectedElement = document.getElementById(targetImageId);
 
       cornerstoneTools.init();
       cornerstoneTools.addToolForElement(selectedElement, CustomHistogramTool);
@@ -225,7 +231,7 @@ export const useToolManageService = () => {
         }
       );
     },
-    [cornerstoneTools, selectedImageId]
+    [cornerstoneTools]
   );
 
   return {
