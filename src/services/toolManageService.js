@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import {
+  castArray,
   concat,
   filter,
   find,
@@ -38,6 +39,8 @@ export const useToolManageService = () => {
 
   const [selectedPosition, setSelectedPosition] = useState('1*1');
   const [imageInfos, setImageInfos] = useState([]);
+
+  const [toolData, setToolData] = useState(null);
 
   const selectedImageId = useMemo(() => {
     const imageInfo = find(imageInfos, { position: selectedPosition });
@@ -114,6 +117,24 @@ export const useToolManageService = () => {
     [cornerstoneFileImageLoader, cornerstoneWADOImageLoader, imageInfoHandler]
   );
 
+  const getValidElements = useCallback(() => {
+    if (isEmpty(cornerstone.getEnabledElements())) return;
+    const elements = filter(
+      cornerstone.getEnabledElements(),
+      (e) => !isNil(e.image)
+    );
+    return elements;
+  }, [cornerstone]);
+
+  const getSelectedElement = useCallback(() => {
+    if (isEmpty(getValidElements())) return;
+    const [element] = filter(
+      getValidElements(),
+      (e) => e.image.imageId === selectedImageId
+    );
+    return element;
+  }, [selectedImageId, getValidElements]);
+
   const exportImage = useCallback(
     async ({ imageType }) => {
       if (isEmpty(cornerstone.getEnabledElements())) {
@@ -146,24 +167,6 @@ export const useToolManageService = () => {
     },
     [cornerstone, toTiffUrl, selectedImageId]
   );
-
-  const getValidElements = useCallback(() => {
-    if (isEmpty(cornerstone.getEnabledElements())) return;
-    const elements = filter(
-      cornerstone.getEnabledElements(),
-      (e) => !isNil(e.image)
-    );
-    return elements;
-  }, [cornerstone]);
-
-  const getSelectedElement = useCallback(() => {
-    if (isEmpty(getValidElements())) return;
-    const [element] = filter(
-      getValidElements(),
-      (e) => e.image.imageId === selectedImageId
-    );
-    return element;
-  }, [selectedImageId, getValidElements]);
 
   useEffect(() => {
     cornerstoneTools.toolColors.setToolColor(TOOL_COLORS[0]);
@@ -207,14 +210,10 @@ export const useToolManageService = () => {
     [cornerstoneTools, getValidElements, selectedImageId]
   );
 
+  const [histogramData, setHistogramData] = useState(null);
+
   const activateHistogramTool = useCallback(
-    ({
-      setHistogramData,
-      setToolData,
-      toolData,
-      rotationAngle,
-      targetImageId,
-    }) => {
+    ({ rotationAngle, targetImageId, sourceImageId }) => {
       const selectedElement = document.getElementById(targetImageId);
 
       cornerstoneTools.init();
@@ -226,13 +225,61 @@ export const useToolManageService = () => {
           mouseButtonMask: 1,
           setHistogramData,
           setToolData,
-          toolData,
+          toolData: get(toolData, sourceImageId),
           rotationAngle,
         }
       );
     },
-    [cornerstoneTools]
+    [cornerstoneTools, toolData, setToolData, setHistogramData]
   );
+
+  const toolDataUpload = useCallback(
+    (file) => {
+      if (isNil(file)) return;
+      const fileReader = new FileReader();
+      fileReader.readAsText(file, 'UTF-8');
+
+      const ele = getSelectedElement();
+      const selectedElement = document.getElementById(ele.image.imageId);
+
+      fileReader.onload = (e) => {
+        cornerstoneTools.init();
+        cornerstoneTools.addToolForElement(
+          selectedElement,
+          CustomHistogramTool
+        );
+        cornerstoneTools.setToolActiveForElement(
+          selectedElement,
+          'CustomHistogram',
+          {
+            mouseButtonMask: 1,
+            setHistogramData,
+            setToolData,
+            toolData: castArray(JSON.parse(e.target.result)),
+          }
+        );
+      };
+    },
+    [cornerstoneTools, setHistogramData, setToolData, getSelectedElement]
+  );
+
+  const exportToolData = useCallback(() => {
+    if (isEmpty(cornerstone.getEnabledElements())) {
+      alert('請先上傳圖檔');
+      return;
+    }
+    const element = getSelectedElement();
+    const [data] = toolData[element.image.imageId];
+
+    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+      JSON.stringify(data)
+    )}`;
+    const link = document.createElement('a');
+    link.href = jsonString;
+    link.download = `${element.image.imageId}.json`;
+
+    link.click();
+  }, [cornerstone, getSelectedElement, toolData]);
 
   return {
     imageInfos,
@@ -246,6 +293,11 @@ export const useToolManageService = () => {
     getSelectedElement,
     getValidElements,
     activateHistogramTool,
+    toolDataUpload,
+    exportToolData,
+    toolData,
+    setToolData,
+    histogramData,
   };
 };
 

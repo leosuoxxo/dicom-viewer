@@ -16,6 +16,7 @@ import {
   ExportImageTool,
   MultipleViewerTool,
   DicomTagsButton,
+  ToolDataUploadTool,
 } from '../../components/GeneralTool';
 
 export const ToolBar = () => {
@@ -39,6 +40,7 @@ export const ToolBar = () => {
         <ExportImageTool />
         {/*TBD: licence related*/}
         <HistogramTool />
+        <ToolDataUploadTool />
         <IconButton>
           <ExitToApp />
         </IconButton>
