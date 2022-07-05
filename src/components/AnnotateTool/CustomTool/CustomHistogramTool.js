@@ -144,7 +144,10 @@ export default class CustomHistogramTool extends BaseAnnotationTool {
       data.handles.end
     );
 
-    setToolData(toolData.data);
+    setToolData((data) => ({
+      ...data,
+      [eventData.image.imageId]: toolData.data,
+    }));
 
     setHistogramData((data) => ({
       ...data,

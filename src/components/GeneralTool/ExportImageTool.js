@@ -14,7 +14,7 @@ const PopoverItem = styled(Box)`
 `;
 
 export const ExportImageTool = () => {
-  const { exportImage } = useToolManage();
+  const { exportImage, exportToolData } = useToolManage();
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -48,6 +48,9 @@ export const ExportImageTool = () => {
           horizontal: 'center',
         }}
       >
+        <PopoverItem p={3} onClick={() => exportToolData()}>
+          Tool Data
+        </PopoverItem>
         <PopoverItem p={3} onClick={exportImageHandler(IMAGE_TYPE.JPG)}>
           JPEG
         </PopoverItem>
