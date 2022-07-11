@@ -73,6 +73,18 @@ export const useToolManageService = () => {
       const extension = getFileExtension(file.name);
 
       switch (extension) {
+        case 'jpg': {
+          const buffer = await fileToBuffer(file);
+          const blob = new Blob([buffer], { type: 'image/jpg' });
+          const canvasBuffer = await blob.arrayBuffer();
+          const imageId =
+            cornerstoneFileImageLoader.fileManager.addBuffer(canvasBuffer);
+
+          setImageInfos((imageInfos) => {
+            return imageInfoHandler(imageInfos, imageId);
+          });
+          break;
+        }
         case IMAGE_TYPE.TIFF:
         case IMAGE_TYPE.TIF: {
           const buffer = await fileToBuffer(file);
