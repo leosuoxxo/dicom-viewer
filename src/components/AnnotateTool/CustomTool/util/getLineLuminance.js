@@ -16,7 +16,7 @@ export default function (element, startPoint, endPoint) {
 
   if (image.color) {
     forEach(coordinates, (coordinate, index) => {
-      spIndex = coordinate.y * image.columns + coordinate.x * 4;
+      spIndex = (coordinate.y * image.columns + coordinate.x) * 4;
       const red = pixelData[spIndex];
       const green = pixelData[spIndex + 1];
       const blue = pixelData[spIndex + 2];

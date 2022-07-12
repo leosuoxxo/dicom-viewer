@@ -40,8 +40,6 @@ export default function (element, x, y, width, height) {
   } else {
     for (row = 0; row < height; row++) {
       for (column = 0; column < width; column++) {
-        console.log('sp', ((row + y) * image.columns + (column + x)) * 4);
-
         spIndex = (row + y) * image.columns + (column + x);
         luminance[index++] = pixelData[spIndex] * image.slope + image.intercept;
       }
