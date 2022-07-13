@@ -139,63 +139,74 @@ export const HistogramTool = () => {
           style={{
             marginTop: '48px',
             display: 'flex',
-            flexDirection: 'row',
+            flexDirection: 'column',
             width: '100%',
           }}
         >
-          {!isNil(chartData) &&
-            map(keys(chartData), (imageId) => (
-              <Box key={imageId} style={{ width: '50%' }}>
-                <Paper>
-                  <Chart data={chartData[imageId]}>
-                    <ValueAxis />
-                    <ArgumentAxis />
-                    <BarSeries valueField="value" argumentField="argument" />
-                    <LineSeries
-                      valueField="threshold"
-                      argumentField="argument"
-                    />
-                    <Title text="灰階圖表" />
-                    <ZoomAndPan />
+          {!isNil(chartData) && (
+            <TextField
+              style={{ margin: '5px 50px' }}
+              onChange={(event) => {
+                setThreshold(toNumber(event.target.value));
+              }}
+              label="閥值"
+              type="number"
+            />
+          )}
+          <div
+            style={{
+              marginTop: '48px',
+              display: 'flex',
+              flexDirection: 'row',
+              width: '100%',
+            }}
+          >
+            {!isNil(chartData) &&
+              map(keys(chartData), (imageId) => (
+                <Box key={imageId} style={{ width: '50%' }}>
+                  <Paper>
+                    <Chart data={chartData[imageId]}>
+                      <ValueAxis />
+                      <ArgumentAxis />
+                      <BarSeries valueField="value" argumentField="argument" />
+                      <LineSeries
+                        valueField="threshold"
+                        argumentField="argument"
+                      />
+                      <Title text="灰階圖表" />
+                      <ZoomAndPan />
 
-                    <EventTracker />
-                    <Tooltip />
-                  </Chart>
-                  <TextField
-                    style={{ margin: '5px 50px' }}
-                    onChange={(event) => {
-                      setThreshold(toNumber(event.target.value));
-                    }}
-                    label="閥值"
-                    type="number"
-                  />
-                  <Box
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      margin: '5px 50px',
-                    }}
-                  >
-                    <Box style={{ marginRight: 5 }}>Pixel</Box>
+                      <EventTracker />
+                      <Tooltip />
+                    </Chart>
                     <Box
                       style={{
-                        width: '70vw',
-                        flexDirection: 'row',
-                        overflow: 'auto',
                         display: 'flex',
+                        flexDirection: 'row',
+                        margin: '5px 50px',
                       }}
                     >
-                      {map(higherValues[imageId], ({ argument }) => (
-                        <Box key={argument}>{`${argument}, `}</Box>
-                      ))}
+                      <Box style={{ marginRight: 5 }}>Pixel</Box>
+                      <Box
+                        style={{
+                          width: '70vw',
+                          flexDirection: 'row',
+                          overflow: 'auto',
+                          display: 'flex',
+                        }}
+                      >
+                        {map(higherValues[imageId], ({ argument }) => (
+                          <Box key={argument}>{`${argument}, `}</Box>
+                        ))}
+                      </Box>
+                      <Box
+                        style={{ marginLeft: 5, width: '15vw' }}
+                      >{`高於閥值, 共${higherValues[imageId].length}個`}</Box>
                     </Box>
-                    <Box
-                      style={{ marginLeft: 5, width: '15vw' }}
-                    >{`高於閥值, 共${higherValues[imageId].length}個`}</Box>
-                  </Box>
-                </Paper>
-              </Box>
-            ))}
+                  </Paper>
+                </Box>
+              ))}
+          </div>
         </div>
       </Drawer>
     </>
