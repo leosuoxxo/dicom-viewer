@@ -8,6 +8,7 @@ import {
   Dialog,
   InputAdornment,
   Button,
+  Popover,
 } from '@material-ui/core';
 import { BarChart } from '@material-ui/icons';
 import {
@@ -40,6 +41,13 @@ const StyledButton = styled(Button)`
   }
 `;
 
+const PopoverItem = styled(Box)`
+  cursor: pointer;
+  &:hover {
+    background-color: ${({ theme }) => theme.palette.action.hover};
+  }
+`;
+
 const RotationDialog = ({ open, onClose, setAngle, onConfirm }) => {
   return (
     <StyledDialog open={open} onClose={onClose}>
@@ -69,20 +77,35 @@ RotationDialog.propTypes = {
 };
 
 export const HistogramTool = () => {
-  const { activateHistogramTool, getValidElements, histogramData } =
-    useContext(ToolManageService);
+  const {
+    activateHistogramTool,
+    getValidElements,
+    histogramData,
+    getSelectedElement,
+  } = useContext(ToolManageService);
   const [openGraph, setOpenGraph] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  const onClickIcon = () => {
-    const [leftImage] = getValidElements();
+  const onClickIcon = (event) => {
+    setAnchorEl(event.target);
+  };
+
+  const onDrawLine = () => {
+    const element = getSelectedElement();
+
     if (isEmpty(histogramData)) {
       activateHistogramTool({
-        targetImageId: leftImage.image.imageId,
+        targetImageId: element.image.imageId,
       });
-    } else if (keys(histogramData).length === 1) {
+    }
+  };
+
+  const onRotateLine = () => {
+    if (isNil(histogramData)) {
+      alert('請先使用畫線工具');
+    }
+    if (keys(histogramData).length === 1) {
       setOpenDialog(true);
-    } else {
-      setOpenGraph(true);
     }
   };
 
@@ -94,12 +117,6 @@ export const HistogramTool = () => {
         ...d,
         threshold,
       }))
-    );
-  }, [histogramData, threshold]);
-
-  const higherValues = useMemo(() => {
-    return mapValues(histogramData, (data) =>
-      filter(data, (d) => d.value > threshold)
     );
   }, [histogramData, threshold]);
 
@@ -117,6 +134,12 @@ export const HistogramTool = () => {
     setOpenDialog(false);
   }, [activateHistogramTool, rotationAngle, getValidElements]);
 
+  const higherValues = useMemo(() => {
+    return mapValues(histogramData, (data) =>
+      filter(data, (d) => d.value > threshold)
+    );
+  }, [histogramData, threshold]);
+
   return (
     <>
       <RotationDialog
@@ -130,6 +153,29 @@ export const HistogramTool = () => {
           <BarChart />
         </IconButton>
       </Tip>
+      <Popover
+        open={!!anchorEl}
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <PopoverItem p={3} onClick={() => onDrawLine()}>
+          畫線
+        </PopoverItem>
+        <PopoverItem p={3} onClick={() => onRotateLine()}>
+          轉換角度
+        </PopoverItem>
+        <PopoverItem p={3} onClick={() => setOpenGraph(true)}>
+          展示圖表
+        </PopoverItem>
+      </Popover>
       <Drawer
         anchor={'top'}
         open={openGraph}
