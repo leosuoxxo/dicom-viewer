@@ -24,7 +24,7 @@ import {
 import { EventTracker } from '@devexpress/dx-react-chart';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { filter, isEmpty, isNil, keys, map, mapValues, toNumber } from 'lodash';
+import { filter, isNil, keys, map, mapValues, toNumber } from 'lodash';
 
 import { ToolManageService } from '../../services/toolManageService';
 import { Box } from '../../components/elements/Box';
@@ -81,36 +81,13 @@ export const HistogramTool = () => {
     activateHistogramTool,
     getValidElements,
     histogramData,
+    setHistogramData,
     getSelectedElement,
+    resetHistogramTool,
   } = useContext(ToolManageService);
   const [openGraph, setOpenGraph] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const onClickIcon = (event) => {
-    setAnchorEl(event.target);
-  };
-
-  const onDrawLine = () => {
-    const element = getSelectedElement();
-
-    if (isEmpty(histogramData)) {
-      activateHistogramTool({
-        targetImageId: element.image.imageId,
-      });
-    }
-  };
-
-  const onRotateLine = () => {
-    if (isNil(histogramData)) {
-      alert('請先使用畫線工具');
-    }
-    if (keys(histogramData).length === 1) {
-      setOpenDialog(true);
-    }
-  };
-
   const [threshold, setThreshold] = useState(0);
-
   const chartData = useMemo(() => {
     return mapValues(histogramData, (data) =>
       map(data, (d) => ({
@@ -119,10 +96,46 @@ export const HistogramTool = () => {
       }))
     );
   }, [histogramData, threshold]);
-
   const [openDialog, setOpenDialog] = useState(false);
-
   const [rotationAngle, setRotationAngle] = useState(null);
+
+  const onClickIcon = (event) => {
+    setAnchorEl(event.target);
+  };
+
+  const onDrawLine = useCallback(() => {
+    const element = getSelectedElement();
+
+    activateHistogramTool({
+      targetImageId: element.image.imageId,
+    });
+  }, [getSelectedElement, activateHistogramTool]);
+
+  const onRotateLine = useCallback(() => {
+    if (isNil(histogramData)) {
+      alert('請先使用畫線工具');
+    }
+    if (keys(histogramData).length === 1) {
+      setOpenDialog(true);
+    }
+  }, [histogramData, setOpenDialog]);
+
+  const onClearLine = useCallback(() => {
+    const selectedElement = getSelectedElement();
+    const validElements = getValidElements();
+    const [remainElement] = filter(
+      validElements,
+      (element) => element !== selectedElement
+    );
+    //TBD: Deal with histogram data
+    resetHistogramTool();
+  }, [
+    histogramData,
+    setHistogramData,
+    getSelectedElement,
+    getValidElements,
+    resetHistogramTool,
+  ]);
 
   const onConfirm = useCallback(() => {
     const [leftImage, rightImage] = getValidElements();
@@ -174,6 +187,9 @@ export const HistogramTool = () => {
         </PopoverItem>
         <PopoverItem p={3} onClick={() => setOpenGraph(true)}>
           展示圖表
+        </PopoverItem>
+        <PopoverItem p={3} onClick={() => onClearLine()}>
+          清除資料
         </PopoverItem>
       </Popover>
       <Drawer

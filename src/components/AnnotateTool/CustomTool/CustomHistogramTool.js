@@ -9,7 +9,7 @@ import { lengthCursor } from './cursors';
 import lineSegDistance from './util/lineSegDistance.js';
 import getPixelSpacing from './util/getPixelSpacing';
 import throttle from './util/throttle';
-import { castArray, isNil, last, map } from 'lodash';
+import { castArray, get, isNil, last, map } from 'lodash';
 import getLineLuminance from './util/getLineLuminance.js';
 
 export default class CustomHistogramTool extends BaseAnnotationTool {
@@ -109,7 +109,7 @@ export default class CustomHistogramTool extends BaseAnnotationTool {
     // make sure only one line appear
     toolData.data = castArray(last(toolData.data));
 
-    if (!toolData) {
+    if (!toolData || isNil(get(toolData, 'data.0.handles'))) {
       return;
     }
 
