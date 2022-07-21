@@ -15,6 +15,8 @@ import {
   InputAdornment,
   Button,
   Popover,
+  Checkbox,
+  FormControlLabel,
 } from '@material-ui/core';
 import { BarChart } from '@material-ui/icons';
 import {
@@ -54,21 +56,36 @@ const PopoverItem = styled(Box)`
   }
 `;
 
-const RotationDialog = ({ open, onClose, setAngle, onConfirm }) => {
+const RotationDialog = ({ open, onClose, onConfirm }) => {
+  const [shouldRotate, setShouldRotate] = useState(false);
+  const [rotationAngle, setRotationAngle] = useState(null);
+
   return (
     <StyledDialog open={open} onClose={onClose}>
       <TextField
         label="順時針旋轉"
         onChange={(event) => {
-          setAngle(toNumber(event.target.value));
+          setRotationAngle(toNumber(event.target.value));
         }}
         sx={{ m: 1, width: '25ch' }}
         InputProps={{
           endAdornment: <InputAdornment position="start">°</InputAdornment>,
         }}
+        disabled={shouldRotate}
         type="number"
       />
-      <StyledButton variant="contained" onClick={onConfirm}>
+      <FormControlLabel
+        label={'鏡射'}
+        control={
+          <Checkbox
+            onChange={(event) => setShouldRotate(event.target.checked)}
+          />
+        }
+      />
+      <StyledButton
+        variant="contained"
+        onClick={() => onConfirm(shouldRotate, rotationAngle)}
+      >
         確認
       </StyledButton>
     </StyledDialog>
@@ -104,7 +121,6 @@ export const HistogramTool = () => {
     );
   }, [histogramData, threshold]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [rotationAngle, setRotationAngle] = useState(null);
 
   const onClickIcon = (event) => {
     setAnchorEl(event.target);
@@ -144,15 +160,25 @@ export const HistogramTool = () => {
     resetHistogramTool,
   ]);
 
-  const onConfirm = useCallback(() => {
-    const [leftImage, rightImage] = getValidElements();
-    activateHistogramTool({
-      rotationAngle,
-      targetImageId: rightImage.image.imageId,
-      sourceImageId: leftImage.image.imageId,
-    });
-    setOpenDialog(false);
-  }, [activateHistogramTool, rotationAngle, getValidElements]);
+  const onConfirm = useCallback(
+    (shouldRotate, rotationAngle) => {
+      const [leftImage, rightImage] = getValidElements();
+      if (shouldRotate) {
+        activateHistogramTool({
+          rotationAngle,
+          targetImageId: rightImage.image.imageId,
+          sourceImageId: leftImage.image.imageId,
+        });
+      } else {
+        activateHistogramTool({
+          targetImageId: rightImage.image.imageId,
+          sourceImageId: leftImage.image.imageId,
+        });
+      }
+      setOpenDialog(false);
+    },
+    [activateHistogramTool, getValidElements]
+  );
 
   const higherValues = useMemo(() => {
     return mapValues(histogramData, (data) =>
@@ -173,7 +199,6 @@ export const HistogramTool = () => {
       <RotationDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
-        setAngle={setRotationAngle}
         onConfirm={onConfirm}
       />
       <Tip title="灰階圖表">
