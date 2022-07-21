@@ -249,6 +249,8 @@ export const useToolManageService = () => {
     activateTool('Eraser');
   }, [cornerstoneTools, activateTool]);
 
+  const [threshold, setThreshold] = useState(0);
+
   const toolDataUpload = useCallback(
     (file) => {
       if (isNil(file)) return;
@@ -259,6 +261,8 @@ export const useToolManageService = () => {
       const selectedElement = document.getElementById(ele.image.imageId);
 
       fileReader.onload = (e) => {
+        const data = JSON.parse(e.target.result);
+
         cornerstoneTools.init();
         cornerstoneTools.addToolForElement(
           selectedElement,
@@ -271,31 +275,38 @@ export const useToolManageService = () => {
             mouseButtonMask: 1,
             setHistogramData,
             setToolData,
-            toolData: castArray(JSON.parse(e.target.result)),
+            toolData: castArray(data),
           }
         );
+        setThreshold(data.threshold);
       };
     },
     [cornerstoneTools, setHistogramData, setToolData, getSelectedElement]
   );
 
-  const exportToolData = useCallback(() => {
-    if (isEmpty(cornerstone.getEnabledElements())) {
-      alert('請先上傳圖檔');
-      return;
-    }
-    const element = getSelectedElement();
-    const [data] = toolData[element.image.imageId];
+  const exportToolData = useCallback(
+    (threshold) => {
+      if (isEmpty(cornerstone.getEnabledElements())) {
+        alert('請先上傳圖檔');
+        return;
+      }
+      const element = getSelectedElement();
+      const [data] = toolData[element.image.imageId];
 
-    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-      JSON.stringify(data)
-    )}`;
-    const link = document.createElement('a');
-    link.href = jsonString;
-    link.download = `${element.image.imageId}.json`;
+      const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+        JSON.stringify({
+          ...data,
+          threshold,
+        })
+      )}`;
+      const link = document.createElement('a');
+      link.href = jsonString;
+      link.download = `${element.image.imageId}.json`;
 
-    link.click();
-  }, [cornerstone, getSelectedElement, toolData]);
+      link.click();
+    },
+    [cornerstone, getSelectedElement, toolData]
+  );
 
   return {
     imageInfos,
@@ -316,6 +327,8 @@ export const useToolManageService = () => {
     histogramData,
     setHistogramData,
     resetHistogramTool,
+    setThreshold,
+    threshold,
   };
 };
 

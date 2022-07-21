@@ -104,14 +104,16 @@ export const HistogramTool = () => {
     activateHistogramTool,
     getValidElements,
     histogramData,
-    setHistogramData,
     getSelectedElement,
     resetHistogramTool,
     toolDataUpload,
+    exportToolData,
+    threshold,
+    setThreshold,
   } = useContext(ToolManageService);
   const [openGraph, setOpenGraph] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [threshold, setThreshold] = useState(0);
+
   const chartData = useMemo(() => {
     return mapValues(histogramData, (data) =>
       map(data, (d) => ({
@@ -138,27 +140,12 @@ export const HistogramTool = () => {
     if (isNil(histogramData)) {
       alert('請先使用畫線工具');
     }
-    if (keys(histogramData).length === 1) {
-      setOpenDialog(true);
-    }
+    setOpenDialog(true);
   }, [histogramData, setOpenDialog]);
 
   const onClearLine = useCallback(() => {
-    const selectedElement = getSelectedElement();
-    const validElements = getValidElements();
-    const [remainElement] = filter(
-      validElements,
-      (element) => element !== selectedElement
-    );
-    //TBD: Deal with histogram data
     resetHistogramTool();
-  }, [
-    histogramData,
-    setHistogramData,
-    getSelectedElement,
-    getValidElements,
-    resetHistogramTool,
-  ]);
+  }, [resetHistogramTool]);
 
   const onConfirm = useCallback(
     (shouldRotate, rotationAngle) => {
@@ -269,6 +256,14 @@ export const HistogramTool = () => {
             onChange={fileUploadHanlder}
           />
         </PopoverItem>
+        <PopoverItem
+          p={3}
+          onClick={() => {
+            exportToolData(threshold);
+          }}
+        >
+          匯出標註
+        </PopoverItem>
       </Popover>
       <Drawer
         anchor={'top'}
@@ -289,6 +284,7 @@ export const HistogramTool = () => {
               onChange={(event) => {
                 setThreshold(toNumber(event.target.value));
               }}
+              value={threshold}
               label="閥值"
               type="number"
             />
