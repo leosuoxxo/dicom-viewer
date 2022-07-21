@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   IconButton,
   Drawer,
@@ -84,6 +90,7 @@ export const HistogramTool = () => {
     setHistogramData,
     getSelectedElement,
     resetHistogramTool,
+    toolDataUpload,
   } = useContext(ToolManageService);
   const [openGraph, setOpenGraph] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -153,6 +160,14 @@ export const HistogramTool = () => {
     );
   }, [histogramData, threshold]);
 
+  const inputRef = useRef();
+
+  const fileUploadHanlder = (event) => {
+    const file = event.target.files[0];
+    toolDataUpload(file);
+    setAnchorEl(null);
+  };
+
   return (
     <>
       <RotationDialog
@@ -179,17 +194,55 @@ export const HistogramTool = () => {
           horizontal: 'center',
         }}
       >
-        <PopoverItem p={3} onClick={() => onDrawLine()}>
+        <PopoverItem
+          p={3}
+          onClick={() => {
+            setAnchorEl(null);
+            onDrawLine();
+          }}
+        >
           畫線
         </PopoverItem>
-        <PopoverItem p={3} onClick={() => onRotateLine()}>
+        <PopoverItem
+          p={3}
+          onClick={() => {
+            setAnchorEl(null);
+            onRotateLine();
+          }}
+        >
           轉換角度
         </PopoverItem>
-        <PopoverItem p={3} onClick={() => setOpenGraph(true)}>
+        <PopoverItem
+          p={3}
+          onClick={() => {
+            setAnchorEl(null);
+            setOpenGraph(true);
+          }}
+        >
           展示圖表
         </PopoverItem>
-        <PopoverItem p={3} onClick={() => onClearLine()}>
+        <PopoverItem
+          p={3}
+          onClick={() => {
+            setAnchorEl(null);
+            onClearLine();
+          }}
+        >
           清除資料
+        </PopoverItem>
+        <PopoverItem
+          p={3}
+          onClick={() => {
+            inputRef.current.click();
+          }}
+        >
+          上傳標註
+          <input
+            hidden
+            ref={inputRef}
+            type="file"
+            onChange={fileUploadHanlder}
+          />
         </PopoverItem>
       </Popover>
       <Drawer
